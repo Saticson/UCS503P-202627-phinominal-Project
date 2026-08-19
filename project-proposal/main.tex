@@ -2,241 +2,178 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \usepackage{enumitem}
-\usepackage{graphicx}
 \usepackage{xcolor}
-
-% -----------------------------------------------------
-% bvraghav-tiet-ucs503p-article.sty
-% -----------------------------------------------------
+\usepackage{titling}
 
 % Variable: Lab Instructor
-\makeatletter \newcommand{\BvrSetLabInstructor}[1]{%
-  \gdef\Bvr@LabInstructor{#1}}
-% default
-\newcommand{\Bvr@LabInstructor}{Dr. Raghav %
-  B. Venkataramaiyer}
-% public accessor
+\makeatletter
+\newcommand{\BvrSetLabInstructor}[1]{\gdef\Bvr@LabInstructor{#1}}
+\newcommand{\Bvr@LabInstructor}{Dr. Raghav B. Venkataramaiyer}
 \newcommand{\BvrLabInstructorValue}{\Bvr@LabInstructor}
 \makeatother
 
-% Add subtitle
-\usepackage{titling}
-% -- Set title bold
+% Title styling and subtitle
 \pretitle{\begin{center}\bfseries\fontsize{18bp}{18bp}\selectfont}
 \makeatletter
 \newcommand{\BvrSubtitle}[1]{%
-  \posttitle{%
-    \par\end{center}
-    \begin{center}\large#1\end{center}
-    \vskip 0.5em}%
-}
+  \posttitle{\par\end{center}\begin{center}\large#1\end{center}\vskip 0.5em}}
 \makeatother
+\newcommand{\BvrHint}[1]{{\normalfont\normalsize\itshape\hfill #1}}
 
-% Hints in the section title(s)
-\newcommand{\BvrHint}[1]{%
-  {\normalfont\normalsize\itshape\hfill #1}}
-
-% -----------------------------------------------------
-
-\title{Grievance-Resolution System for a Tier-2/3 City}
-
+\title{Sukio: A Marketplace for Machine Learning Solutions}
 \BvrSetLabInstructor{Dr. Raghav B. Venkataramaiyer}
-
-\BvrSubtitle{%
-  Project Proposal for UCS503P  \\
-  Submitted to: \BvrLabInstructorValue \\ \bfseries
-  Thapar Institute of Engineering and Technology% 
-}
+\BvrSubtitle{Project Proposal for UCS503P\\Submitted to: \BvrLabInstructorValue\\\bfseries Thapar Institute of Engineering and Technology}
 
 \author{
-  Vidya Vaidyanathan, CSED%
-  \thanks{Roll No: \texttt{1024030xxx}, %
-    Email: \texttt{vvaidhanathan\_be24\@thapar.edu}}
-  \and 
-  Bhanurekha Ganesan, CSED%
-  \thanks{Roll No: \texttt{1024030xxx}, %
-    Email: \texttt{bganesan\_be24\@thapar.edu}}
+  Keshav Juneja, CSED%
+  \thanks{Roll No: \texttt{1024030692}}
+  \and
+  Satwik Sinha, CSED%
+  \thanks{Roll No: \texttt{1024030699}}
 }
-
 \date{\today}
 
 \begin{document}
 \maketitle
 
-\section{Higher-order goal%
-  \BvrHint{\ldots secondary framing}}
-This project aims to improve sustainable urban
-governance by reducing the time and effort required to
-resolve citizen issues. While the topic is broader than
-any single municipality, the immediate engineering
-objective is to translate \emph{efficient public
-  service delivery} into a measurable, deployable
-software solution.
+\section{Higher-order goal \BvrHint{\ldots secondary framing}}
+Sukio aims to make practical machine learning capability more accessible. People with a data problem should be able to obtain a credible starting solution without first becoming ML specialists, while ML engineers should have a structured way to package, demonstrate, and monetise their work. The immediate engineering objective is a deployable marketplace that helps users discover, evaluate, and acquire suitable ML solutions.
 
-\section{Time-to-value %
-\BvrHint{\ldots primary heuristic}}
+\section{Time-to-value \BvrHint{\ldots primary heuristic}}
 \begin{itemize}[leftmargin=0.7cm]
-    \item We will deliver meaningful increments quickly by prototyping the core user workflow and validating it with users within a short iteration window.
-    \item We will prioritize fast feedback over perfection by using weekly iterations (and targeting CI-backed automation early) to reduce release friction.
-    \item Success is defined by what can be delivered and measured in the first iteration, then improved based on user feedback.
+  \item The first usable increment will let a buyer browse verified listings, inspect compatibility and performance details, and request a solution.
+  \item Weekly iterations will add the Build, Buy, and Hire journey in order, producing testable user value early.
+  \item CI will run linting, unit tests, and integration tests on each change; a staging deployment will support rapid feedback from student users and ML practitioners.
 \end{itemize}
 
 \section{Problem Statement}
-Citizens in a tier-2/3 Indian city face delays and uncertainty when reporting local issues (e.g., streetlight outages, water leakage, garbage accumulation, road potholes). Common pain points include:
-\begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Fragmentation:} complaints are often made via multiple channels (calls, social media, paper forms), causing lost context.
-    \item \textbf{Low transparency:} citizens cannot easily see the status of their complaint (e.g., ``received'', ``assigned'', ``in progress'', ``resolved'').
-    \item \textbf{Slow coordination:} departments/field teams lack a unified, trackable workflow with clear ownership.
-    \item \textbf{Poor data quality:} duplicate or incomplete reports force rework and extend resolution time.
-\end{itemize}
+An individual or small team with a machine-learning problem often faces three costly alternatives: build and tune a model from scratch, search through repositories with unclear suitability, or find and contract an expert manually. Existing repositories make discovery possible but rarely provide consistent compatibility information, trustworthy performance evidence, a safe commercial transaction, or an escalation path for specialised work.
 
-\textbf{Why this matters now (contextual relevance):} In an urban setting with limited staff bandwidth, even small process improvements can noticeably reduce resolution delays and repeated submissions.
+ML engineers face the complementary problem: a model, pipeline, or training recipe they have already built is difficult to package, demonstrate, license, and sell repeatedly. Consequently, useful ML assets remain scattered and buyers cannot confidently assess whether an asset will work with their data and hardware.
 
-\section{Proposed Solution %
-\BvrHint{\ldots Software Proposition}}
+\textbf{Contextual relevance:} student developers, startups, and local organisations increasingly need ML-enabled features but may not have dedicated ML expertise. A focused marketplace can reduce the time from problem identification to a usable baseline or expert engagement.
+
+\section{Proposed Solution \BvrHint{\ldots Software Proposition}}
 \subsection{Overview}
-Build a \textbf{web-based} ``Grievance-to-Resolution'' system with the following components:
+Sukio is a web marketplace for ML models, pipelines, recipes, utilities, and expert services. Its experience is organised as a three-level funnel:
+\begin{enumerate}[leftmargin=0.7cm]
+  \item \textbf{Build:} an AutoML baseline helps a user understand their dataset and obtain an initial result.
+  \item \textbf{Buy:} the marketplace recommends compatible, reusable ML assets when a stronger or faster solution may already exist.
+  \item \textbf{Hire:} users can submit a scoped request to an ML expert when no existing listing meets their need.
+\end{enumerate}
+AutoML is therefore a discovery and baseline engine, rather than the product's sole identity. It creates useful evidence---dataset characteristics, problem type, and baseline metrics---that can guide marketplace recommendations.
+
+\subsection{Marketplace listings}
+Each listing will present a clear product card and detail page containing:
 \begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Citizen submission portal:} users submit an issue with photo (optional), category, and locality/ward.
-    \item \textbf{Automated triage:} basic duplicate detection and completeness checks.
-    \item \textbf{Department workflow:} assign issues to relevant department/team and update statuses.
-    \item \textbf{Status transparency:} citizens track status and receive notifications when resolved.
-    \item \textbf{Admin/ops dashboard:} performance summaries (resolution time, backlog).
+  \item the asset type and description (for example, a classification model, preprocessing pipeline, or fine-tuning recipe);
+  \item input and dataset requirements, supported frameworks, hardware requirements, and version compatibility;
+  \item performance metrics appropriate to the task, such as F1, AUROC, RMSE, latency, and memory/GPU requirements;
+  \item a sample-data demo, price model, and license terms; and
+  \item seller profile, ratings, downloads, and a verification status.
 \end{itemize}
+The prototype will prioritise models and complete pipelines. The data model will support future categories including evaluation packages, ML utilities, reproducible recipes, legally distributable datasets, and expert services.
 
 \subsection{Core workflow}
 \begin{enumerate}[leftmargin=0.7cm]
-    \item Citizen creates a complaint and receives a complaint ID immediately.
-    \item System validates completeness and suggests possible duplicates (lightweight similarity on text/category and approximate location).
-    \item Department staff update status (Received $\rightarrow$ Assigned $\rightarrow$ In Progress $\rightarrow$ Resolved).
-    \item Citizen views status updates and resolution notes.
+  \item A buyer enters a problem description and optionally uploads a small tabular dataset or its metadata.
+  \item Sukio identifies the problem type and runs a constrained baseline workflow for supported datasets.
+  \item The buyer sees the baseline result and selects \emph{Find a Better Model}.
+  \item Sukio ranks listings using task type, feature and target characteristics, sample size, baseline metric, and hardware constraints.
+  \item The buyer compares verified listings, tests a demo where available, and creates a purchase/request record.
+  \item If no listing is suitable, the buyer posts a scoped requirement for an expert; an expert can respond with an offer.
 \end{enumerate}
 
-\subsection{Operational constraints for an educational, tier-2/3 setting}
-\begin{itemize}[leftmargin=0.7cm]
-    \item Keep the solution usable on low-to-mid range devices via responsive web design.
-    \item Avoid dependence on advanced research algorithms; focus on workflow, automation, and system correctness.
-    \item Design for deployability using common web hosting and managed databases.
-\end{itemize}
+\section{Solution Approach \BvrHint{\ldots Engineering focus}}
+\subsection{Verification and trust}
+Sukio will distinguish seller-reported figures from platform-verified results. During publication, a seller supplies model metadata, a test interface, supported input schema, and declared environment. For the prototype, an administrator-controlled verification run executes a curated test case and records reproducible metrics, latency, and runtime compatibility. A \emph{Sukio Verified} badge is issued only after that run succeeds.
 
-\section{Solution Approach %
-\BvrHint{\ldots Engineering focus}}
-This is an engineering course project, so we focus on scalable administrative and workflow aspects rather than novel algorithm research.
+Buyers may also submit anonymised outcome feedback. Aggregated community results will be displayed separately from platform verification so ratings communicate both user experience and observed performance. Listing publication will require a rights declaration and licence selection; moderation prevents obviously incomplete or misleading listings.
 
-\subsection{Duplicate/quality assistance %
-\BvrHint{\ldots non-research}}
-Duplicate detection will be heuristic-based:
-\begin{itemize}[leftmargin=0.7cm]
-    \item Normalize text (category + short description keywords).
-    \item Use a simple similarity measure (e.g., token overlap / TF-IDF cosine with threshold) without claiming state-of-the-art.
-    \item Show top candidate duplicates to staff for decision; never fully auto-delete or auto-reject.
-\end{itemize}
+\subsection{Recommendation and AutoML scope}
+The first version limits AutoML to small, structured classification/regression datasets. It will compare a small set of established baseline algorithms and record the best validation metric. Recommendation is intentionally transparent and heuristic-based: it filters incompatible listings and scores the remaining listings by problem type, schema match, resource limits, and verified performance. This is an engineering integration task, not a claim of novel ML research.
 
-\subsection{Web architecture %
-\BvrHint{\ldots web-based solution}}
-A typical 3-tier web architecture:
+\subsection{Web architecture}
+The system follows a modular web architecture:
 \begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Frontend:} responsive UI for citizens and staff (status pages, submission form, dashboard).
-    \item \textbf{Backend API:} authentication, complaint submission, status transitions, assignment logic.
-    \item \textbf{Database:} store users, complaints, status history, attachments metadata.
+  \item \textbf{Frontend:} responsive buyer, seller, and administrator interfaces for search, comparison, publishing, and requests.
+  \item \textbf{Backend API:} authentication and roles, listing lifecycle, search/recommendation, purchase/request records, reviews, and audit events.
+  \item \textbf{Worker service:} bounded AutoML runs and verification jobs, executed asynchronously with resource limits.
+  \item \textbf{Database and object storage:} relational records for users, listings, licences, metrics, and transactions; object storage for approved artifacts and demo assets.
 \end{itemize}
 
 \subsection{CI/CD and fast delivery enabler}
-CI/CD will be used to:
-\begin{itemize}[leftmargin=0.7cm]
-    \item Automatically build and run tests on every change.
-    \item Produce repeatable deployment artifacts to staging.
-    \item Enable safe and frequent releases of incremental features.
-\end{itemize}
+CI/CD will automatically build the application, run API and UI tests, validate migrations, and publish a staging build. Each workflow increment will be separately testable: listing discovery first, seller publication and verification second, then AutoML-led recommendation and expert requests.
 
-\section{Evaluation Criterion %
-\BvrHint{\ldots measurable and attributable}}
-We define success using measurable metrics tied to the core workflow.
-
+\section{Evaluation Criterion \BvrHint{\ldots measurable and attributable}}
 \subsection{Primary evaluation metric}
-\textbf{Time-to-acknowledgement (TTA):} time between complaint submission and ``Received/Assigned'' status creation in the system.
+\textbf{Time-to-shortlist (TTS):} elapsed time from a buyer submitting a supported problem description/dataset profile to receiving at least three compatible marketplace recommendations or an explicit ``no compatible listing'' result.
 \begin{itemize}[leftmargin=0.7cm]
-    \item Target: median TTA $\le$ 2 hours during pilot window.
-    \item Attribution: measured from database timestamps (submission vs. first status update by staff).
+  \item Target: median TTS $\leq$ 60 seconds for the prototype catalogue and supported tabular datasets.
+  \item Attribution: measured using server-side timestamps from submission through recommendation response.
 \end{itemize}
 
 \subsection{Secondary evaluation metrics}
 \begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Resolution time reduction:} reduce time-to-resolved compared to baseline process (even if baseline is collected via survey).
-    \item \textbf{Duplicate rate:} percentage of complaints flagged as duplicates and resolved without rework.
-    \item \textbf{User clarity:} citizen-reported clarity of status using a simple 1--5 feedback question.
-    \item \textbf{Reliability:} availability of staging/production for login and submission during business hours (e.g., $\ge$ 99\% uptime in pilot).
+  \item \textbf{Recommendation relevance:} at least 80\% of pilot users rate one or more shortlisted listings as relevant (4/5 or higher).
+  \item \textbf{Verification coverage:} 100\% of listings shown in recommended results display either a verified metric record or an explicit unverified status.
+  \item \textbf{Publication completeness:} at least 90\% of submitted prototype listings pass required metadata, licence, and compatibility validation without manual rework.
+  \item \textbf{Workflow reliability:} at least 95\% of supported baseline/verification jobs complete with a recorded result during pilot testing.
 \end{itemize}
 
-\subsection{Pilot validation plan %
-\BvrHint{\ldots high-level}}
+\subsection{Pilot validation plan}
 \begin{itemize}[leftmargin=0.7cm]
-    \item Recruit 10--20 pilot users (citizens) and 3--5 staff roles (department simulation if real staff unavailable).
-    \item Compare metrics before/after within the iteration window by logging baseline estimates via short interviews or existing process observations.
+  \item Seed a controlled catalogue of 10--15 representative model/pipeline listings with varied schemas and resource requirements.
+  \item Recruit 10--15 student buyers and 3--5 student ML-engineer sellers for task-based testing.
+  \item Ask buyers to locate or request a solution for defined datasets; collect timestamps, system logs, and short relevance feedback.
+  \item Run verification against controlled test inputs and compare stored results with expected outcomes.
 \end{itemize}
 
-\section{Scalability %
-\BvrHint{\ldots with foresight}}
-The proposition should scale in both theoretical and practical senses.
-
+\section{Scalability \BvrHint{\ldots with foresight}}
 \begin{enumerate}[leftmargin=0.7cm]
-    \item \textbf{Scalable (theoretically):} The system should support growth in number of complaints and concurrent dashboard usage by:
-    \begin{itemize}[leftmargin=0.7cm]
-        \item decoupling components (frontend/backend),
-        \item enabling pagination and indexing for common queries,
-        \item using stateless API design.
-    \end{itemize}
-    
-    \item \textbf{Operationally deployable (practically):} The system should run on common web hosting:
-    \begin{itemize}[leftmargin=0.7cm]
-        \item managed database,
-        \item containerized or platform-hosted deployment,
-        \item CI/CD pipeline for staging/production.
-    \end{itemize}
+  \item \textbf{Scalable theoretically:} listing search will use indexed metadata and paginated results; recommendation and verification are isolated from the interactive API through a job queue; stateless API instances can scale independently.
+  \item \textbf{Operationally deployable:} the web application, worker service, managed database, and object storage can be containerised and deployed on standard cloud platforms. Compute quotas, artifact size limits, and asynchronous processing bound the cost and safety of ML workloads.
 \end{enumerate}
 
 \section{Engine availability heuristic}
-A mature set of ``engines'' (tooling/services) is available to implement this as a web-based project:
+The project relies on mature components rather than unproven research infrastructure:
 \begin{itemize}[leftmargin=0.7cm]
-    \item Web framework for REST APIs and templated/reactive pages.
-    \item Managed relational or document database.
-    \item Authentication approach (token-based or session-based).
-    \item Object storage for optional attachments (or local storage for pilot).
-    \item Test framework for unit/integration tests.
-    \item CI runner and staging deployment target.
+  \item web frameworks, REST APIs, authentication, and managed relational databases;
+  \item established AutoML/baseline libraries for structured data;
+  \item container execution or managed job queues for bounded verification runs;
+  \item object storage and virus/file-type validation for artifacts;
+  \item test frameworks, CI runners, and staging deployment services.
 \end{itemize}
-We will use these mature components to focus on workflow design, correctness, and measurement rather than inventing new infrastructure.
 
-\section{Project scope and deliverables %
-\BvrHint{\ldots iteration-friendly}}
-\subsection{Initial deliverable %
-\BvrHint{\ldots first iteration}}
+\section{Project scope and deliverables \BvrHint{\ldots iteration-friendly}}
+\subsection{Initial deliverable \BvrHint{\ldots first iteration}}
 \begin{itemize}[leftmargin=0.7cm]
-    \item Citizen submission form + complaint ID generation
-    \item Staff workflow: update status and assignment
-    \item Citizen status page: view timeline/history
-    \item Basic logging and timestamps for TTA measurement
-    \item CI: build + backend unit tests + linting
-    \item CD to staging with a single command or pipeline job
+  \item buyer-facing catalogue, filters, search, and listing detail pages;
+  \item seller listing submission with required metadata, compatibility, price, and licence fields;
+  \item administrator review and a recorded prototype verification result;
+  \item authenticated roles and a purchase/request intent record (no live payment processing);
+  \item CI for linting, unit tests, API tests, and staging deployment.
 \end{itemize}
 
 \subsection{Subsequent deliverables}
 \begin{itemize}[leftmargin=0.7cm]
-    \item Lightweight duplicate suggestions with staff review
-    \item Notification layer (email/SMS optional in later iteration; can start with in-app notifications)
-    \item Admin dashboard for metrics and backlog
-    \item Improved search/filtering and indexed queries for scale readiness
+  \item constrained tabular AutoML baseline and the \emph{Find a Better Model} recommendation flow;
+  \item asynchronous verification jobs, verification badges, and seller-versus-verified metric display;
+  \item ratings and anonymised outcome feedback;
+  \item expert request board and seller responses;
+  \item refined ranking, audit logs, and administrator moderation tools.
 \end{itemize}
 
 \section{Risks and mitigations}
 \begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Data privacy / consent:} minimize collected data; keep attachments optional; store only what is needed.
-    \item \textbf{Staff adoption:} provide an easy UI for status updates; keep workflow steps minimal; include shortcuts.
-    \item \textbf{Evaluation measurement ambiguity:} instrument timestamps and define clear status transitions before development begins.
-    \item \textbf{Operational issues in pilot:} use staging early; ensure CI/CD produces repeatable deployments.
+  \item \textbf{Unsafe or unlicensed artifacts:} restrict prototype uploads, scan files, require rights declarations, use isolated verification, and do not execute arbitrary uploaded code in the web process.
+  \item \textbf{Misleading performance claims:} label seller-reported and verified metrics separately; use controlled test inputs and retain verification logs.
+  \item \textbf{Compute cost and long-running jobs:} limit dataset size, supported task types, execution time, and concurrency; process jobs asynchronously.
+  \item \textbf{Marketplace cold start:} seed a controlled catalogue and run a pilot with student sellers before relying on external supply.
+  \item \textbf{Payment and legal complexity:} represent transactions as intent records in the course prototype; defer payment settlement and formal licence enforcement to future work.
 \end{itemize}
 
 \section{Summary}
-This project proposes a deployable web platform to reduce grievance handling delays in a tier-2/3 city context. It meets the course criteria by emphasizing time-to-value through rapid iterations, implementing CI/CD to support frequent safe releases, and using measurable evaluation criteria (especially time-to-acknowledgement). It remains focused on engineering workflow and scalability readiness rather than research-driven novelty.
+Sukio is proposed as a marketplace where users can build, buy, and commission machine-learning solutions. A constrained AutoML baseline helps users discover their needs; verified, compatible marketplace listings offer reusable solutions; and expert requests cover specialised gaps. The initial scope delivers marketplace trust and discovery quickly, while later iterations add recommendation and expert workflows. Its success will be measured by the speed and perceived relevance of compatible shortlists, transparent verification coverage, and reliable completion of supported jobs.
 
 \end{document}
