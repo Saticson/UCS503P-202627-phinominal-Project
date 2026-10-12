@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AxiomCloud</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #0f0f14; color: #eee; margin: 0; padding: 1rem; }
+        .navbar { display: flex; gap: 1rem; border-bottom: 1px solid #333; padding-bottom: .5rem; margin-bottom: 1rem; }
+        .navbar a { color: #ff9f43; text-decoration: none; }
+        main { max-width: 1000px; margin: auto; }
+        .card { background: #181828; padding: 1rem; border-radius: 12px; }
+        #datasets, #training { margin-top: 1rem; }
+        button { background: #ff9f43; border: none; padding: .5rem 1rem; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/datasets">Datasets</a>
+        <a href="/training">Training</a>
+    </nav>
+    <main>
+        <h1>Welcome to AxiomCloud</h1>
+        <div class="card">
+            <h2>Quick Stats</h2>
+            <div hx-get="/api/health" hx-trigger="load">Loading health...</div>
+        </div>
+        <div id="datasets" class="card">
+            <h2>My Datasets</h2>
+            <button hx-post="/api/datasets/upload" hx-target="#datasets">Upload Dataset</button>
+            <div hx-get="/api/datasets/list" hx-trigger="load">No datasets yet.</div>
+        </div>
+    </main>
+</body>
+</html>

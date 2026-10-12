@@ -1,0 +1,12 @@
+{
+  "name": "axiomcloud-playwright",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "playwright": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^22.10.5"
+  }
+}
