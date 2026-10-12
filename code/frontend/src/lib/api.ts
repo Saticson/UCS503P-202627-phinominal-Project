@@ -1,0 +1,146 @@
+import axios from "axios";
+import { logToFile } from "./logger";
+
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+const API_BASE_URL = API_URL ? `${API_URL}/api` : "/api";
+
+
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: { "Content-Type": "application/json" },
+  timeout: 120000, // 2 min for training
+});
+
+// Request interceptor: Attach Firebase ID token to all requests
+api.interceptors.request.use(
+  async (config) => {
+    try {
+      // Dynamically import auth to avoid circular dependencies
+      const { getAuth } = await import("firebase/auth");
+      const auth = getAuth();
+      
+      if (auth?.currentUser) {
+        const token = await auth.currentUser.getIdToken();
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {
+      // Firebase not configured or user not authenticated - skip token injection
+      if (typeof window !== "undefined") {
+        console.debug("Token injection skipped (not authenticated or Firebase not configured)");
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Log errors to file (Node.js only)
+if (typeof window === "undefined") {
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      const msg = error?.message || "Unknown error";
+      const url = error?.config?.url || "unknown";
+      const method = error?.config?.method || "unknown";
+      const status = error?.response?.status || "no-status";
+      logToFile(`API error: [${method}] ${url} status=${status} msg=${msg}`,'error');
+      return Promise.reject(error);
+    }
+  );
+}
+
+// ─── Dataset APIs ─────────────────────────────────────────────────────────────
+export const datasetsAPI = {
+  upload: (formData: FormData) =>
+    api.post("/upload-dataset", formData, { headers: { "Content-Type": "multipart/form-data" } }),
+  list: () => api.get("/datasets"),
+  get: (id: number) => api.get(`/datasets/${id}`),
+  qualityReport: (id: number) => api.get(`/datasets/${id}/quality-report`),
+  edaReport: (id: number) => api.get(`/datasets/${id}/eda-report`),
+  leakageReport: (id: number) => api.get(`/datasets/${id}/leakage-report`),
+  driftBaseline: (id: number) => api.get(`/datasets/${id}/drift-baseline`),
+  cleanPreview: (id: number, previewRows: number = 10) =>
+    api.get(`/datasets/${id}/clean-preview`, { params: { preview_rows: previewRows } }),
+  profile: (id: number) => api.get(`/datasets/${id}/profile`),
+  analyticsReport: (id: number, params?: { target_column?: string; model_type?: string; model_id?: number }) =>
+    api.get(`/datasets/${id}/analytics-report`, { params: params || {} }),
+  cleanAndSave: (id: number, nameSuffix: string = "cleaned") =>
+    api.post(`/datasets/${id}/clean-and-save`, null, { params: { name_suffix: nameSuffix } }),
+  delete: (id: number) => api.delete(`/datasets/${id}`),
+  loadExample: (key: string) => api.post(`/load-example/${key}`),
+  listExamples: () => api.get("/example-datasets"),
+};
+
+// ─── Training APIs ────────────────────────────────────────────────────────────
+export const trainingAPI = {
+  train: (config: {
+    dataset_id: number;
+    target_column: string;
+    execution_mode?: "remote" | "local";
+    task_type?: string;
+    test_size?: number;
+    cv_folds?: number;
+    models_to_train?: string[];
+    model_hyperparams?: Record<string, Record<string, string | number | boolean>>;
+    enable_tuning?: boolean;
+    tuning_trials?: number;
+    tuning_time_budget_sec?: number;
+  }) => api.post("/train-model", config),
+  getStatus: (jobId: string) => api.get(`/training-status/${jobId}`),
+  getLocalJobSpec: (jobId: string) => api.get(`/training/local-job-spec/${jobId}`),
+  localSync: (payload: Record<string, unknown>) => api.post("/training/local-sync", payload),
+  downloadLocalAgent: () => api.get("/training/local-agent/download", { responseType: "blob" }),
+  listJobs: () => api.get("/training-jobs"),
+  modelCatalog: () => api.get("/training/model-catalog"),
+};
+
+export const experimentsAPI = {
+  list: (status?: string) => api.get("/experiments", { params: status ? { status } : {} }),
+  get: (runId: string) => api.get(`/experiments/${runId}`),
+};
+
+// ─── Model APIs ───────────────────────────────────────────────────────────────
+export const modelsAPI = {
+  list: (jobId?: string) => api.get("/models", { params: jobId ? { job_id: jobId } : {} }),
+  get: (id: number) => api.get(`/models/${id}`),
+  shap: (id: number, params?: { nsamples?: number; sample_index?: number }) =>
+    api.get(`/models/${id}/shap`, { params: { nsamples: params?.nsamples ?? 200, sample_index: params?.sample_index ?? 0 } }),
+  lime: (
+    id: number,
+    payload?: { sample_index?: number; num_features?: number; custom_input?: Record<string, unknown> }
+  ) =>
+    api.post(`/models/${id}/lime`, {
+      sample_index: payload?.sample_index ?? 0,
+      num_features: payload?.num_features ?? 12,
+      custom_input: payload?.custom_input,
+    }),
+  monitoring: (id: number, compareDatasetId?: number) =>
+    api.get(`/models/${id}/monitoring`, { params: compareDatasetId ? { compare_dataset_id: compareDatasetId } : {} }),
+  inferenceTemplate: (id: number, randomize: boolean = true) =>
+    api.get(`/models/${id}/inference-template`, { params: { randomize } }),
+  deploy: (id: number) => api.post(`/models/${id}/deploy`),
+  undeploy: (id: number) => api.post(`/models/${id}/undeploy`),
+  download: (id: number) => API_URL ? `${API_URL}/api/models/${id}/download` : `/api/models/${id}/download`,
+  delete: (id: number) => api.delete(`/models/${id}`),
+  listDeployed: () => api.get("/deployed-models"),
+};
+
+// ─── Metrics APIs ─────────────────────────────────────────────────────────────
+export const metricsAPI = {
+  getJobMetrics: (jobId: string) => api.get(`/metrics/${jobId}`),
+  getDashboardSummary: () => api.get("/dashboard/summary"),
+};
+
+// ─── Prediction APIs ──────────────────────────────────────────────────────────
+export const predictionsAPI = {
+  predict: (modelId: number, features: Record<string, unknown>) =>
+    api.post("/predict", { model_id: modelId, features }),
+};
+
+export const authAPI = {
+  syncUser: (payload: { firebase_uid: string; email: string; display_name?: string }) =>
+    api.post("/auth/user", null, { params: payload }),
+  getUser: (firebaseUid: string) => api.get(`/auth/user/${firebaseUid}`),
+};
+
+export default api;

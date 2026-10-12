@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+
+# Environment
+.env
+.env.*
+!.env.example
+!.env.docker
+
+# Storage (runtime artifacts)
+storage/
+*.joblib
+*.pkl
+
+# Database
+*.db
+*.sqlite3
+
+# Node / Next.js
+node_modules/
+.next/
+.turbo/
+out/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Maven / Java
+target/
+*.class
+.mvn/apache-maven-*/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+.docker/
+
+# --- Negations ---
+# The repository root .gitignore contains a broad Python-packaging `lib/` rule
+# which would otherwise hide real frontend source code under src/lib/.
+!frontend/src/lib/
+!frontend/src/lib/**

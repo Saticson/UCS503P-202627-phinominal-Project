@@ -1,0 +1,15 @@
+{
+  "name": "axiomcloud-dev-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail -n BACKEND,ML_ENGINE,FRONTEND -c green,magenta,blue \"npm run dev:backend\" \"npm run dev:ml-engine\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend-java && .\\mvnw.cmd spring-boot:run",
+    "dev:ml-engine": "cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 8001",
+    "dev:frontend": "node scripts/dev-frontend.js",
+    "build:backend": "cd backend-java && .\\mvnw.cmd clean package -DskipTests"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

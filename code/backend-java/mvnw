@@ -1,0 +1,35 @@
+#!/bin/sh
+# ----------------------------------------------------------------------------
+# Maven Wrapper script for AxiomCloud Spring Boot Backend
+# ----------------------------------------------------------------------------
+
+PRG="$0"
+while [ -h "$PRG" ]; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+
+DIR=`dirname "$PRG"`
+MAVEN_DIR="$DIR/.mvn/apache-maven-3.9.9"
+
+if [ -f "$MAVEN_DIR/bin/mvn" ]; then
+    exec "$MAVEN_DIR/bin/mvn" "$@"
+fi
+
+if command -v mvn >/dev/null 2>&1; then
+    exec mvn "$@"
+fi
+
+echo "[INFO] Downloading Apache Maven 3.9.9..."
+mkdir -p "$DIR/.mvn"
+curl -s -L https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.zip -o "$DIR/.mvn/maven.zip"
+unzip -q -o "$DIR/.mvn/maven.zip" -d "$DIR/.mvn"
+rm -f "$DIR/.mvn/maven.zip"
+chmod +x "$MAVEN_DIR/bin/mvn"
+
+exec "$MAVEN_DIR/bin/mvn" "$@"
