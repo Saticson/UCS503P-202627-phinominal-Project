@@ -25,3 +25,20 @@ Thumbs.db
 
 # Docker
 .docker/
+
+# Storage data files (keep folders via .gitkeep)
+storage/*
+!storage/**/.gitkeep
+backend-java/storage/*
+!backend-java/storage/**/.gitkeep
+
+# Playwright Test Artifacts (Screenshots, Gifs, Videos, Reports)
+tests/playwright/test-output/
+tests/playwright/playwright-report/
+tests/playwright/results/
+tests/playwright/test-results/
+tests/playwright/blob-report/
+tests/playwright/*.png
+tests/playwright/*.gif
+tests/playwright/*.webm
+tests/playwright/*.mp4

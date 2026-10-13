@@ -15,7 +15,7 @@
     <artifactId>axiomcloud-backend</artifactId>
     <version>1.0.0</version>
     <name>axiomcloud-backend</name>
-    <description>AxiomCloud AutoML Platform - Java Spring Boot Control Plane</description>
+    <description>Sukio AutoML Platform - Java Spring Boot Control Plane</description>
 
     <properties>
         <java.version>21</java.version>

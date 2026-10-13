@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoML Training - Sukio</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        :root {
+            --bg-color: #0e0e10;
+            --surface: #19191d;
+            --surface-variant: #25252b;
+            --primary: #d0bcff;
+            --primary-accent: #7c3aed;
+            --text-primary: #e7e4ec;
+            --text-muted: #acaab1;
+            --border: #33333d;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 2rem;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .navbar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: color 0.15s ease;
+        }
+        .navbar a:hover, .navbar a.active {
+            color: var(--primary);
+            background: rgba(208, 188, 255, 0.08);
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            background: rgba(52, 211, 153, 0.1);
+            color: var(--success);
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+        .status-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; }
+        main {
+            max-width: 1200px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+        }
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        h1 { font-size: 2rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+        .grid-training {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 900px) {
+            .grid-training { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1.5rem;
+        }
+        .card h2 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .form-group { margin-bottom: 1.1rem; }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.4rem;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            background: var(--surface-variant);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface-variant);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        button, .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: var(--primary-accent);
+            color: #fff;
+            border: none;
+            padding: 0.65rem 1.3rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            width: 100%;
+        }
+        button:hover, .btn:hover { background: #8b5cf6; }
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: var(--surface-variant);
+            border-radius: 999px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary-accent);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Sukio
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/datasets">Datasets</a>
+            <a href="/training" class="active">Training</a>
+            <a href="/models">Models</a>
+            <a href="/predict">Predict</a>
+        </div>
+        <div class="status-pill" hx-get="/api/health" hx-trigger="load, every 30s">
+            <span class="status-dot"></span> Online
+        </div>
+    </nav>
+
+    <main>
+        <div class="header-bar">
+            <div>
+                <h1>AutoML Training Studio</h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Configure multi-model hyperparameter sweeps and launch background optimization</p>
+            </div>
+        </div>
+
+        <div class="grid-training">
+            <div class="card">
+                <h2>Experiment Configuration</h2>
+                <form id="training-form"
+                      hx-post="/api/training/launch"
+                      hx-target="#training-status"
+                      hx-ext="json-enc"
+                      hx-swap="innerHTML">
+                    <div class="form-group">
+                        <label>Dataset ID</label>
+                        <input type="number" name="dataset_id" value="1" min="1" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target Column</label>
+                        <input type="text" name="target_column" placeholder="e.g. target, label, class" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Task Type</label>
+                        <select name="task_type">
+                            <option value="classification">Classification</option>
+                            <option value="regression">Regression</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Candidate Models</label>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="models_to_train" value="Random Forest" checked /> Random Forest
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="models_to_train" value="XGBoost" checked /> XGBoost
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="models_to_train" value="LightGBM" checked /> LightGBM
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="models_to_train" value="Logistic Regression" checked /> Logistic / Linear
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="models_to_train" value="MLP Neural Net" /> MLP Neural Net
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="models_to_train" value="Extra Trees" /> Extra Trees
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Optuna Trials</label>
+                            <input type="number" name="tuning_trials" value="10" min="1" max="50" />
+                        </div>
+                        <div class="form-group">
+                            <label>CV Folds</label>
+                            <input type="number" name="cv_folds" value="3" min="2" max="5" />
+                        </div>
+                    </div>
+
+                    <button type="submit">Launch AutoML Experiment</button>
+                </form>
+            </div>
+
+            <div>
+                <div id="training-status" class="card">
+                    <h2>Live Execution Monitor</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        No training runs currently executing. Configure parameters on the left and click <strong>Launch AutoML Experiment</strong>.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h2>AutoML Pipeline Details</h2>
+                    <ul style="list-style: none; font-size: 0.85rem; color: var(--text-muted); line-height: 1.8;">
+                        <li>&#10003; <strong>Preprocessing:</strong> Imputation, StandardScaler, One-Hot Encoding</li>
+                        <li>&#10003; <strong>Hyperparameter Search:</strong> Bayesian TPE via Optuna</li>
+                        <li>&#10003; <strong>Evaluation:</strong> Stratified K-Fold Cross-Validation</li>
+                        <li>&#10003; <strong>Explainability:</strong> Automated TreeSHAP &amp; KernelSHAP attributions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

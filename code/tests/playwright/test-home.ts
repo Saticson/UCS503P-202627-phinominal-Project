@@ -1,9 +1,9 @@
-﻿// test-home.ts
+// test-home.ts
 import { test, expect } from '@playwright/test';
 
 test('home page renders with navigation', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('h1')).toContainText('Welcome to AxiomCloud');
+  await expect(page.locator('h1')).toContainText('Welcome to Sukio');
   await expect(page.locator('nav a')).toContainText(['Home', 'Dashboard', 'Datasets', 'Training']);
 });
 

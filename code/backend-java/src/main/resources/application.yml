@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: axiomcloud-backend
+    name: sukio-backend
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/sigmacloud}
     username: ${POSTGRES_USER:sigma}

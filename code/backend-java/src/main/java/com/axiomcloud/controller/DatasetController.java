@@ -21,7 +21,7 @@ public class DatasetController {
         this.datasetService = datasetService;
     }
 
-    @PostMapping(value = "/upload-dataset", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = {"/upload-dataset", "/datasets/upload"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<DatasetResponseDto> uploadDataset(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "name", required = false) String name,
@@ -29,7 +29,7 @@ public class DatasetController {
         return ResponseEntity.ok(datasetService.uploadDataset(file, name, targetColumn));
     }
 
-    @GetMapping("/datasets")
+    @GetMapping({"/datasets", "/datasets/list"})
     public ResponseEntity<List<DatasetResponseDto>> listDatasets() {
         return ResponseEntity.ok(datasetService.listDatasets());
     }

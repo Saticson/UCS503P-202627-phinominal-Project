@@ -1,4 +1,4 @@
-# Criteria for Project Selection
+﻿# Criteria for Project Selection
 
 This document defines the criteria we will use to
 choose projects for our software engineering course.
@@ -36,7 +36,7 @@ to get quick feedback about the product.
 > To support our short weekly iteration cadence, we
 > should automate build/test/release as much as
 > practical.  CI/CD is a good way to achieve
-> that—starting with the lightest pipeline we can
+> thatâ€”starting with the lightest pipeline we can
 > (e.g., CI first) and expanding only if it improves
 > delivery.
 
@@ -67,7 +67,7 @@ problem.
 
 We shall address the issues of scalability and
 complexity here, rather than fundamental algorithms
-itself.  Intuitively, we’ll focus on administrative
+itself.  Intuitively, weâ€™ll focus on administrative
 aspects of software development, more than operational
 or creative aspects.
 
@@ -97,23 +97,23 @@ ideally attributable).**
 
 Examples
 
-+ Problem: “Students can’t find answers fast.”  
-  Solution: “Add an FAQ search.”  
-  Evaluation criterion: “Search results find the
++ Problem: â€œStudents canâ€™t find answers fast.â€  
+  Solution: â€œAdd an FAQ search.â€  
+  Evaluation criterion: â€œSearch results find the
   correct answer within 10 seconds, and users report
-  satisfaction ≥ 4/5.”
+  satisfaction â‰¥ 4/5.â€
 
-+ Problem: “The app is slow.”  
-  Solution: “Optimize queries.”  
-  Evaluation criterion: “Page load time decreases from
-  3s to under 1.5s in production.”
++ Problem: â€œThe app is slow.â€  
+  Solution: â€œOptimize queries.â€  
+  Evaluation criterion: â€œPage load time decreases from
+  3s to under 1.5s in production.â€
   
 ### 5. Higher-order goal
 
 Treat this as a secondary heuristic, i.e. something to
 be fulfilled with a lower priority.
 
-It can be very useful—but mostly as a framing layer,
+It can be very usefulâ€”but mostly as a framing layer,
 not as the whole engineering plan.  A higher-order
 goal, /e.g./ address climate change, helps 
 
@@ -124,7 +124,7 @@ goal, /e.g./ address climate change, helps
 But we still need to translate that why (climate
 change) into a measurable problem, e.g.
 
-+ Reduce e-waste and “time-to-replace”
++ Reduce e-waste and â€œtime-to-replaceâ€
 + Reduce network energy and hardware load
 + Lower lifecycle impact by improving reliability (or
   durability)
@@ -138,7 +138,7 @@ time-to-value through rapid, incremental delivery and
 fast feedback. CI/CD is the practical mechanism that
 makes shipping dependable. We focus on problems with
 contextual relevance, available engineering engines,
-and scalable, deployable solutions—validated through
-clear evaluation criteria—while keeping higher-order
+and scalable, deployable solutionsâ€”validated through
+clear evaluation criteriaâ€”while keeping higher-order
 goals as supportive framing rather than primary
 drivers.

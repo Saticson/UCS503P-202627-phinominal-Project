@@ -1,14 +1,14 @@
-# AxiomCloud
+﻿# Sukio
 
-A production-grade, full-stack AutoML platform for dataset diagnostics, controlled model training, explainability, and live inference. AxiomCloud mirrors a practical Vertex AI or Kaggle-style workflow with deeper dataset quality controls and flexible GPU execution modes.
+A production-grade, full-stack AutoML platform for dataset diagnostics, controlled model training, explainability, and live inference. Sukio mirrors a practical Vertex AI or Kaggle-style workflow with deeper dataset quality controls and flexible GPU execution modes.
 
 ---
 
 ## Web Control Plane
 
-AxiomCloud features a Next.js 14 control plane with a unified dark UI, real-time experiment tracking, interactive dataset diagnostics, and low-latency inference playgrounds.
+Sukio features a Next.js 14 control plane with a unified dark UI, real-time experiment tracking, interactive dataset diagnostics, and low-latency inference playgrounds.
 
-![AxiomCloud Web Control Plane](docs/gifs/00_frontend_control_plane.gif)
+![Sukio Web Control Plane](docs/gifs/00_frontend_control_plane.gif)
 
 ### Core Control Plane Views
 
@@ -46,28 +46,28 @@ Inspect trained models with SHAP and LIME feature importance reports. The infere
 ## Architecture
 
 ```
-┌────────────────────────────────────────────────────────────┐
-│                        Browser Client                      │
-│                    Next.js 14 / React                      │
-│       (Dashboard, Training, Leaderboard, Inference UI)     │
-└───────────────────────────┬────────────────────────────────┘
-                            │  HTTPS / REST / Firebase Auth
-┌───────────────────────────▼────────────────────────────────┐
-│                      FastAPI Backend                       │
-│   /datasets   /train   /models   /explain   /predict       │
-│   Optuna   scikit-learn   SHAP   LIME   joblib             │
-└────────┬──────────────────────────────────┬────────────────┘
-         │                                  │
-┌────────▼──────────┐             ┌─────────▼──────────────┐
-│   PostgreSQL DB   │             │   Model Artifact Store  │
-│  (experiment runs,│             │   (.joblib files,       │
-│   metrics, logs)  │             │    SHAP outputs)        │
-└───────────────────┘             └────────────────────────┘
-         │
-┌────────▼────────────────────────────────────────────────────┐
-│                        Docker Compose                       │
-│       backend   frontend   db   (optional local-agent)      │
-└─────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                        Browser Client                      â”‚
+â”‚                    Next.js 14 / React                      â”‚
+â”‚       (Dashboard, Training, Leaderboard, Inference UI)     â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                            â”‚  HTTPS / REST / Firebase Auth
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                      FastAPI Backend                       â”‚
+â”‚   /datasets   /train   /models   /explain   /predict       â”‚
+â”‚   Optuna   scikit-learn   SHAP   LIME   joblib             â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+         â”‚                                  â”‚
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”             â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚   PostgreSQL DB   â”‚             â”‚   Model Artifact Store  â”‚
+â”‚  (experiment runs,â”‚             â”‚   (.joblib files,       â”‚
+â”‚   metrics, logs)  â”‚             â”‚    SHAP outputs)        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜             â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+         â”‚
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                        Docker Compose                       â”‚
+â”‚       backend   frontend   db   (optional local-agent)      â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 | Layer | Technology |
@@ -87,8 +87,8 @@ Inspect trained models with SHAP and LIME feature importance reports. The infere
 **Prerequisites:** Docker and Docker Compose installed.
 
 ```bash
-git clone https://github.com/Keshavj-13/axiomcloud.git
-cd axiomcloud
+git clone https://github.com/Keshavj-13/Sukio.git
+cd Sukio
 
 # Copy and configure environment variables
 cp .env.example .env
@@ -110,7 +110,7 @@ docker-compose down
 
 ## Execution Modes
 
-AxiomCloud supports two distinct training execution modes selectable from the experiment configuration UI.
+Sukio supports two distinct training execution modes selectable from the experiment configuration UI.
 
 ### Remote GPU Mode
 
@@ -174,17 +174,17 @@ The agent trains the job locally, then syncs all metrics and model artifacts bac
 ## Project Structure
 
 ```
-axiomcloud/
-├── backend/          # FastAPI application, routers, ML pipeline
-├── frontend/         # Next.js application, pages, components
-├── database/         # PostgreSQL schema and migration scripts
-├── docs/
-│   ├── gifs/         # Animated walkthrough GIFs
-│   └── screenshots/  # UI control plane screen captures
-├── scripts/          # Utility and setup scripts
-├── local_agent.py    # Local GPU training agent
-├── docker-compose.yml
-└── DESIGN.md         # Architecture and design decisions
+Sukio/
+â”œâ”€â”€ backend/          # FastAPI application, routers, ML pipeline
+â”œâ”€â”€ frontend/         # Next.js application, pages, components
+â”œâ”€â”€ database/         # PostgreSQL schema and migration scripts
+â”œâ”€â”€ docs/
+â”‚   â”œâ”€â”€ gifs/         # Animated walkthrough GIFs
+â”‚   â””â”€â”€ screenshots/  # UI control plane screen captures
+â”œâ”€â”€ scripts/          # Utility and setup scripts
+â”œâ”€â”€ local_agent.py    # Local GPU training agent
+â”œâ”€â”€ docker-compose.yml
+â””â”€â”€ DESIGN.md         # Architecture and design decisions
 ```
 
 ---

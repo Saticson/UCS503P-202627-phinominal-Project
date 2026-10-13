@@ -13,8 +13,8 @@ public class HealthController {
         return Map.of("status", "ok");
     }
 
-    @GetMapping("/")
+    @GetMapping("/api")
     public Map<String, String> root() {
-        return Map.of("message", "Axiom Cloud AI API - Java Spring Boot Backend");
+        return Map.of("message", "Sukio AI API - Java Spring Boot Backend");
     }
 }

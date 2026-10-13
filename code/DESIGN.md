@@ -1,4 +1,4 @@
-# Axiom Cloud UI Design Spec (Target)
+﻿# Sukio UI Design Spec (Target)
 
 This document defines the **new visual system and page behavior** we will follow going forward.
 
@@ -42,10 +42,10 @@ Usage rules:
 
 Font family: **Inter**
 
-- Page title: 28–36px, semibold/bold
-- Section title: 12–14px uppercase tracking
-- Body: 13–14px
-- Dense labels/meta: 9–11px uppercase, wide tracking
+- Page title: 28â€“36px, semibold/bold
+- Section title: 12â€“14px uppercase tracking
+- Body: 13â€“14px
+- Dense labels/meta: 9â€“11px uppercase, wide tracking
 - Numeric metrics: monospace-style look preferred where possible
 
 ### 2.3 Shape, Borders, Depth
@@ -58,7 +58,7 @@ Font family: **Inter**
 ### 2.4 Icons
 
 - Material Symbols Outlined or Lucide (consistent per page)
-- Icon size: 16–20 for nav/actions, 24–32 for hero/feature cards
+- Icon size: 16â€“20 for nav/actions, 24â€“32 for hero/feature cards
 
 ---
 
@@ -73,10 +73,10 @@ Persistent app frame:
 
 ### 3.2 Spacing
 
-- Global page padding: 32–48px
-- Section gaps: 24–32px
-- Card internal padding: 20–32px
-- Dense table cell Y padding: 12–20px
+- Global page padding: 32â€“48px
+- Section gaps: 24â€“32px
+- Card internal padding: 20â€“32px
+- Dense table cell Y padding: 12â€“20px
 
 ### 3.3 Responsiveness
 
@@ -156,7 +156,7 @@ Sections:
 4. Bottom metrics strip (epoch, ETA, accuracy, cost)
 
 Behavior:
-- Training state should feel “live” (animated pulse indicators, rolling logs)
+- Training state should feel â€œliveâ€ (animated pulse indicators, rolling logs)
 - Controls are editable but grouped and safe (apply/confirm changes)
 
 ## 5.3 Leaderboard
@@ -192,7 +192,7 @@ Behavior:
 
 ## 6) Motion & Interaction
 
-- Microtransitions: 120–200ms
+- Microtransitions: 120â€“200ms
 - Hover: subtle opacity/background shifts
 - Active press: slight scale-down (`~0.95`)
 - Pulsing only for truly live states (streaming/training)
@@ -225,8 +225,8 @@ UI copy style:
 - no marketing fluff in operational screens
 
 Examples:
-- Good: “Training Loss / Validation Accuracy”
-- Good: “Cluster: Stable”
+- Good: â€œTraining Loss / Validation Accuracyâ€
+- Good: â€œCluster: Stableâ€
 - Avoid: overly narrative or hype text in core workflows
 
 ---

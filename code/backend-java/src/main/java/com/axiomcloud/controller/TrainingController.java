@@ -38,7 +38,7 @@ public class TrainingController {
         this.experimentRunRepository = experimentRunRepository;
     }
 
-    @PostMapping("/train-model")
+    @PostMapping({"/train-model", "/training/launch"})
     public ResponseEntity<TrainingJobResponseDto> trainModel(@Valid @RequestBody TrainingConfigDto config) {
         return ResponseEntity.ok(trainingService.launchTraining(config));
     }

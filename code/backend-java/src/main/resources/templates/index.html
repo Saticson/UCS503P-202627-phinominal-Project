@@ -1,37 +1,276 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AxiomCloud</title>
+    <title>Sukio - AutoML Platform</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <style>
-        body { font-family: system-ui, sans-serif; background: #0f0f14; color: #eee; margin: 0; padding: 1rem; }
-        .navbar { display: flex; gap: 1rem; border-bottom: 1px solid #333; padding-bottom: .5rem; margin-bottom: 1rem; }
-        .navbar a { color: #ff9f43; text-decoration: none; }
-        main { max-width: 1000px; margin: auto; }
-        .card { background: #181828; padding: 1rem; border-radius: 12px; }
-        #datasets, #training { margin-top: 1rem; }
-        button { background: #ff9f43; border: none; padding: .5rem 1rem; border-radius: 6px; cursor: pointer; }
+        :root {
+            --bg-color: #0e0e10;
+            --surface: #19191d;
+            --surface-variant: #25252b;
+            --primary: #d0bcff;
+            --primary-accent: #7c3aed;
+            --text-primary: #e7e4ec;
+            --text-muted: #acaab1;
+            --border: #33333d;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 2rem;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .navbar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.15s ease;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        .navbar a:hover, .navbar a.active {
+            color: var(--primary);
+            background: rgba(208, 188, 255, 0.08);
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            background: rgba(52, 211, 153, 0.1);
+            color: var(--success);
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+        main {
+            max-width: 1200px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+        }
+        .hero {
+            margin-bottom: 2rem;
+        }
+        .hero h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .card h2 {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .stat-box {
+            background: var(--surface-variant);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .stat-val {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: monospace;
+        }
+        .stat-lbl {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+        button, .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: var(--primary-accent);
+            color: #fff;
+            border: none;
+            padding: 0.55rem 1.1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        button:hover, .btn:hover {
+            background: #8b5cf6;
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        .btn-outline:hover {
+            background: var(--surface-variant);
+            border-color: var(--primary);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--surface-variant);
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <a href="/">Home</a>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/datasets">Datasets</a>
-        <a href="/training">Training</a>
-    </nav>
-    <main>
-        <h1>Welcome to AxiomCloud</h1>
-        <div class="card">
-            <h2>Quick Stats</h2>
-            <div hx-get="/api/health" hx-trigger="load">Loading health...</div>
+        <a href="/" class="nav-brand">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Sukio
+        </a>
+        <div class="nav-links">
+            <a href="/" class="active">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/datasets">Datasets</a>
+            <a href="/training">Training</a>
+            <a href="/models">Models</a>
+            <a href="/predict">Predict</a>
         </div>
-        <div id="datasets" class="card">
-            <h2>My Datasets</h2>
-            <button hx-post="/api/datasets/upload" hx-target="#datasets">Upload Dataset</button>
-            <div hx-get="/api/datasets/list" hx-trigger="load">No datasets yet.</div>
+        <div class="status-pill" hx-get="/api/health" hx-trigger="load, every 30s" hx-swap="innerHTML">
+            <span class="status-dot"></span> System Ready
+        </div>
+    </nav>
+
+    <main>
+        <div class="hero">
+            <h1>Welcome to Sukio</h1>
+            <p>Production-grade AutoML Platform for Dataset Diagnostics, Model Exploration, and Live Inference.</p>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h2>Quick Stats</h2>
+                <div class="stat-grid" hx-get="/api/metrics/dashboard" hx-trigger="load" hx-swap="innerHTML">
+                    <div class="stat-box">
+                        <div class="stat-val">--</div>
+                        <div class="stat-lbl">Registered Datasets</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val">--</div>
+                        <div class="stat-lbl">Trained Models</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val">--</div>
+                        <div class="stat-lbl">Active Experiments</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val">Healthy</div>
+                        <div class="stat-lbl">Engine Health</div>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+                    <a href="/dashboard" class="btn">Open Full Dashboard</a>
+                    <a href="/training" class="btn btn-outline">Launch AutoML Studio</a>
+                </div>
+            </div>
+
+            <div id="datasets" class="card">
+                <h2>
+                    <span>My Datasets</span>
+                    <a href="/datasets" class="btn" style="padding: 0.35rem 0.8rem; font-size: 0.8rem;">Upload Dataset</a>
+                </h2>
+                <div hx-get="/api/datasets" hx-trigger="load" hx-swap="innerHTML">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Loading available datasets...</p>
+                </div>
+            </div>
         </div>
     </main>
 </body>

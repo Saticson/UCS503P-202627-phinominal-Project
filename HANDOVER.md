@@ -1,47 +1,68 @@
-# HANDOVER — AxiomCloud Prototype + Tests
-
-Caveman mode: `/ultracave` (max non-Chinese, 14 tok)
+﻿# HANDOVER â€” Sukio Prototype + Tests
 
 ---
 
-## Completed
+## Status Overview
 
-1. **Git commit** `4269db3` pushed to `Saticson/UCS503P-202627-phinominal-Project` (`master`).
-2. **Code folder (`code/`)** — full AxiomCloud source. Template C++ removed.
-3. **HTMX scaffold** (`code/frontend-htmx/`) — separate, not committed.
-4. **Journal plan** (`journals/` layout) — W1 (Aug 26) to W8 (Oct 26), MST gap (Sep 20 → Oct 4) avoided.
-5. **Playwright tests** (`code/tests/playwright/`) — 8 specs, visible (`headless: false`), Firefox set.
-6. **Caveman skills** installed (`.agents/skills/`).
-7. **Prototype restructuring** — Spring Boot + Thymeleaf + HTMX, Python/Next.js removed, `docker-compose.yml` updated.
+1. **Java Backend Compilation**: Fixed UTF-8 BOM on `FrontendController.java`. Compiles cleanly (`BUILD SUCCESS`, 44 source files).
+2. **Thymeleaf + HTMX Control Plane**: Fully implemented with Axiom Obsidian dark theme:
+   - `index.html` (Landing / Overview)
+   - `dashboard.html` (Platform Dashboard & Metrics)
+   - `datasets.html` (Datasets Management & Diagnostics)
+   - `training.html` (AutoML Training Studio & Live Progress)
+   - `models.html` (Model Leaderboard & Explainability)
+   - `predict.html` (Inference Sandbox)
+3. **ML Engine Architecture**:
+   - `MlEngineClient.java` contains robust embedded simulation fallback, allowing the Spring Boot platform to run 100% self-contained without requiring an external Python process or Docker.
+   - Compatible with Python ML microservice on port 8001 if launched.
+4. **Journals**: Fully generated `w01.md` through `w08.md` for both Keshav (`1024030692`) and Satwik (`1024030699`), avoiding the Mid-Semester Test gap (Sep 20 â†’ Oct 4).
+5. **Playwright Tests**:
+   - Configured for headless execution in `playwright.config.ts`.
+   - `global-setup.ts` verifies storage directories (`code/storage/{datasets,models,reports}`) and allows testing against the local Spring Boot instance.
+6. **Documentation**: Updated `docs/index.md` for MkDocs with full architectural overview and usage instructions.
 
 ---
 
-## Not complete
+## Key Files & Paths
 
-- **Backend compile** — `FrontendController.java` fixed once; still fails (see error log). Next step: verify `pom.xml` and source imports.
-- **No push** of prototype changes or tests (per instruction: ask before committing).
-- **Playwright visible tests** — browser opens but server has no display session; screenshot file (`test-output/`) not created.
-
----
-
-## Key files
-
-| File | Path |
+| Component | Path |
 |---|---|
-| Project commit | `C:\Users\satwi\AppData\Local\Temp\ucs503p-clone` (`4269db3`) |
-| Prototype source | `code/backend-java/` |
-| HTMX frontend | `code/frontend-htmx/` |
-| Tests | `code/tests/playwright/` |
-| Playwright config | `code/tests/playwright/playwright.config.ts` |
-| Docker compose | `code/docker-compose.yml` |
-| .gitignore | `code/.gitignore` |
-| Caveman skills | `C:\Users\satwi\.agents\skills\` |
+| Spring Boot Backend | `code/backend-java/` |
+| Thymeleaf Templates | `code/backend-java/src/main/resources/templates/` |
+| Application Config | `code/backend-java/src/main/resources/application.yml` |
+| Local In-Memory Profile | `code/backend-java/src/main/resources/application-local.yml` |
+| Storage Repositories | `code/storage/{datasets,models,reports}` |
+| Playwright Test Suite | `code/tests/playwright/` |
+| Journals (Keshav) | `journals/1024030692-keshav/` |
+| Journals (Satwik) | `journals/1024030699-satwik/` |
+| MkDocs Documentation | `docs/index.md` |
 
 ---
 
-## Next actions (user must confirm before commit)
+## Verification Commands
 
-- [ ] Fix Java compile error.
-- [ ] Push prototype + tests.
-- [ ] Generate journal `w01.md`…`w08.md` (Satwik + Keshav).
-- [ ] Confirm HTMX integration (template + controller) or keep separate.
+- **Backend Compile**:
+  ```powershell
+  .\code\backend-java\.mvn\apache-maven-3.9.9\bin\mvn.cmd -f code\backend-java\pom.xml test-compile
+  ```
+- **Run Backend Standalone (H2 Local Profile)**:
+  ```powershell
+  .\code\backend-java\.mvn\apache-maven-3.9.9\bin\mvn.cmd -f code\backend-java\pom.xml spring-boot:run -Dspring-boot.run.profiles=local
+  ```
+- **Run Demo E2E Tests**:
+  ```powershell
+  cd code/tests/playwright
+  npm run test:demo
+  ```
+- **View Test Output Gallery (PNGs & GIFs - Untracked in Git)**:
+  Open `code/tests/playwright/test-output/gallery.html` directly in your browser, or run:
+  ```powershell
+  cd code/tests/playwright
+  npm run gallery
+  start test-output/gallery.html
+  ```
+- **View Full Playwright HTML Report**:
+  ```powershell
+  cd code/tests/playwright
+  npm run report
+  ```

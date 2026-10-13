@@ -1,4 +1,4 @@
-﻿package com.axiomcloud.controller;
+package com.axiomcloud.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,5 +24,15 @@ public class FrontendController {
     @GetMapping("/training")
     public String training() {
         return "training";
+    }
+
+    @GetMapping("/models")
+    public String models() {
+        return "models";
+    }
+
+    @GetMapping("/predict")
+    public String predict() {
+        return "predict";
     }
 }
