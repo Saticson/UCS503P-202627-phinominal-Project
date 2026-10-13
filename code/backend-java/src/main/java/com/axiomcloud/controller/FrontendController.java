@@ -50,7 +50,13 @@ public class FrontendController {
 
     @GetMapping({"/", "/index.html"})
     public String index(Model model) {
+        List<DatasetResponseDto> datasets = datasetService.listDatasets();
+        List<ModelResponseDto> models = modelService.listModels(null);
+        model.addAttribute("datasetCount", datasets.size());
+        model.addAttribute("modelCount", models.size());
         model.addAttribute("marketplaceCount", marketplaceService.count());
+        model.addAttribute("commissionCount", commissionService.count());
+        model.addAttribute("datasets", datasets);
         return "index";
     }
 
