@@ -1,212 +1,130 @@
-﻿# Sukio
+# Sukio Codebase: Architecture & Implementation
 
-A production-grade, full-stack AutoML platform for dataset diagnostics, controlled model training, explainability, and live inference. Sukio mirrors a practical Vertex AI or Kaggle-style workflow with deeper dataset quality controls and flexible GPU execution modes.
-
----
-
-## Web Control Plane
-
-Sukio features a Next.js 14 control plane with a unified dark UI, real-time experiment tracking, interactive dataset diagnostics, and low-latency inference playgrounds.
-
-![Sukio Web Control Plane](docs/gifs/00_frontend_control_plane.gif)
-
-### Core Control Plane Views
-
-| Control Surface | Focus & Key Interactions |
-|---|---|
-| **Platform Dashboard**<br><br>![Dashboard Overview](docs/screenshots/01_dashboard_overview.png) | Active training runs, cluster GPU health, registered models, throughput metrics, and dataset inventories. |
-| **Dataset Diagnostics**<br><br>![Dataset Diagnostics](docs/screenshots/02_dataset_diagnostics.png) | Quality scoring (0-100), automated schema inspection, missingness rates, outlier heatmaps, and data leakage detection. |
-| **AutoML Training Studio**<br><br>![AutoML Training Studio](docs/screenshots/03_automl_training.png) | Model selection, Optuna trial budget controls, hyperparameter search, and live accuracy leaderboard. |
-| **Inference & Explainability**<br><br>![Inference & Explainability](docs/screenshots/04_inference_explainability.png) | Interactive input sliders, real-time prediction confidence gauge, and global/local SHAP feature impact rankings. |
+This directory contains the complete source code implementation for the **Sukio AutoML Build Engine**, transitioning the platform to a high-performance, server-driven architecture built on **Java 21 (Spring Boot 3.3)**, **Thymeleaf**, and **HTMX**.
 
 ---
 
-## Pipeline Features
-
-### Dataset Upload and Profiling
-
-Upload CSV or Excel files (or use built-in example datasets) and receive an instant quality report covering missingness rates, duplicate rows, outlier flags, leakage risk per feature, and a composite quality score with actionable recommendations.
-
-![Dataset Upload and Profiling](docs/gifs/01_data_profiling.gif)
-
-### AutoML Training and Leaderboard
-
-Run Optuna-powered hyperparameter sweeps across up to five models in a single experiment. The platform auto-detects task type (classification or regression), applies dataset-aware starting hyperparameters, and populates a live leaderboard ranked by validation accuracy.
-
-![AutoML Training and Leaderboard](docs/gifs/02_automl_training.gif)
-
-### SHAP Explainability and Inference Sandbox
-
-Inspect trained models with SHAP and LIME feature importance reports. The inference sandbox generates a pre-filled feature template sampled from the training data profile, accepts manual overrides, and returns class probabilities alongside a prediction verdict in real time.
-
-![SHAP Explainability and Inference](docs/gifs/03_shap_inference.gif)
-
----
-
-## Architecture
+## Directory Structure
 
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                        Browser Client                      â”‚
-â”‚                    Next.js 14 / React                      â”‚
-â”‚       (Dashboard, Training, Leaderboard, Inference UI)     â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                            â”‚  HTTPS / REST / Firebase Auth
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                      FastAPI Backend                       â”‚
-â”‚   /datasets   /train   /models   /explain   /predict       â”‚
-â”‚   Optuna   scikit-learn   SHAP   LIME   joblib             â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-         â”‚                                  â”‚
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”             â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚   PostgreSQL DB   â”‚             â”‚   Model Artifact Store  â”‚
-â”‚  (experiment runs,â”‚             â”‚   (.joblib files,       â”‚
-â”‚   metrics, logs)  â”‚             â”‚    SHAP outputs)        â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜             â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-         â”‚
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                        Docker Compose                       â”‚
-â”‚       backend   frontend   db   (optional local-agent)      â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-```
-
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 14, React, Tailwind CSS |
-| Backend API | FastAPI (Python 3.11) |
-| AutoML engine | scikit-learn, XGBoost, LightGBM, Optuna |
-| Explainability | SHAP, LIME |
-| Database | PostgreSQL 15 |
-| Auth | Firebase Authentication |
-| Container | Docker, Docker Compose |
-
----
-
-## Quickstart
-
-**Prerequisites:** Docker and Docker Compose installed.
-
-```bash
-git clone https://github.com/Keshavj-13/Sukio.git
-cd Sukio
-
-# Copy and configure environment variables
-cp .env.example .env
-# Edit .env with your Firebase credentials and desired settings
-
-# Start all services
-docker-compose up --build
-```
-
-The frontend will be available at `http://localhost:3000` and the API at `http://localhost:8000`.
-
-To stop all services:
-
-```bash
-docker-compose down
+code/
+├── backend-java/                  # Spring Boot 3 Control Plane (Java 21)
+│   ├── src/main/java/             # Controllers, Services, JPA Entities, DTOs
+│   │   └── com/axiomcloud/
+│   │       ├── config/            # SecurityConfig, StorageProperties, WebConfig
+│   │       ├── controller/        # FrontendController, DatasetController, TrainingController, etc.
+│   │       ├── dto/               # Request/Response Data Transfer Objects
+│   │       ├── model/             # JPA Entities (Dataset, Job, Model, Experiment)
+│   │       ├── repository/        # Spring Data JPA Repositories
+│   │       └── service/           # DatasetService, TrainingService, MlEngineClient
+│   ├── src/main/resources/
+│   │   ├── templates/             # Native Thymeleaf Templates (Obsidian Dark Theme)
+│   │   │   ├── index.html         # Landing / Overview
+│   │   │   ├── dashboard.html     # Real-time Metrics & Inventory
+│   │   │   ├── datasets.html      # Tabular Upload & Quality Diagnostics
+│   │   │   ├── training.html      # AutoML Training Studio & Budget Sliders
+│   │   │   ├── models.html        # Leaderboard Table & SHAP Explainability
+│   │   │   └── predict.html       # Inference Sandbox & Confidence Gauge
+│   │   ├── application.yml        # Default production configuration (PostgreSQL)
+│   │   └── application-local.yml  # In-memory H2 development configuration
+│   ├── pom.xml                    # Maven build descriptor (Java 21, Spring Boot 3.3.4)
+│   └── mvnw.cmd / mvnw            # Maven Wrapper scripts
+├── tests/playwright/              # Presentation-Grade End-to-End Test Suite
+│   ├── demo-e2e-journey.spec.ts   # Complete Data -> AutoML -> Predict workflow
+│   ├── demo-datasets.spec.ts      # Benchmark ingestion & diagnostics assertions
+│   ├── demo-training.spec.ts      # Multi-model selection & Optuna budget tests
+│   ├── demo-models.spec.ts        # Leaderboard ranking & SHAP attributions
+│   ├── demo-predict.spec.ts       # Live prediction sandbox payload verification
+│   ├── demo-visual-capture.spec.ts# High-resolution control surface captures
+│   ├── generate-gallery.js        # Builds test-output/gallery.html (32 media items)
+│   ├── playwright.config.ts       # Configured for visible execution in Brave Browser
+│   └── package.json               # Node.js dependencies (@playwright/test)
+├── docs/                          # Architectural media assets
+│   ├── gifs/                      # Animated walkthrough GIFs
+│   └── screenshots/               # Control plane screenshots
+├── storage/                       # Local filesystem persistence
+│   ├── datasets/                  # Uploaded CSV & Excel datasets
+│   ├── models/                    # Serialized model binaries & checkpoints
+│   └── reports/                   # Generated quality diagnostics reports
+└── DESIGN.md                      # Detailed architectural design decisions
 ```
 
 ---
 
-## Execution Modes
+## Control Plane Architecture
 
-Sukio supports two distinct training execution modes selectable from the experiment configuration UI.
+The control plane replaces the previous client-heavy React single-page application with a reactive, server-driven architecture:
 
-### Remote GPU Mode
-
-Training jobs are queued and executed on the server. The backend handles the full lifecycle: dataset loading, cross-validation, Optuna sweeps, artifact saving, and metric reporting. No local setup is required beyond a browser. This mode is suitable for most datasets and is the default.
-
-### Local GPU Mode
-
-For large datasets or when you want to leverage local hardware:
-
-1. Configure the experiment in the browser and select "Local" mode.
-2. Download the authenticated local agent script from the UI.
-3. Run the agent on your machine (GPU is used automatically if available via CUDA).
-
-```bash
-python local_agent.py --job-id <JOB_ID> --token <YOUR_TOKEN>
+```
+┌────────────────────────────────────────────────────────────┐
+│                    Browser Client UI                       │
+│        Thymeleaf 3 + HTMX 1.9 + Axiom Obsidian CSS        │
+│   (Dashboard, Datasets, Training Studio, Models, Predict)  │
+└───────────────────────────┬────────────────────────────────┘
+                            │  HTTP / HTMX Lazy-Loading
+┌───────────────────────────▼────────────────────────────────┐
+│             Spring Boot 3 Control Plane (Port 8000)        │
+│   • FrontendController  • DatasetController (Apache POI)   │
+│   • TrainingController  • ModelController (SHAP Engine)    │
+│   • Async TaskExecutor  • Spring Data JPA Repositories     │
+└────────┬──────────────────────────────────┬────────────────┘
+         │                                  │
+┌────────▼──────────┐             ┌─────────▼────────────────┐
+│    Database       │             │   Local Storage Filesystem│
+│  H2 (Dev / Local) │             │   • storage/datasets     │
+│  PostgreSQL (Prod)│             │   • storage/models       │
+└───────────────────┘             │   • storage/reports      │
+                                  └──────────────────────────┘
+         │                                  │
+┌────────▼──────────────────────────────────▼────────────────┐
+│              ML Execution & Training Engine                │
+│   • Embedded Simulation Fallback (100% self-contained)    │
+│   • External Python Microservice (Optuna, Scikit, SHAP)    │
+│   • Authenticated Local GPU Training Agent (CLI mode)      │
+└────────────────────────────────────────────────────────────┘
 ```
 
-The agent trains the job locally, then syncs all metrics and model artifacts back to the platform over HTTPS. Offline sync payloads are supported for air-gapped or intermittently connected machines.
+### Key Design Pillars
+1. **Zero Client-Side Build Step:** No Webpack, Vite, or Node.js bundle steps are required to run the web application. Thymeleaf handles server-side layout and HTMX delivers instantaneous partial updates.
+2. **Unified Obsidian Dark Theme:** Strict palette using `#0e0e10` base, `#19191d` surface containers, `#25252b` elevated panels, and `#d0bcff` violet accents.
+3. **Resilient Embedded Simulation:** `MlEngineClient` provides an embedded simulation fallback. If the external Python engine on port 8001 is offline, the Spring Boot platform simulates Optuna sweeps, SHAP attributions, and inference results with 100% functional fidelity.
 
 ---
 
-## Key Features
+## Running the Application Locally
 
-**Dataset diagnostics**
-- Missingness, duplicate, and outlier analysis with per-feature breakdown
-- Composite quality score (0-100) with letter grade and fix recommendations
-- Leakage risk flagging per feature before training
-- EDA report generation with chart artifacts
-- Drift baseline snapshot for future monitoring
+### Development Mode (In-Memory H2, No Docker Required)
+Run the application with the `local` profile:
 
-**AutoML training**
-- Auto task-type detection (classification / regression)
-- Model catalog with dataset-aware hyperparameter defaults
-- Optuna hyperparameter tuning with configurable trial and time budgets
-- Expert mode with per-model override controls
-- Hard safety limits: max 5 models per run, max 5 CV folds
-- Experiment registry with run configs, status, and outcome history
-
-**Evaluation and explainability**
-- Leaderboard ranked by validation metric across all trained models
-- Classification visuals: confusion matrix, ROC curve, CV fold comparison
-- Regression visuals: residual diagnostics, prediction vs actual plots
-- SHAP global and local feature importance
-- LIME local explanations
-- Native feature importance for tree-based estimators
-
-**Deployment and inference**
-- Deploy and undeploy model lifecycle controls from the UI
-- Inference sandbox with auto-generated feature template
-- Integer-aware random defaults sampled from training data profile
-- REST prediction endpoint for programmatic integration
-- Model artifact download (.joblib)
-
-**Security**
-- Firebase-authenticated API access on all endpoints
-- Authenticated local-agent command generation
-- Token-scoped job execution for local runs
-
----
-
-## Project Structure
-
+```powershell
+cd code/backend-java
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=local"
 ```
-Sukio/
-â”œâ”€â”€ backend/          # FastAPI application, routers, ML pipeline
-â”œâ”€â”€ frontend/         # Next.js application, pages, components
-â”œâ”€â”€ database/         # PostgreSQL schema and migration scripts
-â”œâ”€â”€ docs/
-â”‚   â”œâ”€â”€ gifs/         # Animated walkthrough GIFs
-â”‚   â””â”€â”€ screenshots/  # UI control plane screen captures
-â”œâ”€â”€ scripts/          # Utility and setup scripts
-â”œâ”€â”€ local_agent.py    # Local GPU training agent
-â”œâ”€â”€ docker-compose.yml
-â””â”€â”€ DESIGN.md         # Architecture and design decisions
+
+The application runs on `http://localhost:8000/`. H2 database console is enabled at `http://localhost:8000/h2-console`.
+
+### Production Mode (PostgreSQL 16)
+Ensure PostgreSQL is running, then launch without the local profile:
+
+```powershell
+cd code/backend-java
+.\mvnw.cmd spring-boot:run
 ```
 
 ---
 
-## Configuration
+## Playwright Automated Test Suite
 
-All configuration is managed through environment variables. Copy `.env.example` to `.env` and set the following:
+The test suite in `tests/playwright/` is configured to run visibly in your local **Brave Browser** (`headless: false`) with human-paced `slowMo` delay:
 
-| Variable | Description |
-|---|---|
-| `FIREBASE_PROJECT_ID` | Firebase project identifier |
-| `FIREBASE_PRIVATE_KEY` | Firebase service account private key |
-| `FIREBASE_CLIENT_EMAIL` | Firebase service account email |
-| `POSTGRES_USER` | PostgreSQL username |
-| `POSTGRES_PASSWORD` | PostgreSQL password |
-| `POSTGRES_DB` | Database name |
-| `MODEL_ARTIFACT_DIR` | Path for storing .joblib model files |
-| `MAX_MODELS_PER_RUN` | Hard limit on models per experiment (default: 5) |
-| `MAX_CV_FOLDS` | Hard limit on cross-validation folds (default: 5) |
+```powershell
+cd code/tests/playwright
 
----
+# Run all demo tests and build the visual gallery:
+npm run test:demo
 
-## License
+# Open the visual test gallery in your browser:
+start test-output/gallery.html
+```
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+All generated test artifacts (`test-output/`, screenshots, recordings) remain **strictly untracked** in Git via `code/.gitignore`.

@@ -1,4 +1,4 @@
-﻿# System Architecture & Porting Guide
+# System Architecture & Porting Guide
 
 Sukio represents the foundational automated baseline engine within the **Sukio** machine learning solutions marketplace. This document describes the architecture resulting from the port from Python/Next.js to **Spring Boot 3 + Thymeleaf + HTMX**.
 
@@ -20,21 +20,32 @@ The original architecture consisted of:
 ## 2. Core Components
 
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚             Browser UI (Axiom Obsidian)                â”‚
-â”‚       Thymeleaf Templates + HTMX + Tailwind CSS        â”‚
-â”‚    (Dashboard, Datasets, Training, Models, Predict)    â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                            â”‚ HTTP / HTMX
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚          Spring Boot 3 Control Plane (Port 8000)       â”‚
-â”‚   Controllers â”€â”€â–º Services â”€â”€â–º JPA Entities (H2/PG)    â”‚
-â”‚   Async TaskExecutor â”€â”€â–º Embedded Simulation Engine    â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                            â”‚ REST (Optional)
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚      Python ML Engine (scikit-learn, Optuna, SHAP)     â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌────────────────────────────────────────────────────────────┐
+│                    Browser Client UI                       │
+│        Thymeleaf 3 + HTMX 1.9 + Axiom Obsidian CSS        │
+│   (Dashboard, Datasets, Training Studio, Models, Predict)  │
+└───────────────────────────┬────────────────────────────────┘
+                            │  HTTP / HTMX Lazy-Loading
+┌───────────────────────────▼────────────────────────────────┐
+│             Spring Boot 3 Control Plane (Port 8000)        │
+│   • FrontendController  • DatasetController (Apache POI)   │
+│   • TrainingController  • ModelController (SHAP Engine)    │
+│   • Async TaskExecutor  • Spring Data JPA Repositories     │
+└────────┬──────────────────────────────────┬────────────────┘
+         │                                  │
+┌────────▼──────────┐             ┌─────────▼────────────────┐
+│    Database       │             │   Local Storage Filesystem│
+│  H2 (Dev / Local) │             │   • storage/datasets     │
+│  PostgreSQL (Prod)│             │   • storage/models       │
+└───────────────────┘             │   • storage/reports      │
+                                  └──────────────────────────┘
+         │                                  │
+┌────────▼──────────────────────────────────▼────────────────┐
+│              ML Execution & Training Engine                │
+│   • Embedded Simulation Fallback (100% self-contained)    │
+│   • External Python Microservice (Optuna, Scikit, SHAP)    │
+│   • Authenticated Local GPU Training Agent (CLI mode)      │
+└────────────────────────────────────────────────────────────┘
 ```
 
 ### Domain Entities (JPA / PostgreSQL / H2)

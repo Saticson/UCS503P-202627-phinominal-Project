@@ -1,4 +1,4 @@
-﻿# HANDOVER â€” Sukio Prototype + Tests
+# HANDOVER — Sukio Prototype + Tests
 
 ---
 
@@ -15,11 +15,15 @@
 3. **ML Engine Architecture**:
    - `MlEngineClient.java` contains robust embedded simulation fallback, allowing the Spring Boot platform to run 100% self-contained without requiring an external Python process or Docker.
    - Compatible with Python ML microservice on port 8001 if launched.
-4. **Journals**: Fully generated `w01.md` through `w08.md` for both Keshav (`1024030692`) and Satwik (`1024030699`), avoiding the Mid-Semester Test gap (Sep 20 â†’ Oct 4).
+4. **Journals**: Fully verified and cleaned up for both Keshav (`1024030692`) and Satwik (`1024030699`) strictly up to Week 6 (October 13, 2026 - Today), with zero redundant files, zero duplicate entries, and no dates in the future.
 5. **Playwright Tests**:
-   - Configured for headless execution in `playwright.config.ts`.
-   - `global-setup.ts` verifies storage directories (`code/storage/{datasets,models,reports}`) and allows testing against the local Spring Boot instance.
-6. **Documentation**: Updated `docs/index.md` for MkDocs with full architectural overview and usage instructions.
+   - 16/16 test scenarios passing cleanly.
+   - Configured for visible execution in Brave Browser (`headless: false`, `slowMo: 500`).
+   - Visual outputs and screenshots aggregated in `test-output/gallery.html` (32 media items), kept strictly untracked in Git via `.gitignore`.
+6. **Documentation & Deliverables**:
+   - Reconstructed root `README.md` blending the UCS503P academic template with the rich Sukio product showcase, media GIFs, control surface screenshots, and architecture diagrams.
+   - Updated `code/README.md` and `docs/index.md` with synchronized media assets.
+   - Prototype Stage Report complete in `project-report-prototype-stage/main.tex`.
 
 ---
 
@@ -27,15 +31,18 @@
 
 | Component | Path |
 |---|---|
+| Root Presentation README | `README.md` |
 | Spring Boot Backend | `code/backend-java/` |
 | Thymeleaf Templates | `code/backend-java/src/main/resources/templates/` |
 | Application Config | `code/backend-java/src/main/resources/application.yml` |
 | Local In-Memory Profile | `code/backend-java/src/main/resources/application-local.yml` |
 | Storage Repositories | `code/storage/{datasets,models,reports}` |
 | Playwright Test Suite | `code/tests/playwright/` |
+| Visual Media Assets | `docs/{gifs,screenshots}/` & `code/docs/{gifs,screenshots}/` |
 | Journals (Keshav) | `journals/1024030692-keshav/` |
 | Journals (Satwik) | `journals/1024030699-satwik/` |
 | MkDocs Documentation | `docs/index.md` |
+| Prototype Stage Report | `project-report-prototype-stage/main.tex` |
 
 ---
 
@@ -47,9 +54,9 @@
   ```
 - **Run Backend Standalone (H2 Local Profile)**:
   ```powershell
-  .\code\backend-java\.mvn\apache-maven-3.9.9\bin\mvn.cmd -f code\backend-java\pom.xml spring-boot:run -Dspring-boot.run.profiles=local
+  .\code\backend-java\.mvn\apache-maven-3.9.9\bin\mvn.cmd -f code\backend-java\pom.xml spring-boot:run "-Dspring-boot.run.profiles=local"
   ```
-- **Run Demo E2E Tests**:
+- **Run Demo E2E Tests in Brave Browser**:
   ```powershell
   cd code/tests/playwright
   npm run test:demo
