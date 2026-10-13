@@ -5,77 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inference &amp; Computer Vision Sandbox — Sukio</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="/css/sukio.css">
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --surface: #111827;
-            --surface-variant: #1f2937;
-            --primary: #a78bfa;
-            --primary-accent: #7c3aed;
-            --text-primary: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border: #374151;
-            --success: #34d399;
-            --warning: #fbbf24;
-            --danger: #f87171;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 2rem;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 700;
-            font-size: 1.15rem;
-            color: var(--primary);
-            text-decoration: none;
-        }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .navbar a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-        .navbar a:hover, .navbar a.active { color: var(--primary); }
-        main {
-            max-width: 1200px;
-            width: 100%;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            flex: 1;
-        }
-        .header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        h1 { font-size: 1.9rem; font-weight: 700; color: #fff; }
         .tabs-nav {
             display: flex;
             gap: 0.5rem;
             border-bottom: 1px solid var(--border);
             margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
         .tab-btn {
             background: transparent;
@@ -99,79 +36,21 @@
             display: grid;
             grid-template-columns: 1.1fr 1fr;
             gap: 1.5rem;
+            min-width: 0;
+        }
+        .grid-predict > * {
+            min-width: 0;
         }
         @media (max-width: 900px) {
             .grid-predict { grid-template-columns: 1fr; }
         }
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-            margin-bottom: 1.5rem;
-        }
-        .card h2 {
-            font-size: 1.15rem;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #fff;
-        }
-        .form-group { margin-bottom: 1.25rem; }
-        label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 0.4rem;
-        }
-        input, select, textarea {
-            width: 100%;
-            background: var(--surface-variant);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 0.6rem 0.85rem;
-            color: #fff;
-            font-size: 0.9rem;
-            outline: none;
-        }
-        textarea {
-            font-family: monospace;
-            resize: vertical;
-            min-height: 100px;
-        }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-        button, .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--primary-accent);
-            color: #fff;
-            border: none;
-            padding: 0.6rem 1.25rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-        button:hover, .btn:hover { background: #8b5cf6; }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-        }
-        .btn-outline:hover { color: #fff; border-color: var(--primary); }
         .result-box {
             background: var(--surface-variant);
             border-radius: 8px;
             padding: 1.5rem;
             border: 1px solid var(--border);
             margin-top: 1rem;
+            min-width: 0;
         }
         .result-val {
             font-size: 1.8rem;
@@ -179,12 +58,7 @@
             color: var(--success);
             font-family: monospace;
             margin: 0.5rem 0;
-        }
-        .badge {
-            font-size: 0.75rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            font-weight: 700;
+            word-break: break-all;
         }
         .upload-dropzone {
             border: 2px dashed var(--border);
@@ -283,7 +157,7 @@
                             <textarea name="features" id="features-input" placeholder='{"pclass": 1, "sex": "female", "age": 29, "fare": 150.0}'>{"pclass": 1, "sex": "female", "age": 29, "fare": 150.0}</textarea>
                         </div>
 
-                        <button type="submit" id="btn-run-prediction">Run Real-Time Prediction</button>
+                        <button type="submit" id="btn-run-prediction" style="width: 100%;">Run Real-Time Prediction</button>
                     </form>
                 </div>
 
@@ -291,7 +165,7 @@
                     <div id="prediction-result" class="card" th:fragment="predictionResult">
                         <h2>
                             <span>Prediction Verdict</span>
-                            <span th:if="${prediction != null}" class="badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399;">SUCCESS</span>
+                            <span th:if="${prediction != null}" class="badge badge-success">SUCCESS</span>
                         </h2>
 
                         <div th:if="${prediction == null}" class="result-box">
@@ -327,6 +201,7 @@
                           hx-post="/predict/vision"
                           hx-target="#vision-result"
                           hx-swap="outerHTML"
+                          hx-encoding="multipart/form-data"
                           enctype="multipart/form-data">
                         
                         <div class="form-group">
@@ -359,7 +234,7 @@
                         </div>
 
                         <button type="submit" id="btn-run-vision-prediction" style="width: 100%; justify-content: center; margin-top: 1rem;">
-                            Run Vision Inference →
+                            Run Vision Inference &rarr;
                         </button>
                     </form>
                 </div>
@@ -369,7 +244,7 @@
                     <div id="vision-result" class="card" th:fragment="visionPredictionResult">
                         <h2>
                             <span>Vision Prediction Output</span>
-                            <span th:if="${visionPrediction != null}" class="badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399;">SUCCESS</span>
+                            <span th:if="${visionPrediction != null}" class="badge badge-success">SUCCESS</span>
                         </h2>
 
                         <div th:if="${visionPrediction == null}" class="result-box">

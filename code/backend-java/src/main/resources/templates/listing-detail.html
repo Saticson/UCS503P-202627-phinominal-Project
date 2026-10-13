@@ -4,57 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${listing.title + ' — Sukio Solution Marketplace'}">Model Card — Sukio</title>
+    <link rel="stylesheet" href="/css/sukio.css">
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --surface: #111827;
-            --surface-variant: #1f2937;
-            --border: #374151;
-            --primary: #a78bfa;
-            --primary-accent: #7c3aed;
-            --text-primary: #f3f4f6;
-            --text-muted: #9ca3af;
-            --success: #34d399;
-            --info: #60a5fa;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.5;
-            min-height: 100vh;
-        }
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 2rem;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 700;
-            font-size: 1.15rem;
-            color: var(--primary);
-            text-decoration: none;
-        }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .navbar a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-        .navbar a:hover, .navbar a.active { color: var(--text-primary); }
-        main {
-            max-width: 1100px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
         .back-link {
             display: inline-flex;
             align-items: center;
@@ -71,6 +22,8 @@
             border-radius: 12px;
             padding: 2.5rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            min-width: 0;
+            overflow: hidden;
         }
         .detail-header {
             display: flex;
@@ -93,6 +46,7 @@
             border-radius: 9999px;
             font-size: 0.85rem;
             font-weight: 700;
+            white-space: nowrap;
         }
         .badge-community {
             background: rgba(156, 163, 175, 0.15);
@@ -102,18 +56,22 @@
             border-radius: 9999px;
             font-size: 0.85rem;
             font-weight: 600;
+            white-space: nowrap;
         }
         .detail-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.25rem;
             margin: 2rem 0;
+            min-width: 0;
         }
         .detail-tile {
             background: var(--surface-variant);
             border-radius: 8px;
             padding: 1.25rem;
             border: 1px solid rgba(255,255,255,0.05);
+            min-width: 0;
+            overflow: hidden;
         }
         .detail-tile .title {
             font-size: 0.75rem;
@@ -121,29 +79,17 @@
             color: var(--text-muted);
             letter-spacing: 0.05em;
             margin-bottom: 0.4rem;
+            white-space: nowrap;
         }
         .detail-tile .val {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #fff;
             font-family: monospace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--primary-accent);
-            color: #fff;
-            border: none;
-            padding: 0.65rem 1.25rem;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.15s ease;
-        }
-        .btn:hover { background: #8b5cf6; }
         .tag-pill {
             display: inline-block;
             background: rgba(124, 58, 237, 0.15);
@@ -175,7 +121,7 @@
     </nav>
 
     <main>
-        <a href="/marketplace" class="back-link">← Back to Marketplace Catalog</a>
+        <a href="/marketplace" class="back-link">&larr; Back to Marketplace Catalog</a>
 
         <div class="detail-card">
             <div class="detail-header">
@@ -193,7 +139,7 @@
                 </div>
                 <div style="text-align: right;">
                     <div style="font-size: 1.8rem; font-weight: 700; color: var(--success); margin-bottom: 0.5rem;" th:text="${listing.price}">Free</div>
-                    <a th:href="@{'/predict?modality=' + ${listing.modality}}" class="btn">Test in Sandbox →</a>
+                    <a th:href="@{'/predict?modality=' + ${listing.modality}}" class="btn">Test in Sandbox &rarr;</a>
                 </div>
             </div>
 
@@ -218,7 +164,7 @@
             </div>
 
             <div style="background: var(--surface-variant); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem;">
-                <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-primary);">Licensing & Publisher Verification</h4>
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-primary);">Licensing &amp; Publisher Verification</h4>
                 <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
                     <strong>Published by:</strong> <span th:text="${listing.sellerName}">Sukio Core Labs</span> | 
                     <strong>License:</strong> <span th:text="${listing.license}">Apache-2.0</span>

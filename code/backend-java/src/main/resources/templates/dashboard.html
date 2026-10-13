@@ -5,224 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Sukio</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <style>
-        :root {
-            --bg-color: #0e0e10;
-            --surface: #19191d;
-            --surface-variant: #25252b;
-            --primary: #d0bcff;
-            --primary-accent: #7c3aed;
-            --text-primary: #e7e4ec;
-            --text-muted: #acaab1;
-            --border: #33333d;
-            --success: #34d399;
-            --warning: #fbbf24;
-            --danger: #f87171;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 2rem;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 700;
-            font-size: 1.15rem;
-            color: var(--primary);
-            text-decoration: none;
-        }
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-        .navbar a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            transition: color 0.15s ease;
-        }
-        .navbar a:hover, .navbar a.active {
-            color: var(--primary);
-            background: rgba(208, 188, 255, 0.08);
-        }
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.8rem;
-            background: rgba(52, 211, 153, 0.1);
-            color: var(--success);
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            border: 1px solid rgba(52, 211, 153, 0.2);
-        }
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--success);
-            border-radius: 50%;
-        }
-        main {
-            max-width: 1200px;
-            width: 100%;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            flex: 1;
-        }
-        .header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: -0.02em;
-        }
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 2rem;
-        }
-        .metric-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.25rem;
-        }
-        .metric-card .title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-        .metric-card .value {
-            font-size: 1.85rem;
-            font-weight: 700;
-            color: var(--primary);
-            font-family: monospace;
-        }
-        .metric-card .sub {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-        .grid-sections {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-        }
-        @media (max-width: 900px) {
-            .grid-sections { grid-template-columns: 1fr; }
-        }
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            margin-bottom: 1.5rem;
-        }
-        .card h2 {
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        button, .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--primary-accent);
-            color: #fff;
-            border: none;
-            padding: 0.55rem 1rem;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.15s ease;
-        }
-        button:hover, .btn:hover {
-            background: #8b5cf6;
-            transform: translateY(-1px);
-        }
-        .btn-secondary {
-            background: var(--surface-variant);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-        }
-        .btn-secondary:hover {
-            border-color: var(--primary);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.875rem;
-        }
-        th, td {
-            text-align: left;
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--border);
-        }
-        th {
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
-        }
-        .badge {
-            display: inline-block;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: rgba(124, 58, 237, 0.15);
-            color: var(--primary);
-            border: 1px solid rgba(124, 58, 237, 0.3);
-        }
-        .badge-success {
-            background: rgba(52, 211, 153, 0.15);
-            color: var(--success);
-            border-color: rgba(52, 211, 153, 0.3);
-        }
-        .badge-warning {
-            background: rgba(251, 191, 36, 0.15);
-            color: var(--warning);
-            border-color: rgba(251, 191, 36, 0.3);
-        }
-    </style>
+    <link rel="stylesheet" href="/css/sukio.css">
 </head>
 <body>
     <nav class="navbar">
@@ -248,76 +31,78 @@
                 <h1>Platform Dashboard</h1>
                 <p style="color: var(--text-muted); font-size: 0.95rem;">Real-time experiment tracking, cluster metrics, and marketplace solution inventory</p>
             </div>
-            <div style="display: flex; gap: 0.75rem;">
-                <a href="/marketplace" class="btn" style="background: rgba(124, 58, 237, 0.25); border: 1px solid var(--primary);">Explore Marketplace</a>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <a href="/marketplace" class="btn btn-secondary">Explore Marketplace</a>
                 <a href="/training" class="btn">+ New Experiment</a>
                 <a href="/datasets" class="btn btn-secondary">Upload Data</a>
             </div>
         </div>
 
-        <div class="grid-cards">
-            <div class="metric-card">
-                <div class="title">Marketplace Assets</div>
-                <div class="value" id="count-marketplace" th:text="${marketplaceCount != null ? marketplaceCount : 8}">8</div>
-                <div class="sub">Verified &amp; Community</div>
+        <div class="stats-grid">
+            <div class="card metric-card" style="margin-bottom: 0;">
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.4rem;">Marketplace Assets</div>
+                <div style="font-size: 1.85rem; font-weight: 700; color: var(--primary); font-family: monospace;" id="count-marketplace" th:text="${marketplaceCount != null ? marketplaceCount : 8}">8</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Verified &amp; Community</div>
             </div>
-            <div class="metric-card">
-                <div class="title">Total Datasets</div>
-                <div class="value" id="count-datasets" th:text="${datasetCount}">0</div>
-                <div class="sub">Tabular &amp; Vision</div>
+            <div class="card metric-card" style="margin-bottom: 0;">
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.4rem;">Total Datasets</div>
+                <div style="font-size: 1.85rem; font-weight: 700; color: var(--primary); font-family: monospace;" id="count-datasets" th:text="${datasetCount}">0</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Tabular &amp; Vision</div>
             </div>
-            <div class="metric-card">
-                <div class="title">Trained Models</div>
-                <div class="value" id="count-models" th:text="${modelCount}">0</div>
-                <div class="sub">Production registered</div>
+            <div class="card metric-card" style="margin-bottom: 0;">
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.4rem;">Trained Models</div>
+                <div style="font-size: 1.85rem; font-weight: 700; color: var(--primary); font-family: monospace;" id="count-models" th:text="${modelCount}">0</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Production registered</div>
             </div>
-            <div class="metric-card">
-                <div class="title">Active Commissions</div>
-                <div class="value" id="count-commissions" th:text="${commissionCount != null ? commissionCount : 2}">2</div>
-                <div class="sub">Hire Funnel Requests</div>
+            <div class="card metric-card" style="margin-bottom: 0;">
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.4rem;">Active Commissions</div>
+                <div style="font-size: 1.85rem; font-weight: 700; color: var(--primary); font-family: monospace;" id="count-commissions" th:text="${commissionCount != null ? commissionCount : 2}">2</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Hire Funnel Requests</div>
             </div>
         </div>
 
-        <div class="grid-sections">
+        <div class="grid-layout" style="grid-template-columns: 2fr 1fr; margin-top: 1.5rem;">
             <div>
                 <div class="card">
                     <h2>
                         <span>Recent Experiments</span>
                         <a href="/training" style="font-size: 0.85rem; color: var(--primary); text-decoration: none;">View Studio &rarr;</a>
                     </h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Job ID</th>
-                                <th>Task Type</th>
-                                <th>Status</th>
-                                <th>Progress</th>
-                                <th>Target</th>
-                            </tr>
-                        </thead>
-                        <tbody id="recent-jobs-body">
-                            <tr th:if="${#lists.isEmpty(recentJobs)}">
-                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent training runs. Launch one in <a href="/training" style="color: var(--primary);">AutoML Studio</a>!</td>
-                            </tr>
-                            <tr th:each="j : ${recentJobs}">
-                                <td><strong style="color: #fff;" th:text="${j.jobId}">job-1</strong></td>
-                                <td><span class="badge" th:text="${j.taskType}">classification</span></td>
-                                <td>
-                                    <span class="badge"
-                                          th:text="${j.status}"
-                                          th:style="${j.status == 'COMPLETED' ? 'background: rgba(52, 211, 153, 0.15); color: #34d399;' : (j.status == 'FAILED' ? 'background: rgba(248, 113, 113, 0.15); color: #f87171;' : 'background: rgba(251, 191, 36, 0.15); color: #fbbf24;')}">
-                                    </span>
-                                </td>
-                                <td th:text="${j.progress + '%'}">100%</td>
-                                <td th:text="${j.targetColumn}">survived</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Task Type</th>
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                    <th>Target</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-jobs-body">
+                                <tr th:if="${#lists.isEmpty(recentJobs)}">
+                                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent training runs. Launch one in <a href="/training" style="color: var(--primary);">AutoML Studio</a>!</td>
+                                </tr>
+                                <tr th:each="j : ${recentJobs}">
+                                    <td><strong class="cell-mono cell-truncate" style="display: block; max-width: 160px; color: #fff;" th:text="${j.jobId}">job-1</strong></td>
+                                    <td><span class="badge badge-primary" th:text="${j.taskType}">classification</span></td>
+                                    <td>
+                                        <span class="badge"
+                                              th:text="${j.status}"
+                                              th:classappend="${j.status == 'COMPLETED' ? 'badge-success' : (j.status == 'FAILED' ? 'alert-danger' : 'badge-warning')}">
+                                        </span>
+                                    </td>
+                                    <td th:text="${j.progress + '%'}">100%</td>
+                                    <td><code style="color: var(--primary);" th:text="${j.targetColumn}">survived</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="card">
                     <h2>Quick Stats</h2>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 0.5rem;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
                         <div style="background: var(--surface-variant); padding: 1rem; border-radius: 8px;">
                             <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Average Accuracy</div>
                             <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); font-family: monospace;">--</div>

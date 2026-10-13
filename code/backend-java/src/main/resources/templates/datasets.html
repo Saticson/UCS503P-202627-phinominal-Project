@@ -5,185 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Datasets - Sukio</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <style>
-        :root {
-            --bg-color: #0e0e10;
-            --surface: #19191d;
-            --surface-variant: #25252b;
-            --primary: #d0bcff;
-            --primary-accent: #7c3aed;
-            --text-primary: #e7e4ec;
-            --text-muted: #acaab1;
-            --border: #33333d;
-            --success: #34d399;
-            --warning: #fbbf24;
-            --danger: #f87171;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 2rem;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 700;
-            font-size: 1.15rem;
-            color: var(--primary);
-            text-decoration: none;
-        }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .navbar a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            transition: color 0.15s ease;
-        }
-        .navbar a:hover, .navbar a.active {
-            color: var(--primary);
-            background: rgba(208, 188, 255, 0.08);
-        }
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.8rem;
-            background: rgba(52, 211, 153, 0.1);
-            color: var(--success);
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            border: 1px solid rgba(52, 211, 153, 0.2);
-        }
-        .status-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; }
-        main {
-            max-width: 1200px;
-            width: 100%;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            flex: 1;
-        }
-        .header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        h1 { font-size: 2rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 360px 1fr;
-            gap: 1.5rem;
-        }
-        @media (max-width: 900px) {
-            .grid-layout { grid-template-columns: 1fr; }
-        }
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            margin-bottom: 1.5rem;
-        }
-        .card h2 {
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.4rem;
-        }
-        input[type="text"], input[type="file"], select {
-            width: 100%;
-            padding: 0.6rem 0.8rem;
-            background: var(--surface-variant);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-        input[type="file"] { padding: 0.5rem; cursor: pointer; }
-        input:focus, select:focus { outline: none; border-color: var(--primary); }
-        button, .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            background: var(--primary-accent);
-            color: #fff;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.15s ease;
-            width: 100%;
-        }
-        button:hover, .btn:hover { background: #8b5cf6; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin-top: 0.5rem; }
-        th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid var(--border); }
-        th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        tr:hover td { background: rgba(255, 255, 255, 0.02); }
-        .badge {
-            display: inline-block;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: rgba(124, 58, 237, 0.15);
-            color: var(--primary);
-            border: 1px solid rgba(124, 58, 237, 0.3);
-        }
-        .example-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-            margin-top: 0.75rem;
-        }
-        .example-btn {
-            background: var(--surface-variant);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-align: center;
-            width: 100%;
-        }
-        .example-btn:hover { border-color: var(--primary); color: var(--primary); }
-    </style>
+    <link rel="stylesheet" href="/css/sukio.css">
 </head>
 <body>
     <nav class="navbar">
@@ -218,20 +40,21 @@
                     <form hx-post="/datasets/upload"
                           hx-target="#dataset-table-body"
                           hx-swap="outerHTML"
+                          hx-encoding="multipart/form-data"
                           enctype="multipart/form-data">
                         <div class="form-group">
-                            <label>File (CSV, Excel or Image Zip)</label>
-                            <input type="file" name="file" accept=".csv, .xlsx, .xls, .zip" required />
+                            <label>File (CSV or Excel)</label>
+                            <input type="file" name="file" accept=".csv, .xlsx, .xls" required />
                         </div>
                         <div class="form-group">
                             <label>Dataset Name (Optional)</label>
-                            <input type="text" name="name" placeholder="e.g. churn_v2 or defect_images" />
+                            <input type="text" name="name" placeholder="e.g. churn_v2 or defect_data" />
                         </div>
                         <div class="form-group">
                             <label>Target Column (Optional)</label>
                             <input type="text" name="target_column" placeholder="e.g. churn or label" />
                         </div>
-                        <button type="submit">Upload Dataset</button>
+                        <button type="submit" style="width: 100%;">Upload Dataset</button>
                     </form>
 
                     <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
@@ -250,56 +73,63 @@
             <div>
                 <div id="datasets" class="card">
                     <h2>Available Datasets</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 70px;">ID</th>
-                                <th>Name</th>
-                                <th>Rows &times; Cols</th>
-                                <th>Target</th>
-                                <th>Size</th>
-                                <th>Modality / Task</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dataset-table-body" th:fragment="datasetTableBody">
-                            <tr th:if="${#lists.isEmpty(datasets)}">
-                                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-                                    No datasets loaded yet. Click a benchmark on the left or upload a CSV file!
-                                </td>
-                            </tr>
-                            <tr th:each="ds : ${datasets}">
-                                <td>
-                                    <span class="badge" style="background: rgba(208, 188, 255, 0.15); color: var(--primary); font-family: monospace; font-size: 0.85rem;" th:text="'#' + ${ds.id}">#1</span>
-                                </td>
-                                <td style="font-weight: 600; color: #fff;">
-                                    <span th:text="${ds.name}">Titanic Survival</span>
-                                    <span th:if="${ds.isExample}" class="badge" style="margin-left: 0.4rem; font-size: 0.7rem;">Benchmark</span>
-                                </td>
-                                <td th:text="${ds.numRows + ' x ' + ds.numColumns}">891 x 8</td>
-                                <td>
-                                    <code style="color: var(--primary);" th:text="${ds.targetColumn != null ? ds.targetColumn : 'None'}">survived</code>
-                                </td>
-                                <td th:text="${(ds.fileSize != null ? (ds.fileSize / 1024) : 0) + ' KB'}">61 KB</td>
-                                <td>
-                                    <span th:if="${ds.modality == 'COMPUTER_VISION'}" class="badge" style="background: rgba(124, 58, 237, 0.2); color: var(--primary); margin-right: 0.3rem;">VISION</span>
-                                    <span th:unless="${ds.modality == 'COMPUTER_VISION'}" class="badge" style="background: rgba(75, 85, 99, 0.2); color: var(--text-muted); margin-right: 0.3rem;">TABULAR</span>
-                                    <span th:text="${ds.taskType != null ? ds.taskType : 'classification'}">classification</span>
-                                </td>
-                                <td style="display: flex; gap: 0.5rem; align-items: center;">
-                                    <a th:href="@{'/training?dataset_id=' + ${ds.id}}" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; width: auto;">Train &rarr;</a>
-                                    <button type="button"
-                                            th:attr="hx-delete=@{'/datasets/delete/' + ${ds.id}}"
-                                            hx-target="#dataset-table-body"
-                                            hx-swap="outerHTML"
-                                            class="btn"
-                                            style="padding: 0.35rem 0.6rem; font-size: 0.8rem; width: auto; background: transparent; border: 1px solid var(--border); color: var(--danger);">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 70px;">ID</th>
+                                    <th>Name</th>
+                                    <th>Rows &times; Cols</th>
+                                    <th>Target</th>
+                                    <th>Size</th>
+                                    <th>Modality / Task</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataset-table-body" th:fragment="datasetTableBody">
+                                <tr th:if="${uploadError != null}">
+                                    <td colspan="7" style="color: var(--danger); background: rgba(248, 113, 113, 0.12); padding: 0.75rem 1rem; border: 1px solid var(--danger);">
+                                        <strong>Upload Failed:</strong> <span th:text="${uploadError}">Error message</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(datasets)}">
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                        No datasets loaded yet. Click a benchmark on the left or upload a CSV file!
+                                    </td>
+                                </tr>
+                                <tr th:each="ds : ${datasets}">
+                                    <td>
+                                        <span class="badge" style="background: rgba(167, 139, 250, 0.15); color: var(--primary); font-family: monospace; font-size: 0.85rem;" th:text="'#' + ${ds.id}">#1</span>
+                                    </td>
+                                    <td style="font-weight: 600; color: #fff;">
+                                        <span th:text="${ds.name}">Titanic Survival</span>
+                                        <span th:if="${ds.isExample}" class="badge badge-primary" style="margin-left: 0.4rem; font-size: 0.7rem;">Benchmark</span>
+                                    </td>
+                                    <td th:text="${ds.numRows + ' x ' + ds.numColumns}">891 x 8</td>
+                                    <td>
+                                        <code style="color: var(--primary);" th:text="${ds.targetColumn != null ? ds.targetColumn : 'None'}">survived</code>
+                                    </td>
+                                    <td th:text="${(ds.fileSize != null ? (ds.fileSize / 1024) : 0) + ' KB'}">61 KB</td>
+                                    <td>
+                                        <span th:if="${ds.modality == 'COMPUTER_VISION'}" class="badge badge-primary" style="margin-right: 0.3rem;">VISION</span>
+                                        <span th:unless="${ds.modality == 'COMPUTER_VISION'}" class="badge badge-muted" style="margin-right: 0.3rem;">TABULAR</span>
+                                        <span th:text="${ds.taskType != null ? ds.taskType : 'classification'}">classification</span>
+                                    </td>
+                                    <td style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <a th:href="@{'/training?dataset_id=' + ${ds.id}}" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; width: auto;">Train &rarr;</a>
+                                        <button type="button"
+                                                th:attr="hx-delete=@{'/datasets/delete/' + ${ds.id}}"
+                                                hx-target="#dataset-table-body"
+                                                hx-swap="outerHTML"
+                                                class="btn btn-danger"
+                                                style="padding: 0.35rem 0.6rem; font-size: 0.8rem; width: auto;">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="card">

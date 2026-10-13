@@ -24,6 +24,8 @@ import java.util.Map;
 @Controller
 public class FrontendController {
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FrontendController.class);
+
     private final DatasetService datasetService;
     private final TrainingService trainingService;
     private final ModelService modelService;
@@ -101,7 +103,12 @@ public class FrontendController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "target_column", required = false) String targetColumn,
             Model model) {
-        datasetService.uploadDataset(file, name, targetColumn);
+        try {
+            datasetService.uploadDataset(file, name, targetColumn);
+        } catch (Exception e) {
+            logger.error("Dataset upload failed: {}", e.getMessage());
+            model.addAttribute("uploadError", e.getMessage());
+        }
         model.addAttribute("datasets", datasetService.listDatasets());
         return "datasets :: datasetTableBody";
     }

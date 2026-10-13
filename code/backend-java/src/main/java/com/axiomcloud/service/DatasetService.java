@@ -67,7 +67,12 @@ public class DatasetService {
         }
 
         String originalFilename = file.getOriginalFilename();
-        if (originalFilename == null || (!originalFilename.endsWith(".csv") && !originalFilename.endsWith(".xlsx") && !originalFilename.endsWith(".xls"))) {
+        if (originalFilename == null || originalFilename.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Filename cannot be empty");
+        }
+
+        String lowerName = originalFilename.toLowerCase(Locale.ROOT);
+        if (!lowerName.endsWith(".csv") && !lowerName.endsWith(".xlsx") && !lowerName.endsWith(".xls")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only CSV and Excel files are supported");
         }
 
@@ -345,7 +350,7 @@ public class DatasetService {
     }
 
     private DatasetMetadata analyzeDatasetFile(File file) {
-        if (file.getName().endsWith(".csv")) {
+        if (file.getName().toLowerCase(Locale.ROOT).endsWith(".csv")) {
             return analyzeCsv(file);
         } else {
             return analyzeExcel(file);
