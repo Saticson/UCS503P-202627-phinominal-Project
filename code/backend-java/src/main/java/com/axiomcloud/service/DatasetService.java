@@ -215,7 +215,8 @@ public class DatasetService {
                 "california_housing", "California Housing",
                 "iris", "Iris Species",
                 "titanic", "Titanic Survival",
-                "diabetes", "Diabetes Progression"
+                "diabetes", "Diabetes Progression",
+                "mnist", "MNIST Digits (Vision)"
         );
 
         String name = exampleNames.getOrDefault(key, key);
@@ -259,6 +260,7 @@ public class DatasetService {
             case "iris" -> "species";
             case "titanic" -> "survived";
             case "diabetes" -> "target";
+            case "mnist" -> "label";
             default -> "target";
         };
     }
@@ -266,13 +268,21 @@ public class DatasetService {
     private String getDefaultTaskType(String key) {
         return switch (key) {
             case "california_housing", "diabetes" -> "regression";
+            case "mnist" -> "image_classification";
             default -> "classification";
         };
     }
 
     private void generateBuiltinExample(String key, Path path) {
         try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(path))) {
-            if ("iris".equalsIgnoreCase(key)) {
+            if ("mnist".equalsIgnoreCase(key)) {
+                writer.println("pixel_0,pixel_1,pixel_2,pixel_3,pixel_4,label");
+                for (int i = 0; i < 40; i++) {
+                    int digit = (i % 10);
+                    writer.printf(Locale.US, "%.2f,%.2f,%.2f,%.2f,%.2f,%d%n",
+                            Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), digit);
+                }
+            } else if ("iris".equalsIgnoreCase(key)) {
                 writer.println("sepal_length,sepal_width,petal_length,petal_width,species");
                 writer.println("5.1,3.5,1.4,0.2,setosa");
                 writer.println("4.9,3.0,1.4,0.2,setosa");

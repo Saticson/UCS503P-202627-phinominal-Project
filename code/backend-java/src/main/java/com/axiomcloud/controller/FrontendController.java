@@ -29,21 +29,28 @@ public class FrontendController {
     private final ModelService modelService;
     private final PredictionService predictionService;
     private final ObjectMapper objectMapper;
+    private final com.axiomcloud.service.MarketplaceService marketplaceService;
+    private final com.axiomcloud.service.CommissionService commissionService;
 
     public FrontendController(DatasetService datasetService,
                               TrainingService trainingService,
                               ModelService modelService,
                               PredictionService predictionService,
-                              ObjectMapper objectMapper) {
+                              ObjectMapper objectMapper,
+                              com.axiomcloud.service.MarketplaceService marketplaceService,
+                              com.axiomcloud.service.CommissionService commissionService) {
         this.datasetService = datasetService;
         this.trainingService = trainingService;
         this.modelService = modelService;
         this.predictionService = predictionService;
         this.objectMapper = objectMapper;
+        this.marketplaceService = marketplaceService;
+        this.commissionService = commissionService;
     }
 
     @GetMapping({"/", "/index.html"})
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("marketplaceCount", marketplaceService.count());
         return "index";
     }
 
@@ -59,6 +66,8 @@ public class FrontendController {
         model.addAttribute("datasetCount", datasets.size());
         model.addAttribute("modelCount", models.size());
         model.addAttribute("jobCount", jobs.size());
+        model.addAttribute("marketplaceCount", marketplaceService.count());
+        model.addAttribute("commissionCount", commissionService.count());
         model.addAttribute("recentJobs", jobs);
         model.addAttribute("datasets", datasets);
         return "dashboard";
@@ -190,4 +199,95 @@ public class FrontendController {
         model.addAttribute("prediction", response);
         return "predict :: predictionResult";
     }
+
+    // ==========================================
+    // COMPUTER VISION PREDICTION SANDBOX
+    // ==========================================
+    @PostMapping("/predict/vision")
+    public String runVisionPrediction(
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "sample_image", required = false) String sampleImage,
+            @RequestParam(value = "vision_model", required = false) String visionModel,
+            Model model) {
+        com.axiomcloud.dto.VisionPredictionResponseDto result = 
+                predictionService.predictVision(image, sampleImage, visionModel);
+        model.addAttribute("visionPrediction", result);
+        return "predict :: visionPredictionResult";
+    }
+
+    // ==========================================
+    // MARKETPLACE (BUY FUNNEL)
+    // ==========================================
+    @GetMapping("/marketplace")
+    public String marketplace(
+            @RequestParam(value = "modality", required = false, defaultValue = "ALL") String modality,
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "verified", required = false) Boolean verified,
+            @RequestParam(value = "recommend", required = false, defaultValue = "false") boolean recommend,
+            @RequestParam(value = "task_type", required = false) String taskType,
+            Model model) {
+
+        List<com.axiomcloud.dto.MarketplaceListingDto> listings = 
+                marketplaceService.listListings(modality, query, verified);
+        model.addAttribute("listings", listings);
+        model.addAttribute("activeModality", modality);
+        model.addAttribute("activeQuery", query != null ? query : "");
+        model.addAttribute("verifiedOnly", verified != null && verified);
+        model.addAttribute("isRecommended", recommend);
+
+        if (recommend) {
+            String recModality = (modality != null && !modality.equalsIgnoreCase("ALL")) ? modality : "TABULAR";
+            List<com.axiomcloud.dto.MarketplaceListingDto> recommended = 
+                    marketplaceService.recommendListings(recModality, taskType);
+            model.addAttribute("recommendedListings", recommended);
+        }
+
+        return "marketplace";
+    }
+
+    @GetMapping("/marketplace/{id}")
+    public String listingDetail(@PathVariable("id") String id, Model model) {
+        com.axiomcloud.dto.MarketplaceListingDto listing = marketplaceService.getListing(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Marketplace listing not found"));
+        model.addAttribute("listing", listing);
+        return "listing-detail";
+    }
+
+    @PostMapping("/marketplace/publish")
+    public String publishListing(
+            @ModelAttribute com.axiomcloud.dto.MarketplaceListingDto dto,
+            Model model) {
+        com.axiomcloud.dto.MarketplaceListingDto created = marketplaceService.publish(dto);
+        return "redirect:/marketplace/" + created.getId();
+    }
+
+    // ==========================================
+    // HIRE FUNNEL (EXPERT COMMISSIONS)
+    // ==========================================
+    @GetMapping("/hire")
+    public String hire(Model model) {
+        model.addAttribute("commissions", commissionService.listCommissions());
+        return "hire";
+    }
+
+    @PostMapping("/hire/submit")
+    public String submitCommission(
+            @RequestParam("client_name") String clientName,
+            @RequestParam("email") String email,
+            @RequestParam("title") String title,
+            @RequestParam("modality") String modality,
+            @RequestParam("task_type") String taskType,
+            @RequestParam("budget") String budget,
+            @RequestParam("description") String description,
+            Model model) {
+        com.axiomcloud.dto.ExpertCommissionDto commission = new com.axiomcloud.dto.ExpertCommissionDto(
+                null, clientName, email, title, modality, taskType, budget, description, "OPEN"
+        );
+        commissionService.add(commission);
+        model.addAttribute("commissions", commissionService.listCommissions());
+        model.addAttribute("submitSuccess", true);
+        return "redirect:/hire";
+    }
 }
+

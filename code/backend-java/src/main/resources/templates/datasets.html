@@ -194,10 +194,12 @@
         <div class="nav-links">
             <a href="/">Home</a>
             <a href="/dashboard">Dashboard</a>
+            <a href="/marketplace">Marketplace</a>
             <a href="/datasets" class="active">Datasets</a>
             <a href="/training">Training</a>
             <a href="/models">Models</a>
             <a href="/predict">Predict</a>
+            <a href="/hire">Hire</a>
         </div>
         <div class="status-pill" hx-get="/api/health" hx-trigger="load, every 30s">
             <span class="status-dot"></span> Online
@@ -208,7 +210,7 @@
         <div class="header-bar">
             <div>
                 <h1>Datasets &amp; Diagnostics</h1>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Upload tabular datasets, run automated schema validation, and inspect data quality</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Upload tabular and computer vision datasets, run automated schema validation, and inspect data quality</p>
             </div>
         </div>
 
@@ -221,25 +223,26 @@
                           hx-swap="outerHTML"
                           enctype="multipart/form-data">
                         <div class="form-group">
-                            <label>File (CSV or Excel)</label>
-                            <input type="file" name="file" accept=".csv, .xlsx, .xls" required />
+                            <label>File (CSV, Excel or Image Zip)</label>
+                            <input type="file" name="file" accept=".csv, .xlsx, .xls, .zip" required />
                         </div>
                         <div class="form-group">
                             <label>Dataset Name (Optional)</label>
-                            <input type="text" name="name" placeholder="e.g. churn_v2" />
+                            <input type="text" name="name" placeholder="e.g. churn_v2 or defect_images" />
                         </div>
                         <div class="form-group">
                             <label>Target Column (Optional)</label>
-                            <input type="text" name="target_column" placeholder="e.g. churn" />
+                            <input type="text" name="target_column" placeholder="e.g. churn or label" />
                         </div>
                         <button type="submit">Upload Dataset</button>
                     </form>
 
                     <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
-                        <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Built-in Benchmarks</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Built-in Benchmarks (Tabular &amp; Vision)</div>
                         <div class="example-grid">
                             <button type="button" class="example-btn" hx-post="/datasets/load-benchmark/titanic" hx-target="#dataset-table-body" hx-swap="outerHTML">Titanic</button>
                             <button type="button" class="example-btn" hx-post="/datasets/load-benchmark/iris" hx-target="#dataset-table-body" hx-swap="outerHTML">Iris</button>
+                            <button type="button" class="example-btn" id="btn-load-mnist" hx-post="/datasets/load-benchmark/mnist" hx-target="#dataset-table-body" hx-swap="outerHTML" style="border-color: var(--primary); color: #fff;">MNIST (Vision)</button>
                             <button type="button" class="example-btn" hx-post="/datasets/load-benchmark/california_housing" hx-target="#dataset-table-body" hx-swap="outerHTML">Housing</button>
                             <button type="button" class="example-btn" hx-post="/datasets/load-benchmark/diabetes" hx-target="#dataset-table-body" hx-swap="outerHTML">Diabetes</button>
                         </div>
@@ -258,7 +261,7 @@
                                 <th>Rows &times; Cols</th>
                                 <th>Target</th>
                                 <th>Size</th>
-                                <th>Task</th>
+                                <th>Modality / Task</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -281,7 +284,11 @@
                                     <code style="color: var(--primary);" th:text="${ds.targetColumn != null ? ds.targetColumn : 'None'}">survived</code>
                                 </td>
                                 <td th:text="${(ds.fileSize != null ? (ds.fileSize / 1024) : 0) + ' KB'}">61 KB</td>
-                                <td th:text="${ds.taskType != null ? ds.taskType : 'classification'}">classification</td>
+                                <td>
+                                    <span th:if="${ds.modality == 'COMPUTER_VISION'}" class="badge" style="background: rgba(124, 58, 237, 0.2); color: var(--primary); margin-right: 0.3rem;">VISION</span>
+                                    <span th:unless="${ds.modality == 'COMPUTER_VISION'}" class="badge" style="background: rgba(75, 85, 99, 0.2); color: var(--text-muted); margin-right: 0.3rem;">TABULAR</span>
+                                    <span th:text="${ds.taskType != null ? ds.taskType : 'classification'}">classification</span>
+                                </td>
                                 <td style="display: flex; gap: 0.5rem; align-items: center;">
                                     <a th:href="@{'/training?dataset_id=' + ${ds.id}}" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; width: auto;">Train &rarr;</a>
                                     <button type="button"

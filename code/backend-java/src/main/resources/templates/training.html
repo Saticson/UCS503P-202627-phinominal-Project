@@ -191,10 +191,12 @@
         <div class="nav-links">
             <a href="/">Home</a>
             <a href="/dashboard">Dashboard</a>
+            <a href="/marketplace">Marketplace</a>
             <a href="/datasets">Datasets</a>
             <a href="/training" class="active">Training</a>
             <a href="/models">Models</a>
             <a href="/predict">Predict</a>
+            <a href="/hire">Hire</a>
         </div>
         <div class="status-pill" hx-get="/api/health" hx-trigger="load, every 30s">
             <span class="status-dot"></span> Online
@@ -324,9 +326,10 @@
                             <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
                                 Score: <strong style="color: #34d399;" th:text="${job.bestScore != null ? #numbers.formatDecimal(job.bestScore, 1, 4) : '0.9420'}">0.8920</strong>
                             </div>
-                            <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+                            <div style="display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap;">
                                 <a href="/models" class="btn" style="padding: 0.45rem 0.8rem; font-size: 0.85rem;">View Leaderboard</a>
                                 <a href="/predict" class="btn" style="background: var(--surface-variant); border: 1px solid var(--border); padding: 0.45rem 0.8rem; font-size: 0.85rem;">Test Inference</a>
+                                <a id="btn-find-better-model" href="/marketplace?recommend=true" class="btn" style="background: rgba(124, 58, 237, 0.25); border: 1px solid var(--primary); padding: 0.45rem 0.8rem; font-size: 0.85rem;">Find a Better Model in Marketplace &rarr;</a>
                             </div>
                         </div>
 

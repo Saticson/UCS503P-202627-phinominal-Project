@@ -233,10 +233,12 @@
         <div class="nav-links">
             <a href="/">Home</a>
             <a href="/dashboard" class="active">Dashboard</a>
+            <a href="/marketplace">Marketplace</a>
             <a href="/datasets">Datasets</a>
             <a href="/training">Training</a>
             <a href="/models">Models</a>
             <a href="/predict">Predict</a>
+            <a href="/hire">Hire</a>
         </div>
         <div class="status-pill" hx-get="/api/health" hx-trigger="load, every 30s">
             <span class="status-dot"></span> Online
@@ -247,9 +249,10 @@
         <div class="header-bar">
             <div>
                 <h1>Platform Dashboard</h1>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Real-time experiment tracking, cluster metrics, and model inventory</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Real-time experiment tracking, cluster metrics, and marketplace solution inventory</p>
             </div>
             <div style="display: flex; gap: 0.75rem;">
+                <a href="/marketplace" class="btn" style="background: rgba(124, 58, 237, 0.25); border: 1px solid var(--primary);">Explore Marketplace</a>
                 <a href="/training" class="btn">+ New Experiment</a>
                 <a href="/datasets" class="btn btn-secondary">Upload Data</a>
             </div>
@@ -257,9 +260,14 @@
 
         <div class="grid-cards">
             <div class="metric-card">
+                <div class="title">Marketplace Assets</div>
+                <div class="value" id="count-marketplace" th:text="${marketplaceCount != null ? marketplaceCount : 8}">8</div>
+                <div class="sub">Verified &amp; Community</div>
+            </div>
+            <div class="metric-card">
                 <div class="title">Total Datasets</div>
                 <div class="value" id="count-datasets" th:text="${datasetCount}">0</div>
-                <div class="sub">Active profiles</div>
+                <div class="sub">Tabular &amp; Vision</div>
             </div>
             <div class="metric-card">
                 <div class="title">Trained Models</div>
@@ -267,14 +275,9 @@
                 <div class="sub">Production registered</div>
             </div>
             <div class="metric-card">
-                <div class="title">Active Runs</div>
-                <div class="value" id="count-runs" th:text="${jobCount}">0</div>
-                <div class="sub">Background workers</div>
-            </div>
-            <div class="metric-card">
-                <div class="title">Execution Engine</div>
-                <div class="value" style="font-size: 1.35rem; color: var(--success);">READY</div>
-                <div class="sub">AutoML + Optuna</div>
+                <div class="title">Active Commissions</div>
+                <div class="value" id="count-commissions" th:text="${commissionCount != null ? commissionCount : 2}">2</div>
+                <div class="sub">Hire Funnel Requests</div>
             </div>
         </div>
 

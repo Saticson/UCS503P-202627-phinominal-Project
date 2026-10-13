@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sukio — Expert Machine Learning Commission Board (Hire Funnel)</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --surface: #111827;
+            --surface-variant: #1f2937;
+            --border: #374151;
+            --primary: #a78bfa;
+            --primary-accent: #7c3aed;
+            --text-primary: #f3f4f6;
+            --text-muted: #9ca3af;
+            --success: #34d399;
+            --warning: #fbbf24;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 2rem;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .navbar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .navbar a:hover, .navbar a.active { color: var(--text-primary); }
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 900px) {
+            .grid-layout { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        }
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #fff;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        input, select, textarea {
+            width: 100%;
+            background: var(--surface-variant);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.6rem 0.85rem;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary-accent);
+            color: #fff;
+            border: none;
+            padding: 0.65rem 1.25rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn:hover { background: #8b5cf6; }
+        .commission-item {
+            background: var(--surface-variant);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .status-open {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+        }
+        .status-matched {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Sukio
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/marketplace">Marketplace</a>
+            <a href="/datasets">Datasets</a>
+            <a href="/training">Training</a>
+            <a href="/models">Models</a>
+            <a href="/predict">Predict</a>
+            <a href="/hire" class="active">Hire</a>
+        </div>
+    </nav>
+
+    <main>
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-size: 1.8rem; font-weight: 700;">Hire Funnel — Expert Commission Board</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                When catalog models or baseline AutoML runs don't meet specialized operational constraints, submit a scoped commission to verified ML engineers.
+            </p>
+        </div>
+
+        <div class="grid-layout">
+            <!-- Commission Request Form -->
+            <div class="card">
+                <h2>Post a Scoped ML Request</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                    Submit task requirements, latency target, and budget for expert matching.
+                </p>
+
+                <form method="post" action="/hire/submit" id="form-commission">
+                    <div class="form-group">
+                        <label for="client_name">Organization / Requester Name</label>
+                        <input type="text" id="client_name" name="client_name" required placeholder="e.g. Acme Robotics Lab">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Contact Email</label>
+                        <input type="email" id="email" name="email" required placeholder="lead@acme.io">
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Project Scope Title</label>
+                        <input type="text" id="title" name="title" required placeholder="e.g. Vision Model for Drone Defect Inspection">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="modality">Modality</label>
+                            <select id="modality" name="modality">
+                                <option value="COMPUTER_VISION">Computer Vision</option>
+                                <option value="TABULAR">Tabular Data</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="task_type">Task Type</label>
+                            <select id="task_type" name="task_type">
+                                <option value="CLASSIFICATION">Classification</option>
+                                <option value="DETECTION">Object Detection</option>
+                                <option value="REGRESSION">Regression</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="budget">Allocated Budget ($ USD)</label>
+                        <input type="text" id="budget" name="budget" required placeholder="e.g. $1,500">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Technical Constraints & Data Description</label>
+                        <textarea id="description" name="description" rows="4" required placeholder="Target hardware latency, accuracy threshold, dataset size..."></textarea>
+                    </div>
+                    <button type="submit" class="btn" id="btn-submit-commission">Publish Commission Request →</button>
+                </form>
+            </div>
+
+            <!-- Active Commission Board -->
+            <div class="card">
+                <h2>Active Commission Board</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                    Live requests awaiting expert matching and delivery milestone tracking.
+                </p>
+
+                <div id="commission-list">
+                    <div th:each="c : ${commissions}" class="commission-item" th:attr="data-id=${c.id}">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                            <h4 style="font-size: 1rem; color: #fff;" th:text="${c.title}">Title</h4>
+                            <span class="status-badge" th:classappend="${c.status == 'OPEN'} ? 'status-open' : 'status-matched'" th:text="${c.status}">OPEN</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;" th:text="${c.description}">Description</p>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--primary);">
+                            <span th:text="${c.modality + ' | ' + c.taskType}">VISION | CLASSIFICATION</span>
+                            <strong style="color: var(--success);" th:text="${c.budget}">$1,200</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

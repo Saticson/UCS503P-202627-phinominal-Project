@@ -219,10 +219,12 @@
         <div class="nav-links">
             <a href="/" class="active">Home</a>
             <a href="/dashboard">Dashboard</a>
+            <a href="/marketplace">Marketplace</a>
             <a href="/datasets">Datasets</a>
             <a href="/training">Training</a>
             <a href="/models">Models</a>
             <a href="/predict">Predict</a>
+            <a href="/hire">Hire</a>
         </div>
         <div class="status-pill" hx-get="/api/health" hx-trigger="load, every 30s" hx-swap="innerHTML">
             <span class="status-dot"></span> System Ready
@@ -232,7 +234,7 @@
     <main>
         <div class="hero">
             <h1>Welcome to Sukio</h1>
-            <p>Production-grade AutoML Platform for Dataset Diagnostics, Model Exploration, and Live Inference.</p>
+            <p>End-to-end Machine Learning Solutions Marketplace &amp; AutoML Studio across Tabular and Computer Vision Modalities.</p>
         </div>
 
         <div class="grid-2">
@@ -256,7 +258,8 @@
                         <div class="stat-lbl">Engine Health</div>
                     </div>
                 </div>
-                <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+                <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <a href="/marketplace" class="btn" style="background: rgba(124, 58, 237, 0.25); border: 1px solid var(--primary);">Explore Marketplace</a>
                     <a href="/dashboard" class="btn">Open Full Dashboard</a>
                     <a href="/training" class="btn btn-outline">Launch AutoML Studio</a>
                 </div>

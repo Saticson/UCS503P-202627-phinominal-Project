@@ -166,4 +166,14 @@ public class DatasetResponseDto {
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getModality() {
+        if (taskType != null && (taskType.toLowerCase().contains("image") || taskType.toLowerCase().contains("vision"))) {
+            return "COMPUTER_VISION";
+        }
+        if (name != null && (name.toLowerCase().contains("mnist") || name.toLowerCase().contains("cifar") || name.toLowerCase().contains("vision") || name.toLowerCase().contains("image"))) {
+            return "COMPUTER_VISION";
+        }
+        return "TABULAR";
+    }
 }
