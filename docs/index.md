@@ -21,7 +21,7 @@
 
 Originally prototyped with FastAPI and Next.js, the control plane has been ported to **Java 21 (Spring Boot 3.3)** paired with **Thymeleaf + HTMX**, creating a hyper-responsive, server-driven web architecture styled under the technical **Axiom Obsidian** dark design system (`#0e0e10` base, violet accents).
 
-![Sukio Web Control Plane](gifs/00_frontend_control_plane.gif)
+![Sukio Web Control Plane](assets/gifs/00_frontend_control_plane.gif)
 
 ---
 
@@ -29,10 +29,10 @@ Originally prototyped with FastAPI and Next.js, the control plane has been porte
 
 | Control Surface | Live Preview | Capability Highlights |
 |---|---|---|
-| **Platform Dashboard**<br>`/dashboard` | ![Dashboard Overview](screenshots/01_dashboard_overview.png) | Cluster health, active training runs, registered models inventory, throughput metrics, and dataset catalog. |
-| **Dataset Diagnostics**<br>`/datasets` | ![Dataset Diagnostics](screenshots/02_dataset_diagnostics.png) | Multi-format upload (CSV, `.xlsx`, `.xls`), composite quality score (0–100), missingness analysis, and target leakage detection. |
-| **AutoML Training Studio**<br>`/training` | ![AutoML Training Studio](screenshots/03_automl_training.png) | Model candidate selection, Optuna trial budgets, cross-validation parameters, and live HTMX polling progress. |
-| **Inference & Explainability**<br>`/models` & `/predict` | ![Inference & Explainability](screenshots/04_inference_explainability.png) | Ranked leaderboard, champion model badges, global/local SHAP feature rankings, and real-time prediction confidence gauge. |
+| **Platform Dashboard**<br>`/dashboard` | ![Dashboard Overview](assets/screenshots/01_dashboard_overview.png) | Cluster health, active training runs, registered models inventory, throughput metrics, and dataset catalog. |
+| **Dataset Diagnostics**<br>`/datasets` | ![Dataset Diagnostics](assets/screenshots/02_dataset_diagnostics.png) | Multi-format upload (CSV, `.xlsx`, `.xls`), composite quality score (0–100), missingness analysis, and target leakage detection. |
+| **AutoML Training Studio**<br>`/training` | ![AutoML Training Studio](assets/screenshots/03_automl_training.png) | Model candidate selection, Optuna trial budgets, cross-validation parameters, and live HTMX polling progress. |
+| **Inference & Explainability**<br>`/models` & `/predict` | ![Inference & Explainability](assets/screenshots/04_inference_explainability.png) | Ranked leaderboard, champion model badges, global/local SHAP feature rankings, and real-time prediction confidence gauge. |
 
 ---
 
@@ -41,17 +41,17 @@ Originally prototyped with FastAPI and Next.js, the control plane has been porte
 ### Dataset Upload & Profiling
 Upload tabular files or load benchmark datasets (Iris, Titanic, California Housing, Diabetes) to receive immediate schema inspection and composite data health metrics.
 
-![Dataset Upload and Profiling](gifs/01_data_profiling.gif)
+![Dataset Upload and Profiling](assets/gifs/01_data_profiling.gif)
 
 ### AutoML Training & Live Leaderboard
 Asynchronous training executions run across multiple estimators concurrently. Training progress is polled and updated live without requiring full-page reloads.
 
-![AutoML Training and Leaderboard](gifs/02_automl_training.gif)
+![AutoML Training and Leaderboard](assets/gifs/02_automl_training.gif)
 
 ### SHAP Explainability & Inference Sandbox
 Inspect trained decision boundaries through Shapley additive attributions and test models via live parameter adjustments.
 
-![SHAP Explainability and Inference](gifs/03_shap_inference.gif)
+![SHAP Explainability and Inference](assets/gifs/03_shap_inference.gif)
 
 ---
 

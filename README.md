@@ -49,16 +49,16 @@ The **Prototype Stage** focuses on the end-to-end realization and validation of 
 
 Sukio features a unified, server-driven control plane built with **Java 21 (Spring Boot 3.3)**, **Thymeleaf**, and **HTMX**, styled under the technical **Axiom Obsidian** dark design system (`#0e0e10` base, violet accents `#d0bcff`).
 
-![Sukio Web Control Plane](docs/gifs/00_frontend_control_plane.gif)
+![Sukio Web Control Plane](assets/gifs/00_frontend_control_plane.gif)
 
 ### Core Control Surfaces
 
 | Control Surface | Live Preview | Focus & Key Interactions |
 |---|---|---|
-| **Platform Dashboard**<br>`/dashboard` | ![Dashboard Overview](docs/screenshots/01_dashboard_overview.png) | Real-time cluster health, active training jobs, registered models inventory, throughput metrics, and dataset catalog. |
-| **Dataset Diagnostics**<br>`/datasets` | ![Dataset Diagnostics](docs/screenshots/02_dataset_diagnostics.png) | Automated schema inspection, composite quality scoring (0–100), missingness analysis, duplicate flagging, and target leakage risk detection. |
-| **AutoML Training Studio**<br>`/training` | ![AutoML Training Studio](docs/screenshots/03_automl_training.png) | Multi-model candidate selection, Optuna trial budget controls, cross-validation parameters, and live HTMX progress polling. |
-| **Inference & Explainability**<br>`/models` & `/predict` | ![Inference & Explainability](docs/screenshots/04_inference_explainability.png) | Ranked leaderboard, champion model badges, global/local SHAP feature rankings, and real-time prediction confidence gauge. |
+| **Platform Dashboard**<br>`/dashboard` | ![Dashboard Overview](assets/screenshots/01_dashboard_overview.png) | Real-time cluster health, active training jobs, registered models inventory, throughput metrics, and dataset catalog. |
+| **Dataset Diagnostics**<br>`/datasets` | ![Dataset Diagnostics](assets/screenshots/02_dataset_diagnostics.png) | Automated schema inspection, composite quality scoring (0–100), missingness analysis, duplicate flagging, and target leakage risk detection. |
+| **AutoML Training Studio**<br>`/training` | ![AutoML Training Studio](assets/screenshots/03_automl_training.png) | Multi-model candidate selection, Optuna trial budget controls, cross-validation parameters, and live HTMX progress polling. |
+| **Inference & Explainability**<br>`/models` & `/predict` | ![Inference & Explainability](assets/screenshots/04_inference_explainability.png) | Ranked leaderboard, champion model badges, global/local SHAP feature rankings, and real-time prediction confidence gauge. |
 
 ---
 
@@ -67,17 +67,17 @@ Sukio features a unified, server-driven control plane built with **Java 21 (Spri
 ### 1. Dataset Upload & Quality Profiling
 Upload CSV or Excel files (`.xlsx`, `.xls`) or load one-click benchmarks (Iris, Titanic, California Housing, Diabetes). The engine extracts data schemas, calculates composite quality scores with letter grades, and detects data leakage hazards prior to model training.
 
-![Dataset Upload and Profiling](docs/gifs/01_data_profiling.gif)
+![Dataset Upload and Profiling](assets/gifs/01_data_profiling.gif)
 
 ### 2. AutoML Training & Live Leaderboard
 Configure multi-model experiments across Random Forest, Extra Trees, Gradient Boosting, XGBoost, LightGBM, and Neural Networks. The platform auto-detects task type (classification vs. regression) and executes Optuna hyperparameter searches with live progress streaming via HTMX.
 
-![AutoML Training and Leaderboard](docs/gifs/02_automl_training.gif)
+![AutoML Training and Leaderboard](assets/gifs/02_automl_training.gif)
 
 ### 3. SHAP Explainability & Inference Sandbox
 Inspect trained candidate models through SHAP feature importance attributions. The real-time inference sandbox pre-fills feature values sampled from the training dataset profile, accepts manual parameter overrides, and returns instantaneous prediction verdicts with confidence probabilities.
 
-![SHAP Explainability and Inference](docs/gifs/03_shap_inference.gif)
+![SHAP Explainability and Inference](assets/gifs/03_shap_inference.gif)
 
 ---
 

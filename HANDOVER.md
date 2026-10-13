@@ -38,7 +38,8 @@
 | Local In-Memory Profile | `code/backend-java/src/main/resources/application-local.yml` |
 | Storage Repositories | `code/storage/{datasets,models,reports}` |
 | Playwright Test Suite | `code/tests/playwright/` |
-| Visual Media Assets | `docs/{gifs,screenshots}/` & `code/docs/{gifs,screenshots}/` |
+| Visual Media Assets | `assets/{gifs,screenshots}/` |
+| Asset Rebranding Script | `scripts/generate_brand_assets.py` |
 | Journals (Keshav) | `journals/1024030692-keshav/` |
 | Journals (Satwik) | `journals/1024030699-satwik/` |
 | MkDocs Documentation | `docs/index.md` |

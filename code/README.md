@@ -39,9 +39,6 @@ code/
 │   ├── generate-gallery.js        # Builds test-output/gallery.html (32 media items)
 │   ├── playwright.config.ts       # Configured for visible execution in Brave Browser
 │   └── package.json               # Node.js dependencies (@playwright/test)
-├── docs/                          # Architectural media assets
-│   ├── gifs/                      # Animated walkthrough GIFs
-│   └── screenshots/               # Control plane screenshots
 ├── storage/                       # Local filesystem persistence
 │   ├── datasets/                  # Uploaded CSV & Excel datasets
 │   ├── models/                    # Serialized model binaries & checkpoints
