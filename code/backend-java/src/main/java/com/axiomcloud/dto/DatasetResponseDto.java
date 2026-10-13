@@ -95,12 +95,24 @@ public class DatasetResponseDto {
         return numRows;
     }
 
+    public Integer getRowCount() {
+        return numRows;
+    }
+
     public void setNumRows(Integer numRows) {
         this.numRows = numRows;
     }
 
     public Integer getNumColumns() {
         return numColumns;
+    }
+
+    public Integer getColumnCount() {
+        return numColumns;
+    }
+
+    public Integer getSizeBytes() {
+        return fileSize;
     }
 
     public void setNumColumns(Integer numColumns) {

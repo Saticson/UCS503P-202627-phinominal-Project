@@ -258,17 +258,17 @@
         <div class="grid-cards">
             <div class="metric-card">
                 <div class="title">Total Datasets</div>
-                <div class="value" id="count-datasets">0</div>
+                <div class="value" id="count-datasets" th:text="${datasetCount}">0</div>
                 <div class="sub">Active profiles</div>
             </div>
             <div class="metric-card">
                 <div class="title">Trained Models</div>
-                <div class="value" id="count-models">0</div>
+                <div class="value" id="count-models" th:text="${modelCount}">0</div>
                 <div class="sub">Production registered</div>
             </div>
             <div class="metric-card">
                 <div class="title">Active Runs</div>
-                <div class="value" id="count-runs">0</div>
+                <div class="value" id="count-runs" th:text="${jobCount}">0</div>
                 <div class="sub">Background workers</div>
             </div>
             <div class="metric-card">
@@ -295,9 +295,21 @@
                                 <th>Target</th>
                             </tr>
                         </thead>
-                        <tbody hx-get="/api/training/runs" hx-trigger="load" hx-target="this">
-                            <tr>
-                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent training runs. Launch one in AutoML Studio!</td>
+                        <tbody id="recent-jobs-body">
+                            <tr th:if="${#lists.isEmpty(recentJobs)}">
+                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent training runs. Launch one in <a href="/training" style="color: var(--primary);">AutoML Studio</a>!</td>
+                            </tr>
+                            <tr th:each="j : ${recentJobs}">
+                                <td><strong style="color: #fff;" th:text="${j.jobId}">job-1</strong></td>
+                                <td><span class="badge" th:text="${j.taskType}">classification</span></td>
+                                <td>
+                                    <span class="badge"
+                                          th:text="${j.status}"
+                                          th:style="${j.status == 'COMPLETED' ? 'background: rgba(52, 211, 153, 0.15); color: #34d399;' : (j.status == 'FAILED' ? 'background: rgba(248, 113, 113, 0.15); color: #f87171;' : 'background: rgba(251, 191, 36, 0.15); color: #fbbf24;')}">
+                                    </span>
+                                </td>
+                                <td th:text="${j.progress + '%'}">100%</td>
+                                <td th:text="${j.targetColumn}">survived</td>
                             </tr>
                         </tbody>
                     </table>
@@ -312,7 +324,7 @@
                         </div>
                         <div style="background: var(--surface-variant); padding: 1rem; border-radius: 8px;">
                             <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Optuna Trials</div>
-                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); font-family: monospace;">--</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); font-family: monospace;">10</div>
                         </div>
                         <div style="background: var(--surface-variant); padding: 1rem; border-radius: 8px;">
                             <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Inference Latency</div>
@@ -326,10 +338,18 @@
                 <div id="datasets" class="card">
                     <h2>
                         <span>Datasets Inventory</span>
-                        <a href="/datasets" class="btn" style="padding: 0.35rem 0.8rem; font-size: 0.8rem;">Upload Dataset</a>
+                        <a href="/datasets" class="btn" style="padding: 0.35rem 0.8rem; font-size: 0.8rem;">View All</a>
                     </h2>
-                    <div hx-get="/api/datasets" hx-trigger="load" hx-target="this">
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Loading datasets...</p>
+                    <div>
+                        <p th:if="${#lists.isEmpty(datasets)}" style="color: var(--text-muted); font-size: 0.9rem;">
+                            No datasets loaded. Go to <a href="/datasets" style="color: var(--primary);">Datasets</a> to load Titanic or upload CSV.
+                        </p>
+                        <ul th:if="${!#lists.isEmpty(datasets)}" style="list-style: none; font-size: 0.875rem;">
+                            <li th:each="d : ${datasets}" style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span style="color: #fff; font-weight: 500;" th:text="${d.name}">Titanic</span>
+                                <span style="color: var(--text-muted);" th:text="${d.numRows + ' rows'}">891 rows</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 

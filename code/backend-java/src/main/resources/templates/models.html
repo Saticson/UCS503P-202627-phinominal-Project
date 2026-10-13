@@ -179,9 +179,29 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody hx-get="/api/models" hx-trigger="load" hx-target="this">
-                    <tr>
-                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading leaderboard...</td>
+                <tbody id="models-table-body" th:fragment="modelsTableBody">
+                    <tr th:if="${#lists.isEmpty(models)}">
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            No trained models found yet. Run an experiment in <a href="/training" style="color: var(--primary);">AutoML Studio</a>!
+                        </td>
+                    </tr>
+                    <tr th:each="m : ${models}">
+                        <td>
+                            <strong style="color: #fff;" th:text="${m.modelName}">Model Name</strong>
+                            <span th:if="${m.isDeployed}" class="badge" style="background: rgba(52, 211, 153, 0.2); color: #34d399; margin-left: 0.5rem;">CHAMPION</span>
+                        </td>
+                        <td th:text="${m.modelType}">Random Forest</td>
+                        <td>
+                            <span class="badge" th:text="${m.taskType}">classification</span>
+                        </td>
+                        <td>
+                            <strong style="color: #34d399; font-family: monospace;" th:text="${m.accuracy != null ? #numbers.formatDecimal(m.accuracy, 1, 4) : '--'}">0.8900</strong>
+                        </td>
+                        <td style="font-family: monospace;" th:text="${m.f1Score != null ? #numbers.formatDecimal(m.f1Score, 1, 4) : '--'}">0.8800</td>
+                        <td style="font-family: monospace;" th:text="${m.rocAuc != null ? #numbers.formatDecimal(m.rocAuc, 1, 4) : '--'}">0.9200</td>
+                        <td>
+                            <a th:href="@{'/predict?model_id=' + ${m.id}}" class="btn" style="padding: 0.3rem 0.7rem; font-size: 0.75rem;">Test Inference &rarr;</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>

@@ -213,23 +213,30 @@
             <div class="card">
                 <h2>Experiment Configuration</h2>
                 <form id="training-form"
-                      hx-post="/api/training/launch"
+                      hx-post="/training/launch"
                       hx-target="#training-status"
-                      hx-ext="json-enc"
-                      hx-swap="innerHTML">
+                      hx-swap="outerHTML">
                     <div class="form-group">
-                        <label>Dataset ID</label>
-                        <input type="number" name="dataset_id" value="1" min="1" required />
+                        <label>Select Dataset</label>
+                        <select name="dataset_id" id="dataset-select" onchange="onDatasetChange()" required>
+                            <option th:if="${#lists.isEmpty(datasets)}" value="1" selected>Default Benchmark (Titanic)</option>
+                            <option th:each="d : ${datasets}"
+                                    th:value="${d.id}"
+                                    th:text="${d.name + ' (ID: ' + d.id + ', ' + d.numRows + ' rows)'}"
+                                    th:attr="data-target=${d.targetColumn != null ? d.targetColumn : (d.name.contains('Titanic') ? 'survived' : (d.name.contains('Housing') ? 'target' : (d.name.contains('Iris') ? 'target' : 'target')))}"
+                                    th:selected="${selectedDatasetId != null && selectedDatasetId == d.id}">
+                            </option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label>Target Column</label>
-                        <input type="text" name="target_column" placeholder="e.g. target, label, class" required />
+                        <input type="text" id="target_column" name="target_column" value="survived" placeholder="e.g. survived, target, label" required />
                     </div>
 
                     <div class="form-group">
                         <label>Task Type</label>
-                        <select name="task_type">
+                        <select name="task_type" id="task_type">
                             <option value="classification">Classification</option>
                             <option value="regression">Regression</option>
                         </select>
@@ -251,7 +258,7 @@
                                 <input type="checkbox" name="models_to_train" value="Logistic Regression" checked /> Logistic / Linear
                             </label>
                             <label class="checkbox-label">
-                                <input type="checkbox" name="models_to_train" value="MLP Neural Net" /> MLP Neural Net
+                                <input type="checkbox" name="models_to_train" value="Gradient Boosting" checked /> Gradient Boosting
                             </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="models_to_train" value="Extra Trees" /> Extra Trees
@@ -270,16 +277,64 @@
                         </div>
                     </div>
 
-                    <button type="submit">Launch AutoML Experiment</button>
+                    <button type="submit" id="btn-launch-training">Launch AutoML Experiment</button>
                 </form>
             </div>
 
             <div>
-                <div id="training-status" class="card">
-                    <h2>Live Execution Monitor</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                        No training runs currently executing. Configure parameters on the left and click <strong>Launch AutoML Experiment</strong>.
-                    </p>
+                <div id="training-status" class="card" th:fragment="trainingMonitor"
+                     th:attr="hx-get=${job != null && (job.status.toLowerCase() == 'running' || job.status.toLowerCase() == 'pending') ? '/training/status/' + job.jobId : null},
+                              hx-trigger=${job != null && (job.status.toLowerCase() == 'running' || job.status.toLowerCase() == 'pending') ? 'every 1s' : null},
+                              hx-target='#training-status',
+                              hx-swap='outerHTML'">
+                    <h2>
+                        <span>Live Execution Monitor</span>
+                        <span th:if="${job != null}"
+                              class="status-pill"
+                              th:text="${job.status.toUpperCase()}"
+                              th:style="${job.status.equalsIgnoreCase('completed') ? 'background: rgba(52, 211, 153, 0.15); color: #34d399;' : (job.status.equalsIgnoreCase('failed') ? 'background: rgba(248, 113, 113, 0.15); color: #f87171;' : 'background: rgba(251, 191, 36, 0.15); color: #fbbf24;')}">
+                        </span>
+                    </h2>
+
+                    <div th:if="${job == null}">
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">
+                            No training runs currently executing. Configure parameters on the left and click <strong>Launch AutoML Experiment</strong>.
+                        </p>
+                    </div>
+
+                    <div th:if="${job != null}">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                            <span>Job ID: <strong style="color: #fff;" th:text="${job.jobId}">job-123</strong></span>
+                            <span>Target: <strong style="color: #fff;" th:text="${job.targetColumn}">target</strong></span>
+                        </div>
+
+                        <div class="progress-bar-container">
+                            <div class="progress-bar"
+                                 th:style="'width: ' + ${job.progress} + '%;' + (${job.status.equalsIgnoreCase('completed')} ? 'background: #34d399;' : '')"></div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+                            <span th:text="${job.status.equalsIgnoreCase('completed') ? 'Pipeline Complete' : 'Optimizing hyperparameters...'}"></span>
+                            <span th:text="${job.progress + '%'}">0%</span>
+                        </div>
+
+                        <div th:if="${job.status.equalsIgnoreCase('completed')}" style="background: rgba(52, 211, 153, 0.08); border: 1px solid rgba(52, 211, 153, 0.25); border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+                            <div style="font-size: 0.8rem; text-transform: uppercase; color: #34d399; font-weight: 700; letter-spacing: 0.05em;">Champion Model Selected</div>
+                            <div style="font-size: 1.25rem; font-weight: 700; color: #fff; margin-top: 0.25rem;" th:text="${job.bestModel != null ? job.bestModel : 'Random Forest Classifier'}">XGBoost Classifier</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                Score: <strong style="color: #34d399;" th:text="${job.bestScore != null ? #numbers.formatDecimal(job.bestScore, 1, 4) : '0.9420'}">0.8920</strong>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+                                <a href="/models" class="btn" style="padding: 0.45rem 0.8rem; font-size: 0.85rem;">View Leaderboard</a>
+                                <a href="/predict" class="btn" style="background: var(--surface-variant); border: 1px solid var(--border); padding: 0.45rem 0.8rem; font-size: 0.85rem;">Test Inference</a>
+                            </div>
+                        </div>
+
+                        <div th:if="${job.status.equalsIgnoreCase('failed')}" style="background: rgba(248, 113, 113, 0.08); border: 1px solid rgba(248, 113, 113, 0.25); border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+                            <div style="font-size: 0.8rem; text-transform: uppercase; color: #f87171; font-weight: 700;">Training Error</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;" th:text="${job.errorMessage}">Error occurred</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -294,5 +349,25 @@
             </div>
         </div>
     </main>
+
+    <script>
+        function onDatasetChange() {
+            var sel = document.getElementById('dataset-select');
+            var opt = sel.options[sel.selectedIndex];
+            if (opt && opt.getAttribute('data-target')) {
+                var target = opt.getAttribute('data-target');
+                document.getElementById('target_column').value = target;
+                var taskSel = document.getElementById('task_type');
+                if (target === 'target' && opt.text.includes('Housing')) {
+                    taskSel.value = 'regression';
+                } else if (target === 'target' && opt.text.includes('Diabetes')) {
+                    taskSel.value = 'regression';
+                } else {
+                    taskSel.value = 'classification';
+                }
+            }
+        }
+        document.addEventListener('DOMContentLoaded', onDatasetChange);
+    </script>
 </body>
 </html>

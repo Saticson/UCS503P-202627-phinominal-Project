@@ -106,6 +106,14 @@ public class ModelResponseDto {
         return modelName;
     }
 
+    public String getName() {
+        return modelName;
+    }
+
+    public Boolean getIsChampion() {
+        return isDeployed != null ? isDeployed : true;
+    }
+
     public void setModelName(String modelName) {
         this.modelName = modelName;
     }

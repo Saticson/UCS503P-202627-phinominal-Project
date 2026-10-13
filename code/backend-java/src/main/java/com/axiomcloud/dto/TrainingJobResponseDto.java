@@ -43,6 +43,12 @@ public class TrainingJobResponseDto {
 
     private String message;
 
+    @JsonProperty("best_model")
+    private String bestModel;
+
+    @JsonProperty("best_score")
+    private Double bestScore;
+
     public TrainingJobResponseDto() {
     }
 
@@ -163,5 +169,21 @@ public class TrainingJobResponseDto {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getBestModel() {
+        return bestModel;
+    }
+
+    public void setBestModel(String bestModel) {
+        this.bestModel = bestModel;
+    }
+
+    public Double getBestScore() {
+        return bestScore;
+    }
+
+    public void setBestScore(Double bestScore) {
+        this.bestScore = bestScore;
     }
 }

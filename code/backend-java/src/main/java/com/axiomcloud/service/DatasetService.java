@@ -284,6 +284,45 @@ public class DatasetService {
                 writer.println("5.8,2.7,5.1,1.9,virginica");
                 writer.println("7.1,3.0,5.9,2.1,virginica");
                 writer.println("6.3,2.9,5.6,1.8,virginica");
+            } else if ("titanic".equalsIgnoreCase(key)) {
+                writer.println("pclass,survived,sex,age,sibsp,parch,fare,embarked");
+                writer.println("1,1,female,29.0,0,0,211.3375,S");
+                writer.println("1,1,male,0.92,1,2,151.55,S");
+                writer.println("1,0,female,2.0,1,2,151.55,S");
+                writer.println("1,0,male,30.0,1,2,151.55,S");
+                writer.println("1,0,female,25.0,1,2,151.55,S");
+                writer.println("1,1,male,48.0,0,0,26.55,S");
+                writer.println("2,1,female,34.0,0,0,13.0,S");
+                writer.println("2,0,male,39.0,0,0,13.0,S");
+                writer.println("3,1,female,15.0,0,0,7.225,C");
+                writer.println("3,0,male,22.0,1,0,7.25,S");
+                writer.println("3,0,male,26.0,0,0,7.925,S");
+                writer.println("3,1,female,27.0,0,2,11.1333,S");
+                writer.println("3,0,male,32.0,0,0,7.8958,S");
+                writer.println("3,0,female,18.0,1,0,9.825,S");
+                writer.println("3,1,male,20.0,0,0,8.05,S");
+                writer.println("1,1,female,35.0,1,0,53.1,S");
+                writer.println("2,0,male,25.0,0,0,10.5,S");
+                writer.println("3,0,male,35.0,0,0,7.8958,C");
+                writer.println("1,1,female,58.0,0,0,26.55,S");
+                writer.println("3,1,female,4.0,1,1,16.7,S");
+            } else if ("california_housing".equalsIgnoreCase(key)) {
+                writer.println("MedInc,HouseAge,AveRooms,AveBedrms,Population,AveOccup,Latitude,Longitude,MedHouseVal");
+                writer.println("8.3252,41.0,6.9841,1.0238,322.0,2.5555,37.88,-122.23,4.526");
+                writer.println("8.3014,21.0,6.2381,0.9718,2401.0,2.1098,37.86,-122.22,3.585");
+                writer.println("7.2574,52.0,8.2881,1.0734,496.0,2.8022,37.85,-122.24,3.521");
+                writer.println("5.6431,52.0,5.8173,1.0730,558.0,2.5479,37.85,-122.25,3.413");
+                writer.println("3.8462,52.0,6.2818,1.0810,565.0,2.1814,37.85,-122.25,3.422");
+                writer.println("4.0365,52.0,4.7616,1.1036,413.0,2.1398,37.85,-122.25,2.697");
+                writer.println("3.6591,52.0,4.9319,0.9511,1094.0,3.6466,37.84,-122.25,2.992");
+                writer.println("3.1200,52.0,4.7975,1.0618,1157.0,3.5709,37.84,-122.25,2.414");
+            } else if ("diabetes".equalsIgnoreCase(key)) {
+                writer.println("age,sex,bmi,bp,s1,s2,s3,s4,s5,s6,target");
+                writer.println("0.038,0.050,0.061,0.021,-0.044,-0.034,-0.043,-0.002,0.019,-0.017,151.0");
+                writer.println("-0.001,-0.044,-0.051,-0.026,-0.008,-0.019,0.074,-0.039,-0.068,-0.092,75.0");
+                writer.println("0.085,0.050,0.044,-0.005,-0.045,-0.034,-0.032,-0.002,0.002,-0.025,141.0");
+                writer.println("-0.089,-0.044,-0.011,-0.036,0.012,0.024,-0.036,0.034,0.022,-0.009,206.0");
+                writer.println("0.005,-0.044,-0.036,0.021,0.003,0.015,0.008,-0.002,-0.031,0.036,135.0");
             } else {
                 writer.println("feature1,feature2,feature3,target");
                 for (int i = 0; i < 50; i++) {

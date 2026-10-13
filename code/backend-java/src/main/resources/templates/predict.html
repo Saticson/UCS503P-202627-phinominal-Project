@@ -197,31 +197,55 @@
             <div class="card">
                 <h2>Prediction Request</h2>
                 <form id="predict-form"
-                      hx-post="/api/predict"
+                      hx-post="/predict/run"
                       hx-target="#prediction-result"
-                      hx-ext="json-enc"
-                      hx-swap="innerHTML">
+                      hx-swap="outerHTML">
                     <div class="form-group">
                         <label>Model ID</label>
-                        <input type="number" name="model_id" value="1" min="1" required />
+                        <input type="number" name="model_id" id="model_id" th:value="${selectedModelId != null ? selectedModelId : 1}" min="1" required />
+                        <select th:if="${!#lists.isEmpty(models)}" id="model-select" style="margin-top: 0.5rem;" onchange="document.getElementById('model_id').value = this.value">
+                            <option value="" disabled selected>-- Or select from registered models --</option>
+                            <option th:each="m : ${models}"
+                                    th:value="${m.id}"
+                                    th:text="${m.name + ' (' + m.modelType + ' - Score: ' + (m.accuracy != null ? #numbers.formatDecimal(m.accuracy, 1, 3) : '--') + ')'}"
+                                    th:selected="${selectedModelId != null && selectedModelId == m.id}">
+                            </option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Features (JSON Key-Value)</label>
-                        <textarea name="features" placeholder='{"sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2}'></textarea>
+                        <label>Feature Vector (JSON)</label>
+                        <textarea name="features" id="features-input" placeholder='{"pclass": 1, "sex": "female", "age": 29, "fare": 150.0}'>{"pclass": 1, "sex": "female", "age": 29, "fare": 150.0}</textarea>
                     </div>
 
-                    <button type="submit">Run Real-Time Prediction</button>
+                    <button type="submit" id="btn-run-prediction">Run Real-Time Prediction</button>
                 </form>
             </div>
 
             <div>
-                <div id="prediction-result" class="card">
-                    <h2>Prediction Verdict</h2>
-                    <div class="result-box">
+                <div id="prediction-result" class="card" th:fragment="predictionResult">
+                    <h2>
+                        <span>Prediction Verdict</span>
+                        <span th:if="${prediction != null}" class="badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399;">SUCCESS</span>
+                    </h2>
+
+                    <div th:if="${prediction == null}" class="result-box">
                         <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Awaiting Payload</div>
                         <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
-                            Provide model ID and feature dictionary on the left, then trigger prediction.
+                            Select model and provide feature values on the left, then trigger prediction.
+                        </div>
+                    </div>
+
+                    <div th:if="${prediction != null}" class="result-box">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Predicted Class / Output</div>
+                        <div class="result-val" id="prediction-value" th:text="${prediction.prediction}">1</div>
+
+                        <div th:if="${prediction.confidence != null}" style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-muted);">
+                            Confidence Score: <strong style="color: #fff;" th:text="${#numbers.formatDecimal(prediction.confidence * 100, 1, 1) + '%'}">95.0%</strong>
+                        </div>
+
+                        <div th:if="${prediction.modelName != null}" style="margin-top: 0.25rem; font-size: 0.85rem; color: var(--text-muted);">
+                            Evaluated by: <span th:text="${prediction.modelName}">Model</span>
                         </div>
                     </div>
                 </div>

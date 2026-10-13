@@ -131,14 +131,8 @@
             color: var(--text-primary);
             font-size: 0.9rem;
         }
-        input[type="file"] {
-            padding: 0.5rem;
-            cursor: pointer;
-        }
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
+        input[type="file"] { padding: 0.5rem; cursor: pointer; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
         button, .btn {
             display: inline-flex;
             align-items: center;
@@ -173,9 +167,9 @@
         }
         .example-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 0.5rem;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
         }
         .example-btn {
             background: var(--surface-variant);
@@ -183,9 +177,10 @@
             color: var(--text-primary);
             padding: 0.5rem;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             cursor: pointer;
             text-align: center;
+            width: 100%;
         }
         .example-btn:hover { border-color: var(--primary); color: var(--primary); }
     </style>
@@ -221,9 +216,9 @@
             <div>
                 <div class="card">
                     <h2>Upload Dataset</h2>
-                    <form hx-post="/api/upload-dataset"
-                          hx-target="#datasets"
-                          hx-swap="innerHTML"
+                    <form hx-post="/datasets/upload"
+                          hx-target="#dataset-table-body"
+                          hx-swap="outerHTML"
                           enctype="multipart/form-data">
                         <div class="form-group">
                             <label>File (CSV or Excel)</label>
@@ -231,11 +226,11 @@
                         </div>
                         <div class="form-group">
                             <label>Dataset Name (Optional)</label>
-                            <input type="text" name="name" placeholder="e.g. churn_q3_v1" />
+                            <input type="text" name="name" placeholder="e.g. churn_v2" />
                         </div>
                         <div class="form-group">
                             <label>Target Column (Optional)</label>
-                            <input type="text" name="target_column" placeholder="e.g. churn_risk" />
+                            <input type="text" name="target_column" placeholder="e.g. churn" />
                         </div>
                         <button type="submit">Upload Dataset</button>
                     </form>
@@ -243,10 +238,10 @@
                     <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
                         <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Built-in Benchmarks</div>
                         <div class="example-grid">
-                            <button class="example-btn" hx-post="/api/load-example/iris" hx-target="#datasets">Iris</button>
-                            <button class="example-btn" hx-post="/api/load-example/titanic" hx-target="#datasets">Titanic</button>
-                            <button class="example-btn" hx-post="/api/load-example/diabetes" hx-target="#datasets">Diabetes</button>
-                            <button class="example-btn" hx-post="/api/load-example/california_housing" hx-target="#datasets">Housing</button>
+                            <button type="button" class="example-btn" hx-post="/datasets/load-benchmark/titanic" hx-target="#dataset-table-body" hx-swap="outerHTML">Titanic</button>
+                            <button type="button" class="example-btn" hx-post="/datasets/load-benchmark/iris" hx-target="#dataset-table-body" hx-swap="outerHTML">Iris</button>
+                            <button type="button" class="example-btn" hx-post="/datasets/load-benchmark/california_housing" hx-target="#dataset-table-body" hx-swap="outerHTML">Housing</button>
+                            <button type="button" class="example-btn" hx-post="/datasets/load-benchmark/diabetes" hx-target="#dataset-table-body" hx-swap="outerHTML">Diabetes</button>
                         </div>
                     </div>
                 </div>
@@ -258,16 +253,46 @@
                     <table>
                         <thead>
                             <tr>
+                                <th style="width: 70px;">ID</th>
                                 <th>Name</th>
                                 <th>Rows &times; Cols</th>
-                                <th>Target Column</th>
+                                <th>Target</th>
                                 <th>Size</th>
+                                <th>Task</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody hx-get="/api/datasets" hx-trigger="load, datasetUploaded from:body" hx-target="this">
-                            <tr>
-                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading datasets repository...</td>
+                        <tbody id="dataset-table-body" th:fragment="datasetTableBody">
+                            <tr th:if="${#lists.isEmpty(datasets)}">
+                                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                    No datasets loaded yet. Click a benchmark on the left or upload a CSV file!
+                                </td>
+                            </tr>
+                            <tr th:each="ds : ${datasets}">
+                                <td>
+                                    <span class="badge" style="background: rgba(208, 188, 255, 0.15); color: var(--primary); font-family: monospace; font-size: 0.85rem;" th:text="'#' + ${ds.id}">#1</span>
+                                </td>
+                                <td style="font-weight: 600; color: #fff;">
+                                    <span th:text="${ds.name}">Titanic Survival</span>
+                                    <span th:if="${ds.isExample}" class="badge" style="margin-left: 0.4rem; font-size: 0.7rem;">Benchmark</span>
+                                </td>
+                                <td th:text="${ds.numRows + ' x ' + ds.numColumns}">891 x 8</td>
+                                <td>
+                                    <code style="color: var(--primary);" th:text="${ds.targetColumn != null ? ds.targetColumn : 'None'}">survived</code>
+                                </td>
+                                <td th:text="${(ds.fileSize != null ? (ds.fileSize / 1024) : 0) + ' KB'}">61 KB</td>
+                                <td th:text="${ds.taskType != null ? ds.taskType : 'classification'}">classification</td>
+                                <td style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <a th:href="@{'/training?dataset_id=' + ${ds.id}}" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; width: auto;">Train &rarr;</a>
+                                    <button type="button"
+                                            th:attr="hx-delete=@{'/datasets/delete/' + ${ds.id}}"
+                                            hx-target="#dataset-table-body"
+                                            hx-swap="outerHTML"
+                                            class="btn"
+                                            style="padding: 0.35rem 0.6rem; font-size: 0.8rem; width: auto; background: transparent; border: 1px solid var(--border); color: var(--danger);">
+                                        Delete
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

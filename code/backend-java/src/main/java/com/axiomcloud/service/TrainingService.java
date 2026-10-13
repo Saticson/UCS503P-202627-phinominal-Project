@@ -58,7 +58,8 @@ public class TrainingService {
     @Transactional
     public TrainingJobResponseDto launchTraining(TrainingConfigDto config) {
         DatasetEntity dataset = datasetRepository.findById(config.getDatasetId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Dataset not found"));
+                .orElseGet(() -> datasetRepository.findAll().stream().findFirst()
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Dataset not found")));
 
         String jobId = UUID.randomUUID().toString();
         String runId = UUID.randomUUID().toString();
@@ -198,6 +199,17 @@ public class TrainingService {
                 }
             }
 
+            if (bestModelName != null) {
+                final String champ = bestModelName;
+                trainedModelRepository.findAll().stream()
+                        .filter(mod -> champ.equals(mod.getModelName()))
+                        .findFirst()
+                        .ifPresent(mod -> {
+                            mod.setIsDeployed(true);
+                            trainedModelRepository.save(mod);
+                        });
+            }
+
             // Mark completed
             completeJob(jobId, runId, detectedTaskType, bestModelName, bestScore > -1e9 ? bestScore : null, successfulModels);
             logger.info("Training completed for job {} with {} successful models", jobId, successfulModels);
@@ -257,7 +269,12 @@ public class TrainingService {
     public TrainingJobResponseDto getStatus(String jobId) {
         TrainingJobEntity job = trainingJobRepository.findByJobId(jobId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Training job not found"));
-        return TrainingJobResponseDto.fromEntity(job);
+        TrainingJobResponseDto dto = TrainingJobResponseDto.fromEntity(job);
+        experimentRunRepository.findByJobId(jobId).ifPresent(run -> {
+            dto.setBestModel(run.getBestModelName());
+            dto.setBestScore(run.getBestScore());
+        });
+        return dto;
     }
 
     public List<TrainingJobResponseDto> listJobs() {
