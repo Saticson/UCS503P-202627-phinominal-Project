@@ -328,5 +328,17 @@ public class FrontendController {
         model.addAttribute("submitSuccess", true);
         return "redirect:/hire";
     }
+
+    @PostMapping("/hire/proposal")
+    public String submitProposal(
+            @RequestParam("commission_id") String commissionId,
+            @RequestParam("expert_name") String expertName,
+            @RequestParam("expert_email") String expertEmail,
+            @RequestParam("bid_amount") String bidAmount,
+            @RequestParam(value = "estimated_days", defaultValue = "5") int estimatedDays,
+            @RequestParam("proposal_text") String proposalText) {
+        commissionService.addProposal(commissionId, expertName, expertEmail, bidAmount, estimatedDays, proposalText);
+        return "redirect:/hire";
+    }
 }
 
