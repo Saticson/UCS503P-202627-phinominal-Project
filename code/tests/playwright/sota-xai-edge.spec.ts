@@ -85,4 +85,42 @@ test.describe('Sukio SOTA Architecture — Edge Ingestion, XAI & Showcases', () 
     expect(bodyBuffer.length).toBeGreaterThan(100);
   });
 
+  test('5. Hardware GPU Diagnostics: audits GPU hardware detection and honest fallback reason', async ({ request }) => {
+    const healthRes = await request.get('/api/health');
+    expect(healthRes.status()).toBe(200);
+    const health = await healthRes.json();
+    expect(health.status).toBe('ok');
+    expect(health.effective_backend).toBeDefined();
+
+    const gpuRes = await request.get('/api/health/gpu');
+    expect(gpuRes.status()).toBe(200);
+    const gpu = await gpuRes.json();
+    expect(gpu.device_name).toBeDefined();
+    expect(gpu.effective_backend).toBeDefined();
+    expect(gpu.fallback_reason).toBeDefined();
+  });
+
+  test('6. Research Hard Benchmark API: returns 9 benchmark catalog with explicit resource tiers', async ({ request }) => {
+    const res = await request.get('/api/showcase/benchmarks/hard');
+    expect(res.status()).toBe(200);
+    const benchmarks = await res.json();
+    expect(benchmarks.length).toBe(9);
+
+    // Verify Tabular Tier 1
+    const ieee = benchmarks.find((b: any) => b.id === 'tabular-ieee-cis-fraud');
+    expect(ieee).toBeDefined();
+    expect(ieee.tier).toBe('TIER_1_LOCAL_SUPPORTED');
+    expect(ieee.status).toBe('EVALUATED_ON_CONTROL_PLANE');
+
+    // Verify Tabular Tier 2 (Criteo 1TB)
+    const criteo = benchmarks.find((b: any) => b.id === 'tabular-criteo-1tb');
+    expect(criteo).toBeDefined();
+    expect(criteo.status).toBe('RESOURCE_TIER_EXCEEDED');
+
+    // Verify Unsupported Modality (ImageNet)
+    const imagenet = benchmarks.find((b: any) => b.id === 'vision-imagenet-1k');
+    expect(imagenet).toBeDefined();
+    expect(imagenet.status).toBe('TRAINING_UNSUPPORTED_IN_EDGE_TIER');
+  });
+
 });

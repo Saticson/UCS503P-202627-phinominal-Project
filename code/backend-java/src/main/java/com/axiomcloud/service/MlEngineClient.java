@@ -32,6 +32,8 @@ public class MlEngineClient {
     private final ObjectMapper objectMapper;
     private final String mlEngineUrl;
     private final com.axiomcloud.service.ml.SmileTrainer smileTrainer;
+    private final com.axiomcloud.service.ml.GpuAutoMlDispatcher gpuAutoMlDispatcher;
+    private final com.axiomcloud.service.ml.GpuEnvironmentDetector gpuDetector;
     private final com.axiomcloud.service.ml.SmileInferenceEngine smileInferenceEngine;
     private final com.axiomcloud.service.ml.TabularProfiler tabularProfiler;
     private final com.axiomcloud.service.ml.LabelNoiseDetector labelNoiseDetector;
@@ -40,12 +42,16 @@ public class MlEngineClient {
                           RestTemplateBuilder restTemplateBuilder,
                           ObjectMapper objectMapper,
                           com.axiomcloud.service.ml.SmileTrainer smileTrainer,
+                          com.axiomcloud.service.ml.GpuAutoMlDispatcher gpuAutoMlDispatcher,
+                          com.axiomcloud.service.ml.GpuEnvironmentDetector gpuDetector,
                           com.axiomcloud.service.ml.SmileInferenceEngine smileInferenceEngine,
                           com.axiomcloud.service.ml.TabularProfiler tabularProfiler,
                           com.axiomcloud.service.ml.LabelNoiseDetector labelNoiseDetector) {
         this.mlEngineUrl = mlEngineUrl.replaceAll("/+$", "");
         this.objectMapper = objectMapper;
         this.smileTrainer = smileTrainer;
+        this.gpuAutoMlDispatcher = gpuAutoMlDispatcher;
+        this.gpuDetector = gpuDetector;
         this.smileInferenceEngine = smileInferenceEngine;
         this.tabularProfiler = tabularProfiler;
         this.labelNoiseDetector = labelNoiseDetector;
@@ -163,11 +169,15 @@ public class MlEngineClient {
         Map<String, Object> reqMap = (body instanceof Map) ? (Map<String, Object>) body : Collections.emptyMap();
 
         if (url.endsWith("/train")) {
-            if (smileTrainer != null && reqMap.containsKey("dataset_path")) {
+            if (reqMap.containsKey("dataset_path")) {
                 try {
-                    return smileTrainer.train(reqMap);
+                    if (gpuAutoMlDispatcher != null) {
+                        return gpuAutoMlDispatcher.dispatchTraining(reqMap);
+                    } else if (smileTrainer != null) {
+                        return smileTrainer.train(reqMap);
+                    }
                 } catch (Exception e) {
-                    logger.warn("SmileTrainer failed, falling back to static schema: {}", e.getMessage());
+                    logger.warn("Automated trainer failed, falling back to static schema: {}", e.getMessage());
                 }
             }
 
