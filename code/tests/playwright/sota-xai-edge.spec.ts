@@ -123,4 +123,61 @@ test.describe('Sukio SOTA Architecture — Edge Ingestion, XAI & Showcases', () 
     expect(imagenet.status).toBe('TRAINING_UNSUPPORTED_IN_EDGE_TIER');
   });
 
+  test('7. NLP Text Saliency Sandbox: renders prediction and token attribution pills', async ({ page }) => {
+    await page.goto('/predict');
+    await expect(page.locator('h1')).toContainText('Inference');
+
+    // Click NLP Sandbox Tab
+    const nlpTab = page.locator('#tab-btn-nlp');
+    await expect(nlpTab).toBeVisible();
+    await nlpTab.click();
+
+    // Verify input text area and analyze button
+    const textarea = page.locator('#nlp-text-input');
+    await expect(textarea).toBeVisible();
+    await textarea.fill('Operating revenue surged with record quarterly expansion.');
+
+    const analyzeBtn = page.locator('#btn-run-nlp-prediction');
+    await expect(analyzeBtn).toBeVisible();
+    await analyzeBtn.click();
+    await page.waitForTimeout(1000);
+
+    // Verify result card and token badges
+    const nlpResult = page.locator('#nlp-result');
+    await expect(nlpResult).toBeVisible();
+    await expect(nlpResult).toContainText('NLP Prediction & Token Attribution');
+    await expect(nlpResult).toContainText('Leave-One-Out Token Saliency Attribution');
+
+    const badgeContainer = page.locator('#token-attribution-container');
+    await expect(badgeContainer).toBeVisible();
+    const tokenBadges = badgeContainer.locator('span');
+    expect(await tokenBadges.count()).toBeGreaterThanOrEqual(3);
+  });
+
+  test('8. Computer Vision Inference: renders predicted defect class and Grad-CAM heatmap overlay', async ({ page }) => {
+    await page.goto('/predict');
+    const visionTab = page.locator('#tab-btn-vision');
+    await expect(visionTab).toBeVisible();
+    await visionTab.click();
+
+    // Select PCB defect benchmark sample
+    const pcbBtn = page.locator('button:text("PCB Solder Defect")');
+    await expect(pcbBtn).toBeVisible();
+    await pcbBtn.click();
+
+    const runVisionBtn = page.locator('#btn-run-vision-prediction');
+    await expect(runVisionBtn).toBeVisible();
+    await runVisionBtn.click();
+    await page.waitForTimeout(1500);
+
+    // Verify vision verdict card
+    const visionResult = page.locator('#vision-result');
+    await expect(visionResult).toBeVisible();
+    await expect(visionResult).toContainText('Vision Prediction Output');
+
+    // Verify Grad-CAM overlay image is present
+    const gradcamImg = page.locator('#gradcam-preview-image');
+    await expect(gradcamImg).toBeVisible();
+  });
+
 });

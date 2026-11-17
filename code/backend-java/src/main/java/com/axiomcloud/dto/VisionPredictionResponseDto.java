@@ -10,6 +10,7 @@ public class VisionPredictionResponseDto {
     private String imagePreview;
     private String modelName;
     private String status;
+    private String gradcamHeatmapSvg;
 
     public VisionPredictionResponseDto() {
         this.status = "SUCCESS";
@@ -47,4 +48,7 @@ public class VisionPredictionResponseDto {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getGradcamHeatmapSvg() { return gradcamHeatmapSvg; }
+    public void setGradcamHeatmapSvg(String gradcamHeatmapSvg) { this.gradcamHeatmapSvg = gradcamHeatmapSvg; }
 }

@@ -229,6 +229,20 @@ public class FrontendController {
     }
 
     // ==========================================
+    // NLP TEXT PREDICTION SANDBOX
+    // ==========================================
+    @PostMapping("/predict/nlp")
+    public String runNlpPrediction(
+            @RequestParam(value = "text", required = false) String text,
+            @RequestParam(value = "nlp_model_id", required = false) Integer modelId,
+            Model model) {
+        com.axiomcloud.dto.NlpPredictionResponseDto result =
+                predictionService.predictNlp(text, modelId);
+        model.addAttribute("nlpPrediction", result);
+        return "predict :: nlpPredictionResult";
+    }
+
+    // ==========================================
     // MARKETPLACE (BUY FUNNEL)
     // ==========================================
     @GetMapping("/marketplace")

@@ -127,7 +127,8 @@
 
         <div class="tabs-nav">
             <button class="tab-btn active" id="tab-btn-tabular" onclick="switchTab('tabular')">📊 Tabular Inference (JSON)</button>
-            <button class="tab-btn" id="tab-btn-vision" onclick="switchTab('vision')">👁 Computer Vision Sandbox</button>
+            <button class="tab-btn" id="tab-btn-vision" onclick="switchTab('vision')">👁 Computer Vision (Grad-CAM)</button>
+            <button class="tab-btn" id="tab-btn-nlp" onclick="switchTab('nlp')">📝 NLP Text Saliency</button>
         </div>
 
         <!-- ================= TABULAR TAB ================= -->
@@ -268,11 +269,18 @@
                         </div>
 
                         <div th:if="${visionPrediction != null}" class="result-box">
-                            <div th:if="${visionPrediction.imagePreview != null and !visionPrediction.imagePreview.isEmpty()}">
-                                <img th:src="${visionPrediction.imagePreview}" alt="Inspected Frame" class="preview-img" id="result-preview-image">
+                            <div style="display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap;">
+                                <div th:if="${visionPrediction.imagePreview != null and !visionPrediction.imagePreview.isEmpty()}" style="text-align: center;">
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">Input Raster</div>
+                                    <img th:src="${visionPrediction.imagePreview}" alt="Inspected Frame" class="preview-img" id="result-preview-image" style="max-height: 120px; border-radius: 6px; border: 1px solid var(--border);">
+                                </div>
+                                <div th:if="${visionPrediction.gradcamHeatmapSvg != null and !visionPrediction.gradcamHeatmapSvg.isEmpty()}" style="text-align: center;">
+                                    <div style="font-size: 0.75rem; color: #ef4444; font-weight: 600; margin-bottom: 0.25rem;">Grad-CAM Saliency</div>
+                                    <img th:src="${visionPrediction.gradcamHeatmapSvg}" alt="Grad-CAM Saliency Map" class="preview-img" id="gradcam-preview-image" style="max-height: 120px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.4); background: #000;">
+                                </div>
                             </div>
 
-                            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Detected Class Label</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-top: 0.75rem;">Detected Class Label</div>
                             <div class="result-val" id="vision-predicted-class" th:text="${visionPrediction.predictedClass}">Digit 7 (Handwritten)</div>
 
                             <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-top: 0.5rem;">
@@ -304,6 +312,80 @@
                 </div>
             </div>
         </div>
+
+        <!-- ================= NLP TEXT TAB ================= -->
+        <div id="tab-nlp" class="tab-content">
+            <div class="grid-predict">
+                <div class="card">
+                    <h2>Natural Language Text Input</h2>
+                    <form id="nlp-predict-form"
+                          hx-post="/predict/nlp"
+                          hx-target="#nlp-result"
+                          hx-swap="outerHTML">
+                        <div class="form-group">
+                            <label>Input Document / Text String</label>
+                            <textarea name="text" id="nlp-text-input" rows="4" placeholder="Enter financial statement, customer review, or news article..." required>Operating earnings and revenue collapsed following severe regulatory penalties and customer churn.</textarea>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <span style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); font-weight:600;">Benchmark sample prompts:</span>
+                            <div class="sample-buttons">
+                                <button type="button" class="btn btn-outline" style="font-size:0.8rem; padding:0.35rem 0.65rem;" onclick="document.getElementById('nlp-text-input').value = 'Record breaking quarterly revenue exceeded analyst estimates with strong margin retention.'">Positive / Growth</button>
+                                <button type="button" class="btn btn-outline" style="font-size:0.8rem; padding:0.35rem 0.65rem;" onclick="document.getElementById('nlp-text-input').value = 'Severe restructuring and bankruptcy default following massive liquidity collapse.'">Negative / Default</button>
+                            </div>
+                        </div>
+                        <button type="submit" id="btn-run-nlp-prediction" style="width: 100%;">
+                            Analyze Text &amp; Token Saliency &rarr;
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <div id="nlp-result" class="card" th:fragment="nlpPredictionResult">
+                        <h2>
+                            <span>NLP Prediction &amp; Token Attribution</span>
+                            <span th:if="${nlpPrediction != null}" class="badge badge-success">SUCCESS</span>
+                        </h2>
+
+                        <div th:if="${nlpPrediction == null}" class="result-box">
+                            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Awaiting Text String</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
+                                Submit text on the left to evaluate sentiment, class probability, and token-level Leave-One-Out saliency attribution.
+                            </div>
+                        </div>
+
+                        <div th:if="${nlpPrediction != null}" class="result-box">
+                            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Class Classification</div>
+                            <div class="result-val" id="nlp-predicted-class" th:text="${nlpPrediction.prediction}">Negative / Risk</div>
+
+                            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-top: 0.5rem;">
+                                <span>Confidence: <strong style="color: var(--success);" id="nlp-confidence" th:text="${#numbers.formatDecimal(nlpPrediction.confidence * 100, 1, 1) + '%'}">91.2%</strong></span>
+                                <span>Latency: <strong style="color: #fff;" th:text="${nlpPrediction.latencyMs + ' ms'}">12 ms</strong></span>
+                            </div>
+
+                            <!-- Conformal Set -->
+                            <div th:if="${nlpPrediction.conformalPredictionSet != null}" style="margin-top: 0.85rem; padding: 0.5rem 0.75rem; background: rgba(167, 139, 250, 0.12); border: 1px solid rgba(167, 139, 250, 0.35); border-radius: 6px; font-size: 0.85rem;">
+                                <strong style="color: var(--primary);">Conformal Prediction Set (90% Finite-Sample Coverage):</strong>
+                                <span style="font-family: monospace; color: #fff; margin-left: 0.35rem;" th:text="${nlpPrediction.conformalPredictionSet}">{Negative}</span>
+                            </div>
+
+                            <!-- Real Token Saliency Attribution -->
+                            <div th:if="${nlpPrediction.tokenAttributions != null}" style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+                                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.65rem;">
+                                    Leave-One-Out Token Saliency Attribution ($\Delta P$ Score):
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;" id="token-attribution-container">
+                                    <span th:each="t : ${nlpPrediction.tokenAttributions}"
+                                          th:text="${t.token + ' (' + (t.attribution >= 0 ? '+' : '') + #numbers.formatDecimal(t.attribution, 1, 3) + ')'}"
+                                          style="font-family: monospace; font-size: 0.8rem; padding: 0.25rem 0.5rem; border-radius: 4px;"
+                                          th:styleappend="${t.attribution > 0.01 ? 'background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5;' : (t.attribution < -0.01 ? 'background: rgba(52, 211, 153, 0.2); border: 1px solid #34d399; color: #6ee7b7;' : 'background: rgba(156, 163, 175, 0.15); border: 1px solid rgba(156, 163, 175, 0.3); color: #d1d5db;')}">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -313,6 +395,9 @@
             if (tab === 'vision') {
                 document.getElementById('tab-btn-vision').classList.add('active');
                 document.getElementById('tab-vision').classList.add('active');
+            } else if (tab === 'nlp') {
+                document.getElementById('tab-btn-nlp').classList.add('active');
+                document.getElementById('tab-nlp').classList.add('active');
             } else {
                 document.getElementById('tab-btn-tabular').classList.add('active');
                 document.getElementById('tab-tabular').classList.add('active');
