@@ -29,12 +29,15 @@ public class MlEngineClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final String mlEngineUrl;
+    private final com.axiomcloud.service.ml.SmileTrainer smileTrainer;
 
     public MlEngineClient(@Value("${axiomcloud.ml-engine.url:http://localhost:8001}") String mlEngineUrl,
                           RestTemplateBuilder restTemplateBuilder,
-                          ObjectMapper objectMapper) {
+                          ObjectMapper objectMapper,
+                          com.axiomcloud.service.ml.SmileTrainer smileTrainer) {
         this.mlEngineUrl = mlEngineUrl.replaceAll("/+$", "");
         this.objectMapper = objectMapper;
+        this.smileTrainer = smileTrainer;
         this.restTemplate = restTemplateBuilder
                 .setConnectTimeout(Duration.ofSeconds(3))
                 .setReadTimeout(Duration.ofMinutes(10))
@@ -149,6 +152,14 @@ public class MlEngineClient {
         Map<String, Object> reqMap = (body instanceof Map) ? (Map<String, Object>) body : Collections.emptyMap();
 
         if (url.endsWith("/train")) {
+            if (smileTrainer != null && reqMap.containsKey("dataset_path")) {
+                try {
+                    return smileTrainer.train(reqMap);
+                } catch (Exception e) {
+                    logger.warn("SmileTrainer failed, falling back to static schema: {}", e.getMessage());
+                }
+            }
+
             String taskType = (String) reqMap.getOrDefault("task_type", "classification");
             String jobId = (String) reqMap.getOrDefault("job_id", UUID.randomUUID().toString());
 
