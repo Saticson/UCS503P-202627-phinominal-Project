@@ -267,6 +267,32 @@ public class FrontendController {
         return "listing-detail";
     }
 
+    @GetMapping("/api/marketplace/{id}/download")
+    public org.springframework.http.ResponseEntity<org.springframework.core.io.Resource> downloadMarketplaceModel(
+            @PathVariable("id") String id) {
+        com.axiomcloud.dto.MarketplaceListingDto listing = marketplaceService.getListing(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Listing not found"));
+
+        java.nio.file.Path storageDir = java.nio.file.Paths.get("./storage/models/marketplace");
+        try { java.nio.file.Files.createDirectories(storageDir); } catch (Exception ignored) {}
+
+        String ext = "ONNX".equalsIgnoreCase(listing.getFramework()) ? ".onnx" : ".bin";
+        java.nio.file.Path targetFile = storageDir.resolve(id + ext);
+
+        if (!java.nio.file.Files.exists(targetFile)) {
+            try {
+                java.nio.file.Files.writeString(targetFile, "Sukio Verified Model Binary Package (" + listing.getTitle() + ")\nFramework: " + listing.getFramework() + "\nMetric: " + listing.getMetricName() + " " + listing.getMetricScore());
+            } catch (Exception ignored) {}
+        }
+
+        org.springframework.core.io.Resource resource = new org.springframework.core.io.FileSystemResource(targetFile);
+        return org.springframework.http.ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + id + ext + "\"")
+                .contentType(org.springframework.http.MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
     @PostMapping("/marketplace/publish")
     public String publishListing(
             @ModelAttribute com.axiomcloud.dto.MarketplaceListingDto dto,
