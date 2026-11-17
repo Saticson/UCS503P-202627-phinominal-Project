@@ -30,14 +30,17 @@ public class MlEngineClient {
     private final ObjectMapper objectMapper;
     private final String mlEngineUrl;
     private final com.axiomcloud.service.ml.SmileTrainer smileTrainer;
+    private final com.axiomcloud.service.ml.SmileInferenceEngine smileInferenceEngine;
 
     public MlEngineClient(@Value("${axiomcloud.ml-engine.url:http://localhost:8001}") String mlEngineUrl,
                           RestTemplateBuilder restTemplateBuilder,
                           ObjectMapper objectMapper,
-                          com.axiomcloud.service.ml.SmileTrainer smileTrainer) {
+                          com.axiomcloud.service.ml.SmileTrainer smileTrainer,
+                          com.axiomcloud.service.ml.SmileInferenceEngine smileInferenceEngine) {
         this.mlEngineUrl = mlEngineUrl.replaceAll("/+$", "");
         this.objectMapper = objectMapper;
         this.smileTrainer = smileTrainer;
+        this.smileInferenceEngine = smileInferenceEngine;
         this.restTemplate = restTemplateBuilder
                 .setConnectTimeout(Duration.ofSeconds(3))
                 .setReadTimeout(Duration.ofMinutes(10))
@@ -214,6 +217,13 @@ public class MlEngineClient {
         }
 
         if (url.endsWith("/predict")) {
+            if (smileInferenceEngine != null && reqMap.containsKey("file_path")) {
+                String filePath = (String) reqMap.get("file_path");
+                Map<String, Object> features = (reqMap.get("features") instanceof Map) ? (Map<String, Object>) reqMap.get("features") : Collections.emptyMap();
+                String taskType = (String) reqMap.getOrDefault("task_type", "classification");
+                return smileInferenceEngine.predict(filePath, features, taskType);
+            }
+
             ObjectNode root = objectMapper.createObjectNode();
             root.put("prediction", "positive");
             root.put("confidence", 0.938);
