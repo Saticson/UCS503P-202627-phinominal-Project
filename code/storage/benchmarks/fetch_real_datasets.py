@@ -114,29 +114,48 @@ def fetch_tabular_datasets():
         "sha256": sha256_file(p_bank)
     }
 
-    # 4. Adult Census Income (UCI ID 2) - Full 32,561 complete records, no truncation
+    # 4. Adult Census Income (UCI ID 2) - Official Train (32,561) & Official Test (16,281) Splits
     p_adult = os.path.join(TABULAR_DIR, "adult_census.csv")
-    if not os.path.exists(p_adult) or len(pd.read_csv(p_adult)) < 5000:
-        print("  Downloading Full Adult Census Income (32,561 records)...")
+    p_adult_tr = os.path.join(TABULAR_DIR, "adult_census_train.csv")
+    p_adult_te = os.path.join(TABULAR_DIR, "adult_census_test.csv")
+
+    cols = ["age", "workclass", "fnlwgt", "education", "education_num", "marital_status",
+            "occupation", "relationship", "race", "sex", "capital_gain", "capital_loss",
+            "hours_per_week", "native_country", "income"]
+
+    if not os.path.exists(p_adult_tr) or not os.path.exists(p_adult_te):
+        print("  Downloading Full Adult Census Income (adult.data + adult.test)...")
         req = urllib.request.Request('https://archive.ics.uci.edu/static/public/2/adult.zip', headers=headers)
         with urllib.request.urlopen(req) as resp:
             z = zipfile.ZipFile(io.BytesIO(resp.read()))
-            with z.open('adult.data') as f:
-                cols = ["age", "workclass", "fnlwgt", "education", "education_num", "marital_status",
-                        "occupation", "relationship", "race", "sex", "capital_gain", "capital_loss",
-                        "hours_per_week", "native_country", "income"]
-                df = pd.read_csv(f, header=None, names=cols, na_values=" ?", skipinitialspace=True)
-                df = df.dropna()
-                df['income_above_50k'] = df['income'].apply(lambda x: 1 if '>50K' in str(x) else 0)
-                df = df.drop(columns=['income'])
-                df.to_csv(p_adult, index=False)
+            with z.open('adult.data') as f_tr, z.open('adult.test') as f_te:
+                df_tr = pd.read_csv(f_tr, header=None, names=cols, na_values=" ?", skipinitialspace=True).dropna()
+                df_te = pd.read_csv(f_te, header=None, names=cols, na_values=" ?", skipinitialspace=True, skiprows=1).dropna()
+                
+                df_tr['income_above_50k'] = df_tr['income'].astype(str).str.strip().str.rstrip('.').apply(lambda x: 1 if '>50K' in x else 0)
+                df_te['income_above_50k'] = df_te['income'].astype(str).str.strip().str.rstrip('.').apply(lambda x: 1 if '>50K' in x else 0)
+                
+                df_tr = df_tr.drop(columns=['income'])
+                df_te = df_te.drop(columns=['income'])
+
+                df_tr.to_csv(p_adult_tr, index=False)
+                df_te.to_csv(p_adult_te, index=False)
+                df_tr.to_csv(p_adult, index=False)
+
     manifest["adult_census"] = {
         "modality": "TABULAR",
         "provenance": "UCI Machine Learning Repository (ID 2)",
         "file_path": p_adult,
+        "train_file": p_adult_tr,
+        "test_file": p_adult_te,
+        "train_rows": len(pd.read_csv(p_adult_tr)),
+        "test_rows": len(pd.read_csv(p_adult_te)),
+        "total_rows": len(pd.read_csv(p_adult_tr)) + len(pd.read_csv(p_adult_te)),
         "rows": len(pd.read_csv(p_adult)),
         "features": 14,
         "classes": ["<=50K", ">50K"],
+        "train_sha256": sha256_file(p_adult_tr),
+        "test_sha256": sha256_file(p_adult_te),
         "sha256": sha256_file(p_adult)
     }
 
@@ -264,10 +283,14 @@ def fetch_nlp_datasets():
     manifest = {}
     headers = {'User-Agent': 'Mozilla/5.0'}
 
-    # 1. Financial PhraseBank (Malo et al. 50Agree)
+    # 1. Financial PhraseBank (Malo et al. 50Agree) - 60/20/20 Train/Calibration/Test Splits
     p_fin = os.path.join(NLP_DIR, "financial_phrasebank.csv")
-    if not os.path.exists(p_fin):
-        print("  Downloading Financial PhraseBank...")
+    p_fin_tr = os.path.join(NLP_DIR, "financial_phrasebank_train.csv")
+    p_fin_cal = os.path.join(NLP_DIR, "financial_phrasebank_cal.csv")
+    p_fin_te = os.path.join(NLP_DIR, "financial_phrasebank_test.csv")
+
+    if not os.path.exists(p_fin) or not os.path.exists(p_fin_tr):
+        print("  Downloading Financial PhraseBank & constructing isolated train/cal/test splits...")
         u = 'https://raw.githubusercontent.com/maxwellsarpong/NLP-financial-text-processing-dataset/master/Sentences_50Agree.txt'
         req = urllib.request.Request(u, headers=headers)
         with urllib.request.urlopen(req) as resp:
@@ -280,13 +303,33 @@ def fetch_nlp_datasets():
                 records.append({"text": text.strip(), "sentiment": label.strip()})
         df = pd.DataFrame(records)
         df.to_csv(p_fin, index=False)
+
+        # Construct stratified 60% train, 20% calibration, 20% test splits with seed 42
+        # Deduplicate to ensure 0 duplicate text overlap across splits
+        df_unique = df.drop_duplicates(subset=['text']).reset_index(drop=True)
+        from sklearn.model_selection import train_test_split
+        tr_df, temp_df = train_test_split(df_unique, test_size=0.40, random_state=42, stratify=df_unique['sentiment'])
+        cal_df, te_df = train_test_split(temp_df, test_size=0.50, random_state=42, stratify=temp_df['sentiment'])
+
+        tr_df.to_csv(p_fin_tr, index=False)
+        cal_df.to_csv(p_fin_cal, index=False)
+        te_df.to_csv(p_fin_te, index=False)
+
     manifest["financial_phrasebank"] = {
         "modality": "NLP",
         "provenance": "Malo et al. Financial PhraseBank (50% Consensus Agreement)",
         "file_path": p_fin,
-        "rows": len(pd.read_csv(p_fin)),
+        "train_file": p_fin_tr,
+        "cal_file": p_fin_cal,
+        "test_file": p_fin_te,
+        "total_rows": len(pd.read_csv(p_fin)),
+        "train_rows": len(pd.read_csv(p_fin_tr)),
+        "cal_rows": len(pd.read_csv(p_fin_cal)),
+        "test_rows": len(pd.read_csv(p_fin_te)),
         "classes": ["negative", "neutral", "positive"],
-        "sha256": sha256_file(p_fin)
+        "sha256": sha256_file(p_fin),
+        "train_sha256": sha256_file(p_fin_tr),
+        "test_sha256": sha256_file(p_fin_te)
     }
 
     # 2. Rotten Tomatoes SST-2 (Pang & Lee / Socher et al.)

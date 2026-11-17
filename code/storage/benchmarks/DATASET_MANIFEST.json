@@ -40,12 +40,19 @@
       "modality": "TABULAR",
       "provenance": "UCI Machine Learning Repository (ID 2)",
       "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\adult_census.csv",
+      "train_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\adult_census_train.csv",
+      "test_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\adult_census_test.csv",
+      "train_rows": 32561,
+      "test_rows": 16281,
+      "total_rows": 48842,
       "rows": 32561,
       "features": 14,
       "classes": [
         "<=50K",
         ">50K"
       ],
+      "train_sha256": "7505de0e0825025e89ad153f830cac82bdeba54ba90d5a643e2e0715a8a50e11",
+      "test_sha256": "220b858fbd9bc1804ba67637975ac7a010477b321fb8e445568d496c40caa8eb",
       "sha256": "7505de0e0825025e89ad153f830cac82bdeba54ba90d5a643e2e0715a8a50e11"
     },
     "auto_mpg": {
@@ -184,13 +191,21 @@
       "modality": "NLP",
       "provenance": "Malo et al. Financial PhraseBank (50% Consensus Agreement)",
       "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\financial_phrasebank.csv",
-      "rows": 4846,
+      "train_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\financial_phrasebank_train.csv",
+      "cal_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\financial_phrasebank_cal.csv",
+      "test_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\financial_phrasebank_test.csv",
+      "total_rows": 4846,
+      "train_rows": 2902,
+      "cal_rows": 968,
+      "test_rows": 968,
       "classes": [
         "negative",
         "neutral",
         "positive"
       ],
-      "sha256": "16b013b8c7481109aedc85f064cfd6d45b58edc15c388eda904a153ce2f322ed"
+      "sha256": "16b013b8c7481109aedc85f064cfd6d45b58edc15c388eda904a153ce2f322ed",
+      "train_sha256": "3981dc47d7454e9f2a958b09955fc13d7b1609571e15fb6e1f2dcc9949bfc3a1",
+      "test_sha256": "836ed01b7e215ff432bee5aaa457cda95cf225fba123a6cc70a992891f566e7e"
     },
     "rotten_tomatoes": {
       "modality": "NLP",
