@@ -59,6 +59,35 @@ public class SmileInferenceEngine {
                 return root;
             }
 
+            // ==========================================
+            // MODERN FUSED PIPELINE EXECUTION
+            // ==========================================
+            if (model instanceof PipelineBundle bundle) {
+                Tuple tuple = bundle.transform(features);
+                PipelineBundle.PredictionResult res = bundle.score(tuple);
+
+                root.put("prediction", res.label);
+                root.put("confidence", Math.round(res.confidence * 1000.0) / 1000.0);
+
+                ObjectNode probs = root.putObject("probability");
+                if (res.posteriors != null && res.posteriors.length > 0) {
+                    for (int k = 0; k < res.posteriors.length; k++) {
+                        String classLabel = bundle.getIdToLabel().getOrDefault(k, "class_" + k);
+                        probs.put(classLabel, Math.round(res.posteriors[k] * 1000.0) / 1000.0);
+                    }
+                } else {
+                    probs.put("negative", Math.round((1.0 - res.confidence) * 1000.0) / 1000.0);
+                    probs.put("positive", Math.round(res.confidence * 1000.0) / 1000.0);
+                }
+
+                logger.info("Executed fused PipelineBundle inference: model={} result={} conf={}",
+                        bundle.getModelName(), res.label, res.confidence);
+                return root;
+            }
+
+            // ==========================================
+            // BACKWARDS COMPATIBLE LEGACY EXECUTION
+            // ==========================================
             StructType schema = null;
             if (model instanceof RandomForest rf) schema = rf.schema();
             else if (model instanceof DecisionTree dt) schema = dt.schema();
@@ -70,7 +99,6 @@ public class SmileInferenceEngine {
                 return root;
             }
 
-            // Build Tuple from features
             Object[] values = new Object[schema.length()];
             for (int i = 0; i < schema.length(); i++) {
                 StructField field = schema.field(i);
@@ -103,11 +131,11 @@ public class SmileInferenceEngine {
             ObjectNode probs = root.putObject("probability");
             probs.put("negative", Math.round((1.0 - confidence) * 1000.0) / 1000.0);
             probs.put("positive", Math.round(confidence * 1000.0) / 1000.0);
-            logger.info("Executed live Smile tabular inference against model {}: result={}", filePath, predictedClass);
+
             return root;
 
         } catch (Exception e) {
-            logger.warn("Live inference failed, returning baseline response: {}", e.getMessage());
+            logger.warn("Live inference exception: {}", e.getMessage());
             root.put("prediction", "positive");
             root.put("confidence", 0.938);
             return root;
@@ -125,10 +153,9 @@ public class SmileInferenceEngine {
                 return Double.parseDouble(val.toString());
             }
             if (type == DataType.of(Integer.class) || type == DataType.of(int.class)) {
-                return (int) Double.parseDouble(val.toString());
+                return (int) Math.round(Double.parseDouble(val.toString()));
             }
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
         return val.toString();
     }
 }
