@@ -72,7 +72,9 @@ public class DatasetService {
         }
 
         String lowerName = originalFilename.toLowerCase(Locale.ROOT);
-        if (!lowerName.endsWith(".csv") && !lowerName.endsWith(".xlsx") && !lowerName.endsWith(".xls")) {
+        boolean isGzip = lowerName.endsWith(".gz");
+        String checkName = isGzip ? lowerName.substring(0, lowerName.length() - 3) : lowerName;
+        if (!checkName.endsWith(".csv") && !checkName.endsWith(".xlsx") && !checkName.endsWith(".xls")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only CSV and Excel files are supported");
         }
 
@@ -81,11 +83,13 @@ public class DatasetService {
         }
 
         String fileId = UUID.randomUUID().toString().substring(0, 8);
-        String safeName = fileId + "_" + originalFilename;
+        String storedFilename = isGzip ? originalFilename.substring(0, originalFilename.length() - 3) : originalFilename;
+        String safeName = fileId + "_" + storedFilename;
         Path targetPath = Paths.get(storageProperties.getDatasetsPath(), safeName);
 
-        try {
-            Files.copy(file.getInputStream(), targetPath);
+        try (java.io.InputStream inStream = file.getInputStream();
+             java.io.InputStream effectiveStream = isGzip ? new java.util.zip.GZIPInputStream(inStream) : inStream) {
+            Files.copy(effectiveStream, targetPath);
         } catch (IOException e) {
             logger.error("Failed to store dataset file: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save file: " + e.getMessage());
@@ -96,10 +100,10 @@ public class DatasetService {
             DatasetMetadata metadata = analyzeDatasetFile(targetPath.toFile());
 
             DatasetEntity entity = new DatasetEntity();
-            entity.setName(name != null && !name.isBlank() ? name : originalFilename);
-            entity.setFilename(originalFilename);
+            entity.setName(name != null && !name.isBlank() ? name : storedFilename);
+            entity.setFilename(storedFilename);
             entity.setFilePath(targetPath.toAbsolutePath().toString());
-            entity.setFileSize((int) file.getSize());
+            entity.setFileSize((int) Files.size(targetPath));
             entity.setNumRows(metadata.numRows);
             entity.setNumColumns(metadata.numColumns);
             entity.setColumnsInfo(metadata.columnsInfo);
