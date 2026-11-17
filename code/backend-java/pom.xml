@@ -22,6 +22,7 @@
         <firebase.version>9.2.0</firebase.version>
         <poi.version>5.2.5</poi.version>
         <smile.version>3.0.2</smile.version>
+        <onnxruntime.version>1.18.0</onnxruntime.version>
     </properties>
 
     <dependencies>
@@ -96,6 +97,13 @@
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-base</artifactId>
             <version>${smile.version}</version>
+        </dependency>
+
+        <!-- Microsoft ONNX Runtime for Embedded Deep Learning & Vision -->
+        <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime</artifactId>
+            <version>${onnxruntime.version}</version>
         </dependency>
 
         <!-- Testing -->
