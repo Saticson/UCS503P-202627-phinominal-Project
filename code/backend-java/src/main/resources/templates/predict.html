@@ -186,6 +186,18 @@
                             <div th:if="${prediction.modelName != null}" style="margin-top: 0.25rem; font-size: 0.85rem; color: var(--text-muted);">
                                 Evaluated by: <span th:text="${prediction.modelName}">Model</span>
                             </div>
+
+                            <!-- SOTA Conformal Prediction Set -->
+                            <div th:if="${prediction.conformalPredictionSet != null}" style="margin-top: 0.85rem; padding: 0.5rem 0.75rem; background: rgba(167, 139, 250, 0.12); border: 1px solid rgba(167, 139, 250, 0.35); border-radius: 6px; font-size: 0.85rem;">
+                                <strong style="color: var(--primary);">Conformal Prediction Set (90% Coverage Guarantee):</strong>
+                                <span style="font-family: monospace; color: #fff; margin-left: 0.35rem;" th:text="${'{' + #strings.listJoin(prediction.conformalPredictionSet, ', ') + '}'}">{positive}</span>
+                            </div>
+
+                            <!-- SOTA Actionable Counterfactual Recourse -->
+                            <div th:if="${prediction.actionableRecourse != null}" style="margin-top: 0.85rem; padding: 0.75rem; background: rgba(52, 211, 153, 0.08); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 6px; font-size: 0.85rem; line-height: 1.5;">
+                                <strong style="color: var(--success);">Actionable Algorithmic Recourse (DiCE):</strong>
+                                <p style="color: var(--text-primary); margin-top: 0.35rem;" th:text="${prediction.actionableRecourse}">Recourse steps</p>
+                            </div>
                         </div>
                     </div>
                 </div>
