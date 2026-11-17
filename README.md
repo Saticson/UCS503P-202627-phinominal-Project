@@ -22,7 +22,7 @@ This repository serves as the official deliverable for the **UCS503P Software En
 |---|---|---|
 | **Project Proposal** | [`project-proposal/main.tex`](project-proposal/main.tex) | LaTeX specification of the Sukio marketplace concept, Time-to-Value heuristics, and multi-stage funnel. |
 | **Prototype Stage Report** | [`project-report-prototype-stage/main.tex`](project-report-prototype-stage/main.tex) | Empirical validation of the core **Build** engine (AutoML platform), TTS benchmarks, and Playwright verification. |
-| **Final Stage Report** | [`project-report-final/`](project-report-final/) | Final milestone deliverable covering the Buy and Hire marketplace modules (Upcoming). |
+| **Final Stage Report** | [`project-report-final/main.pdf`](project-report-final/main.pdf) | Final milestone deliverable covering the Build, Buy, and Hire marketplace modules (Completed). |
 | **Team Journals** | [`journals/`](journals/) | Individual weekly activity journals tracking architectural progress and deliverables. |
 | **Documentation** | [`docs/`](docs/) | Markdown technical documentation built and deployed via MkDocs CI/CD. |
 | **Source Code** | [`code/`](code/) | Full-stack platform implementation (Java 21 Spring Boot control plane, Thymeleaf + HTMX UI, ML engine). |
