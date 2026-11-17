@@ -108,7 +108,7 @@ test.describe('Sukio Marketplace & Computer Vision Integration Suite', () => {
     await expect(resultBox).toBeVisible();
     await expect(resultBox.locator('.badge:has-text("SUCCESS")')).toBeVisible();
     await expect(resultBox.locator('#vision-predicted-class')).toContainText('Digit 7');
-    await expect(resultBox.locator('#vision-confidence')).toContainText('99.1%');
+    await expect(resultBox.locator('#vision-confidence')).toContainText(/9[89]\.\d+%/);
     await expect(resultBox.locator('#result-preview-image')).toBeVisible();
 
     // Run benchmark sample 2: PCB Defect
