@@ -68,13 +68,16 @@ class MobileNetV3FineTune(nn.Module):
 
         if in_channels != 3:
             orig_conv = base.features[0][0]
-            base.features[0][0] = nn.Conv2d(
+            new_conv = nn.Conv2d(
                 in_channels, orig_conv.out_channels,
                 kernel_size=orig_conv.kernel_size,
                 stride=orig_conv.stride,
                 padding=orig_conv.padding,
                 bias=False
             )
+            with torch.no_grad():
+                new_conv.weight.copy_(orig_conv.weight.mean(dim=1, keepdim=True))
+            base.features[0][0] = new_conv
 
         self.features = base.features
         self.avgpool = base.avgpool
@@ -87,6 +90,8 @@ class MobileNetV3FineTune(nn.Module):
         )
 
     def forward(self, x):
+        if x.shape[-1] < 112 or x.shape[-2] < 112:
+            x = nn.functional.interpolate(x, size=(112, 112), mode='bilinear', align_corners=False)
         x = self.features(x)
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
@@ -443,12 +448,18 @@ def load_vision_artifact(model_path):
     checkpoint = torch.load(model_path, map_location='cpu')
     arch = checkpoint.get("architecture", "ConvNet")
     num_classes = checkpoint["num_classes"]
-    model = build_vision_model(architecture=arch, num_classes=num_classes, in_channels=3)
+    sd = checkpoint["state_dict"]
+    in_channels = 3
+    if "features.0.0.weight" in sd:
+        in_channels = sd["features.0.0.weight"].shape[1]
+    elif "features.0.weight" in sd:
+        in_channels = sd["features.0.weight"].shape[1]
+    model = build_vision_model(architecture=arch, num_classes=num_classes, in_channels=in_channels, pretrained=False)
     try:
-        model.load_state_dict(checkpoint["state_dict"])
+        model.load_state_dict(sd)
     except Exception:
         # Fallback to ConvNet if architecture mismatch
-        model = ConvNet(num_classes=num_classes)
-        model.load_state_dict(checkpoint["state_dict"])
+        model = ConvNet(num_classes=num_classes, in_channels=in_channels)
+        model.load_state_dict(sd)
     model.eval()
     return model, checkpoint["class_names"], checkpoint.get("conformal_quantiles", {})

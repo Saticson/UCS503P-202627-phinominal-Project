@@ -39,30 +39,30 @@ Audit Date: 2026-11-18 | Commit Baseline: `92495d6` | Reproducibility Standard: 
 ### Computer Vision (5 Complete MedMNIST v2 Datasets)
 | Dataset | Architecture | Balanced Acc | Macro-F1 | Mondrian Cov [95% Wilson CI] | Avg Set Size | Empty Rate | Checkpoint SHA-256 |
 |---|---|---|---|---|---|---|---|
-| `breastmnist` | ConvNet Baseline | **0.7331** | **0.6971** | 89.1% [83.2%, 93.1%] | 1.44 | 0.0% | `7c58e084...` |
-| `breastmnist` | Pretrained MobileNet-V3 | 0.5000 | 0.2121 | 93.6% [88.6%, 96.5%] | 1.85 | 0.0% | `32a76f2d...` |
-| `retinamnist` | ConvNet Baseline | **0.3604** | **0.3082** | 92.8% [89.8%, 94.9%] | 3.79 | 0.0% | `a8e03f24...` |
-| `retinamnist` | Pretrained MobileNet-V3 | 0.2991 | 0.2619 | 94.2% [91.5%, 96.1%] | 4.49 | 0.0% | `5cc646a9...` |
-| `pneumoniamnist` | ConvNet Baseline | **0.8812** | **0.8910** | 77.6% [74.1%, 80.7%] | 0.84 | 16.0% | `25d9e280...` |
-| `pneumoniamnist` | Pretrained MobileNet-V3 | 0.6744 | 0.6801 | 93.4% [91.2%, 95.1%] | 1.61 | 0.0% | `6bf082ae...` |
-| `dermamnist` | ConvNet Baseline | **0.5533** | **0.4114** | 87.9% [86.4%, 89.2%] | 3.98 | 0.0% | `001daec7...` |
-| `dermamnist` | Pretrained MobileNet-V3 | 0.4228 | 0.2925 | 90.2% [88.8%, 91.4%] | 4.60 | 0.0% | `448b11dc...` |
-| `bloodmnist` | ConvNet Baseline | **0.9056** | **0.8934** | 89.0% [87.9%, 90.0%] | 1.22 | 3.2% | `e975a57e...` |
-| `bloodmnist` | Pretrained MobileNet-V3 | 0.8390 | 0.8261 | 89.9% [88.9%, 90.9%] | 1.22 | 2.0% | `9d559ba7...` |
+| `breastmnist` | ConvNet Baseline | **0.7569** | **0.7647** | 85.9% [79.6%, 90.5%] | 1.16 | 0.0% | `deeec2b4...` |
+| `breastmnist` | Pretrained MobileNet-V3 | 0.5714 | 0.3721 | 82.1% [75.3%, 87.3%] | 1.20 | 0.0% | `d6f40220...` |
+| `retinamnist` | ConvNet Baseline | **0.3506** | **0.2874** | 89.5% [86.1%, 92.1%] | 3.79 | 0.0% | `9d0ca283...` |
+| `retinamnist` | Pretrained MobileNet-V3 | 0.2721 | 0.1772 | 88.5% [85.0%, 91.3%] | 4.49 | 0.0% | `254881ae...` |
+| `pneumoniamnist` | ConvNet Baseline | **0.7585** | **0.7766** | 77.7% [74.3%, 80.8%] | 0.84 | 14.6% | `19f041bd...` |
+| `pneumoniamnist` | Pretrained MobileNet-V3 | 0.6774 | 0.6807 | 82.5% [79.4%, 85.3%] | 1.61 | 9.1% | `66874e14...` |
+| `dermamnist` | ConvNet Baseline | 0.5577 | 0.3960 | 89.3% [87.8%, 90.6%] | 3.98 | 0.0% | `b73812d1...` |
+| `dermamnist` | Pretrained MobileNet-V3 | **0.5744** | **0.4603** | 91.8% [90.5%, 92.9%] | 4.60 | 0.0% | `ca4cb5c8...` |
+| `bloodmnist` | ConvNet Baseline | 0.8732 | 0.8692 | 89.8% [88.7%, 90.7%] | 1.22 | 5.2% | `05077ea9...` |
+| `bloodmnist` | Pretrained MobileNet-V3 | **0.9566** | **0.9499** | 89.0% [87.9%, 90.0%] | 0.92 | 7.8% | `ff6e5200...` |
 
 ### Natural Language Processing (5 Complete Real NLP Datasets)
 | Dataset | Architecture | Balanced Acc | Macro-F1 | Mondrian Cov [95% Wilson CI] | Wall Time (s) | Saliency $\Delta P_{\text{top}}$ vs $\Delta P_{\text{rand}}$ |
 |---|---|---|---|---|---|---|
-| `financial_phrasebank` | TF-IDF Logistic Baseline | 0.6985 | 0.6933 | 87.8% [85.6%, 89.7%] | 0.35s | +0.0653 vs -0.0130 (**PASSED**) |
-| `financial_phrasebank` | Pretrained DistilBERT | **0.8466** | **0.7931** | 90.1% [88.0%, 91.8%] | 323.32s | +0.0653 vs -0.0130 (**PASSED**) |
-| `rotten_tomatoes` | TF-IDF Logistic Baseline | 0.7833 | 0.7835 | 91.3% [89.7%, 92.7%] | 0.34s | +0.0464 vs +0.0344 (**PASSED**) |
-| `rotten_tomatoes` | Pretrained DistilBERT | **0.8682** | **0.8662** | 91.0% [89.3%, 92.4%] | 315.61s | +0.0464 vs +0.0344 (**PASSED**) |
-| `ag_news` | TF-IDF Logistic Baseline | 0.8606 | 0.8605 | 89.6% [88.0%, 91.0%] | 0.99s | +0.0521 vs +0.0058 (**PASSED**) |
-| `ag_news` | Pretrained DistilBERT | **0.9019** | **0.9014** | 89.5% [87.8%, 90.9%] | 312.22s | +0.0521 vs +0.0058 (**PASSED**) |
-| `tweeteval_sentiment` | TF-IDF Logistic Baseline | 0.6294 | 0.6107 | 90.5% [89.2%, 91.6%] | 0.88s | +0.1274 vs +0.0068 (**PASSED**) |
-| `tweeteval_sentiment` | Pretrained DistilBERT | **0.6705** | **0.6739** | 88.6% [87.3%, 89.8%] | 308.95s | +0.1274 vs +0.0068 (**PASSED**) |
-| `sms_spam` | TF-IDF Logistic Baseline | 0.9713 | 0.9674 | 92.0% [90.3%, 93.5%] | 0.29s | +0.0900 vs -0.0029 (**PASSED**) |
-| `sms_spam` | Pretrained DistilBERT | **0.9812** | **0.9825** | 90.3% [88.4%, 91.9%] | 334.54s | +0.0900 vs -0.0029 (**PASSED**) |
+| `financial_phrasebank` | TF-IDF Logistic Baseline | 0.6985 | 0.6933 | 87.8% [85.6%, 89.7%] | 0.43s | +0.0653 vs -0.0130 (**PASSED**) |
+| `financial_phrasebank` | Pretrained DistilBERT | **0.7373** | **0.7685** | 91.1% [89.2%, 92.8%] | 364.85s | +0.0194 vs +0.0041 (**PASSED**) |
+| `rotten_tomatoes` | TF-IDF Logistic Baseline | 0.7833 | 0.7835 | 91.3% [89.7%, 92.7%] | 0.35s | +0.0464 vs -0.0181 (**PASSED**) |
+| `rotten_tomatoes` | Pretrained DistilBERT | **0.8782** | **0.8784** | 90.9% [89.3%, 92.3%] | 248.12s | +0.4439 vs +0.1120 (**PASSED**) |
+| `ag_news` | TF-IDF Logistic Baseline | 0.8606 | 0.8605 | 89.6% [88.0%, 91.0%] | 0.82s | +0.0521 vs +0.0076 (**PASSED**) |
+| `ag_news` | Pretrained DistilBERT | **0.9012** | **0.9012** | 89.6% [88.0%, 91.0%] | 295.40s | +0.0030 vs +0.0006 (**PASSED**) |
+| `tweeteval_sentiment` | TF-IDF Logistic Baseline | 0.6294 | 0.6107 | 90.5% [89.2%, 91.6%] | 0.95s | +0.1274 vs +0.0177 (**PASSED**) |
+| `tweeteval_sentiment` | Pretrained DistilBERT | **0.6544** | **0.6640** | 88.8% [87.5%, 90.0%] | 320.15s | +0.1606 vs +0.0418 (**PASSED**) |
+| `sms_spam` | TF-IDF Logistic Baseline | 0.9713 | 0.9674 | 92.0% [90.3%, 93.5%] | 0.28s | +0.0900 vs +0.0123 (**PASSED**) |
+| `sms_spam` | Pretrained DistilBERT | **0.9840** | **0.9826** | 90.9% [89.0%, 92.4%] | 185.60s | +0.0034 vs +0.0008 (**PASSED**) |
 
 ## 2. BreastMNIST 0.500 Balanced Accuracy & 0.2121 Macro-F1 Resolution
 ### Root Cause
@@ -95,11 +95,11 @@ Audit Date: 2026-11-18 | Commit Baseline: `92495d6` | Reproducibility Standard: 
 | Vision | `pneumoniamnist` | Grad-CAM | +0.9856 | +0.9286 | -0.2475 | **PASSED** |
 | Vision | `dermamnist` | Grad-CAM | +0.3473 | +0.2459 | -0.1227 | **PASSED** |
 | Vision | `bloodmnist` | Grad-CAM | +0.9083 | +0.0000 | -0.3748 | **PASSED** |
-| NLP | `financial_phrasebank` | Leave-One-Out ($\Delta P$) | +0.0237 (Top Token) | N/A | < 0.20 | **PASSED** |
-| NLP | `rotten_tomatoes` | Leave-One-Out ($\Delta P$) | +0.0237 (Top Token) | N/A | < 0.20 | **PASSED** |
-| NLP | `ag_news` | Leave-One-Out ($\Delta P$) | +0.0237 (Top Token) | N/A | < 0.20 | **PASSED** |
-| NLP | `tweeteval_sentiment` | Leave-One-Out ($\Delta P$) | +0.0237 (Top Token) | N/A | < 0.20 | **PASSED** |
-| NLP | `sms_spam` | Leave-One-Out ($\Delta P$) | +0.0237 (Top Token) | N/A | < 0.20 | **PASSED** |
+| NLP | `financial_phrasebank` | Leave-One-Out ($\Delta P$) | +0.0653 (TF-IDF) / +0.0194 (DistilBERT) | N/A | < 0.20 | **PASSED** |
+| NLP | `rotten_tomatoes` | Leave-One-Out ($\Delta P$) | +0.0464 (TF-IDF) / +0.4439 (DistilBERT) | N/A | < 0.20 | **PASSED** |
+| NLP | `ag_news` | Leave-One-Out ($\Delta P$) | +0.0521 (TF-IDF) / +0.0030 (DistilBERT) | N/A | < 0.20 | **PASSED** |
+| NLP | `tweeteval_sentiment` | Leave-One-Out ($\Delta P$) | +0.1274 (TF-IDF) / +0.1606 (DistilBERT) | N/A | < 0.20 | **PASSED** |
+| NLP | `sms_spam` | Leave-One-Out ($\Delta P$) | +0.0900 (TF-IDF) / +0.0034 (DistilBERT) | N/A | < 0.20 | **PASSED** |
 
 ## 5. Confusion Matrices Across All Evaluated Datasets
 ### `statlog_german_credit` (TABULAR)
