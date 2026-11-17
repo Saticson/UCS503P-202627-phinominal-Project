@@ -1,5 +1,7 @@
 package com.axiomcloud.service;
 
+import com.axiomcloud.service.ml.LabelNoiseDetector;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -31,16 +33,22 @@ public class MlEngineClient {
     private final String mlEngineUrl;
     private final com.axiomcloud.service.ml.SmileTrainer smileTrainer;
     private final com.axiomcloud.service.ml.SmileInferenceEngine smileInferenceEngine;
+    private final com.axiomcloud.service.ml.TabularProfiler tabularProfiler;
+    private final com.axiomcloud.service.ml.LabelNoiseDetector labelNoiseDetector;
 
     public MlEngineClient(@Value("${axiomcloud.ml-engine.url:http://localhost:8001}") String mlEngineUrl,
                           RestTemplateBuilder restTemplateBuilder,
                           ObjectMapper objectMapper,
                           com.axiomcloud.service.ml.SmileTrainer smileTrainer,
-                          com.axiomcloud.service.ml.SmileInferenceEngine smileInferenceEngine) {
+                          com.axiomcloud.service.ml.SmileInferenceEngine smileInferenceEngine,
+                          com.axiomcloud.service.ml.TabularProfiler tabularProfiler,
+                          com.axiomcloud.service.ml.LabelNoiseDetector labelNoiseDetector) {
         this.mlEngineUrl = mlEngineUrl.replaceAll("/+$", "");
         this.objectMapper = objectMapper;
         this.smileTrainer = smileTrainer;
         this.smileInferenceEngine = smileInferenceEngine;
+        this.tabularProfiler = tabularProfiler;
+        this.labelNoiseDetector = labelNoiseDetector;
         this.restTemplate = restTemplateBuilder
                 .setConnectTimeout(Duration.ofSeconds(3))
                 .setReadTimeout(Duration.ofMinutes(10))
@@ -234,6 +242,22 @@ public class MlEngineClient {
         }
 
         if (url.endsWith("/datasets/quality-report")) {
+            String filePath = (String) reqMap.get("file_path");
+            if (tabularProfiler != null && filePath != null) {
+                ObjectNode report = tabularProfiler.buildQualityReportJson(filePath);
+                if (labelNoiseDetector != null) {
+                    try {
+                        LabelNoiseDetector.NoiseReport noise = labelNoiseDetector.detectLabelErrors(filePath, null);
+                        if (noise.flaggedLabelErrors > 0) {
+                            ArrayNode recs = (ArrayNode) report.get("recommendations");
+                            recs.add(String.format("Confident Learning: Identified %d candidate mislabeled sample(s) (%.1f%% noise rate).",
+                                    noise.flaggedLabelErrors, noise.noiseRate));
+                        }
+                    } catch (Exception ignored) {}
+                }
+                return report;
+            }
+
             ObjectNode root = objectMapper.createObjectNode();
             root.put("quality_score", 94.0);
             root.put("missingness_percentage", 0.2);
@@ -246,6 +270,11 @@ public class MlEngineClient {
         }
 
         if (url.endsWith("/datasets/profile")) {
+            String filePath = (String) reqMap.get("file_path");
+            if (tabularProfiler != null && filePath != null) {
+                return tabularProfiler.buildProfileJson(filePath);
+            }
+
             ObjectNode root = objectMapper.createObjectNode();
             root.put("num_rows", 150);
             root.put("num_columns", 5);
