@@ -236,11 +236,19 @@ class GradCAM:
         denom = (np.sqrt(np.sum(c1**2)) * np.sqrt(np.sum(c2**2))) + 1e-8
         randomization_correlation = float(np.sum(c1 * c2) / denom)
 
+        # 4. Input perturbation stability check
+        noise = torch.randn_like(input_tensor) * 0.03
+        noisy_cam, _, _ = self.generate_heatmap(input_tensor + noise, pred_class)
+        c3 = noisy_cam.flatten() - noisy_cam.flatten().mean()
+        denom_stab = (np.sqrt(np.sum(c1**2)) * np.sqrt(np.sum(c3**2))) + 1e-8
+        stability_correlation = float(np.sum(c1 * c3) / denom_stab)
+
         return {
             "delta_deletion": round(float(delta_deletion), 4),
             "delta_insertion": round(float(delta_insertion), 4),
             "randomization_correlation": round(float(randomization_correlation), 4),
-            "fidelity_passed": bool(delta_deletion >= 0 and randomization_correlation < 0.6)
+            "stability_correlation": round(float(stability_correlation), 4),
+            "fidelity_passed": bool(delta_deletion >= 0 and randomization_correlation < 0.6 and stability_correlation > 0.5)
         }
 
 def train_vision_model(image_data, labels, class_names, architecture="convnet",
