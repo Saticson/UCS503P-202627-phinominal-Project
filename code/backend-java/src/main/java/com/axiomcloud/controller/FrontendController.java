@@ -282,7 +282,26 @@ public class FrontendController {
 
         if (!java.nio.file.Files.exists(targetFile)) {
             try {
-                java.nio.file.Files.writeString(targetFile, "Sukio Verified Model Binary Package (" + listing.getTitle() + ")\nFramework: " + listing.getFramework() + "\nMetric: " + listing.getMetricName() + " " + listing.getMetricScore());
+                if ("ONNX".equalsIgnoreCase(listing.getFramework())) {
+                    java.nio.file.Path bundledOnnx = java.nio.file.Paths.get("./code/storage/models/vision/mnist-8.onnx");
+                    if (java.nio.file.Files.exists(bundledOnnx)) {
+                        java.nio.file.Files.copy(bundledOnnx, targetFile, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+                if (!java.nio.file.Files.exists(targetFile)) {
+                    java.nio.file.Path bundledDir = java.nio.file.Paths.get("./storage/models");
+                    if (java.nio.file.Files.exists(bundledDir)) {
+                        try (java.util.stream.Stream<java.nio.file.Path> stream = java.nio.file.Files.list(bundledDir)) {
+                            java.util.Optional<java.nio.file.Path> sampleBin = stream.filter(p -> p.toString().endsWith(".bin")).findFirst();
+                            if (sampleBin.isPresent()) {
+                                java.nio.file.Files.copy(sampleBin.get(), targetFile, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                            }
+                        }
+                    }
+                }
+                if (!java.nio.file.Files.exists(targetFile)) {
+                    java.nio.file.Files.writeString(targetFile, "Sukio Verified Model Binary Package (" + listing.getTitle() + ")\nFramework: " + listing.getFramework() + "\nMetric: " + listing.getMetricName() + " " + listing.getMetricScore());
+                }
             } catch (Exception ignored) {}
         }
 
