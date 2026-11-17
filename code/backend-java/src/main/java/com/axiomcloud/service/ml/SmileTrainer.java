@@ -94,6 +94,7 @@ public class SmileTrainer {
 
             Path artifactPath = modelDir.resolve("model_" + jobId + "_random_forest.bin");
             Write.object((Serializable) rf, artifactPath);
+            long bytes = Files.size(artifactPath);
 
             double accuracy = evaluateClassificationAccuracy(rf, df, prep.getTargetColumn());
             double[] importances = rf.importance();
@@ -103,13 +104,14 @@ public class SmileTrainer {
             m.put("model_type", "random_forest");
             m.put("task_type", "classification");
             m.put("file_path", artifactPath.toAbsolutePath().toString());
+            m.put("file_size_bytes", bytes);
             m.put("accuracy", Math.round(accuracy * 1000.0) / 1000.0);
             m.put("f1_score", Math.round(accuracy * 0.98 * 1000.0) / 1000.0);
             m.put("roc_auc", 0.985);
             m.put("training_time", elapsed / 1000.0);
 
             populateFeatureImportances(m, prep.getFeatureNames(), importances);
-            logger.info("Random Forest trained: accuracy={} time={}ms file={}", accuracy, elapsed, artifactPath);
+            logger.info("Random Forest trained: accuracy={} time={}ms file={} bytes={}", accuracy, elapsed, artifactPath, bytes);
 
         } catch (Exception e) {
             logger.warn("Random Forest training failed: {}", e.getMessage());
@@ -158,6 +160,7 @@ public class SmileTrainer {
 
             Path artifactPath = modelDir.resolve("model_" + jobId + "_gradient_boosting.bin");
             Write.object((Serializable) gtb, artifactPath);
+            long bytes = Files.size(artifactPath);
 
             double accuracy = evaluateClassificationAccuracy(gtb, df, prep.getTargetColumn());
             double[] importances = gtb.importance();
@@ -167,6 +170,7 @@ public class SmileTrainer {
             m.put("model_type", "gradient_boosting");
             m.put("task_type", "classification");
             m.put("file_path", artifactPath.toAbsolutePath().toString());
+            m.put("file_size_bytes", bytes);
             m.put("accuracy", Math.round(accuracy * 1000.0) / 1000.0);
             m.put("f1_score", Math.round(accuracy * 0.99 * 1000.0) / 1000.0);
             m.put("roc_auc", 0.991);
