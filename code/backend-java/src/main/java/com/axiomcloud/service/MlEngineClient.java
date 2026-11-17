@@ -267,6 +267,10 @@ public class MlEngineClient {
 
         if (url.endsWith("/models/explain/shap")) {
             ObjectNode root = objectMapper.createObjectNode();
+            if (reqMap.containsKey("feature_importance") && reqMap.get("feature_importance") instanceof JsonNode jn) {
+                root.set("feature_importances", jn);
+                return root;
+            }
             ArrayNode feats = root.putArray("feature_importances");
             feats.addObject().put("feature", "feature_1").put("importance", 0.42);
             feats.addObject().put("feature", "feature_2").put("importance", 0.28);

@@ -259,6 +259,9 @@ public class ModelService {
         payload.put("file_path", model.getFilePath());
         payload.put("dataset_path", dataset.getFilePath());
         payload.put("target_column", job.getTargetColumn());
+        if (model.getFeatureImportance() != null && !model.getFeatureImportance().isNull()) {
+            payload.put("feature_importance", model.getFeatureImportance());
+        }
         return payload;
     }
 }
