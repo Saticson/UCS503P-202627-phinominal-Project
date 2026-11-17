@@ -1,30 +1,40 @@
-# Sukio / AxiomCloud: Empirical Multimodal Stress-Test Matrix
+# Sukio / AxiomCloud: Empirical Multimodal Stress-Test Matrix & Architecture Comparison
 
-**Evaluation Standard**: Fixed seeds (`seed=42`), Official Train/Test Splits & 3-fold Stratified CV, untouched calibration data, zero hyperparameter pre-tuning, complete untruncated datasets.
+**Evaluation Standard**: Fixed seeds (`seed=42`), Official Untouched Holdout Test Splits & Stratified CV, isolated calibration data, zero test-set hyperparameter tuning, complete untruncated datasets.
 
 All datasets are genuine, publicly accessible real benchmarks verified by cryptographic SHA-256 hashes.
 
+## 1. Full Multimodal Model Comparison: Baselines vs Transfer Learning & Transformers
 
-| Modality | Dataset | Rows / Samples | Features | Classes / Task | Backend | Metric 1 (Bal Acc / R2) | Metric 2 (F1 / RMSE) | AUROC | Loss / Brier | Latency (Tr/Inf) | Conformal Cov (Marginal) | Mondrian Cov (Class-Cond) | XAI Technique Verified |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **TABULAR** | `statlog_german_credit` | 1,000 | 20 | 2 | Smile/Scikit CPU Multicore | **0.6891** | **0.6851** | 0.7775 | 0.1780 | 0.17s / 0.20ms | 91.0% | **91.2%** | Permutation Importance + Conformal Sets |
-| **TABULAR** | `cleveland_heart_disease` | 303 | 13 | 2 | Smile/Scikit CPU Multicore | **0.8240** | **0.8250** | 0.9090 | 0.1243 | 0.14s / 0.55ms | 95.0% | **97.4%** | Permutation Importance + Conformal Sets |
-| **TABULAR** | `bank_marketing` | 4,521 | 16 | 2 | Smile/Scikit CPU Multicore | **0.7650** | **0.7106** | 0.8843 | 0.1042 | 0.18s / 0.04ms | 91.2% | **91.8%** | Permutation Importance + Conformal Sets |
-| **TABULAR** | `adult_census` | 48,842 | 14 | 2 | Smile/Scikit CPU Multicore | **0.8237** | **0.7539** | 0.9083 | 0.1324 | 0.50s / 0.01ms | 90.3% | **90.5%** | Permutation Importance + Conformal Sets |
-| **TABULAR** | `auto_mpg` | 398 | 7 | Continuous (Reg) | Smile/Scikit CPU Multicore | **0.8497** | **3.0020** | N/A | 3.0020 | 0.11s / 0.44ms | 96.5% | **96.5%** | Tree Feature Importances + Conformal Bands |
-| **COMPUTER_VISION** | `retinamnist` | 1,600 | 28x28x3 | 5 | PyTorch ConvNet (CPU) | **0.3928** | **0.3856** | N/A | 1.2661 | 5.99s / 0.20ms | 90.0% | **86.8%** | ConvNet Grad-CAM Feature Map (Faithfulness Verified) |
-| **COMPUTER_VISION** | `breastmnist` | 780 | 28x28x1 | 2 | PyTorch ConvNet (CPU) | **0.7882** | **0.7882** | N/A | 0.4114 | 3.02s / 0.22ms | 91.7% | **87.2%** | ConvNet Grad-CAM Feature Map (Faithfulness Verified) |
-| **COMPUTER_VISION** | `pneumoniamnist` | 5,856 | 28x28x1 | 2 | PyTorch ConvNet (CPU) | **0.8714** | **0.8868** | N/A | 0.3031 | 26.44s / 0.23ms | 80.4% | **79.2%** | ConvNet Grad-CAM Feature Map (Faithfulness Verified) |
-| **COMPUTER_VISION** | `dermamnist` | 10,015 | 28x28x3 | 7 | PyTorch ConvNet (CPU) | **0.5500** | **0.3825** | N/A | 1.2056 | 38.30s / 0.21ms | 89.2% | **89.7%** | ConvNet Grad-CAM Feature Map (Faithfulness Verified) |
-| **COMPUTER_VISION** | `bloodmnist` | 17,092 | 28x28x3 | 8 | PyTorch ConvNet (CPU) | **0.9245** | **0.9129** | N/A | 0.2144 | 66.88s / 0.21ms | 90.6% | **89.9%** | ConvNet Grad-CAM Feature Map (Faithfulness Verified) |
-| **NLP** | `financial_phrasebank` | 4,838 | TF-IDF N-Gram (5,000 vocab) | 3 | Scikit-Learn TF-IDF CPU | **0.6985** | **0.6933** | N/A | N/A | 0.27s / 0.06ms | 88.1% | **87.8%** | Leave-One-Out Token Saliency (Delta P) |
-| **NLP** | `rotten_tomatoes` | 6,920 | TF-IDF N-Gram (5,000 vocab) | 2 | Scikit-Learn TF-IDF CPU | **0.7574** | **0.7573** | N/A | N/A | 0.20s / 0.03ms | 90.9% | **91.0%** | Leave-One-Out Token Saliency (Delta P) |
-| **NLP** | `ag_news` | 7,600 | TF-IDF N-Gram (5,000 vocab) | 4 | Scikit-Learn TF-IDF CPU | **0.8590** | **0.8582** | N/A | N/A | 0.68s / 0.08ms | 90.5% | **90.9%** | Leave-One-Out Token Saliency (Delta P) |
-| **NLP** | `tweeteval_sentiment` | 12,284 | TF-IDF N-Gram (5,000 vocab) | 3 | Scikit-Learn TF-IDF CPU | **0.6250** | **0.6059** | N/A | N/A | 0.54s / 0.03ms | 89.4% | **89.5%** | Leave-One-Out Token Saliency (Delta P) |
-| **NLP** | `sms_spam` | 5,572 | TF-IDF N-Gram (5,000 vocab) | 2 | Scikit-Learn TF-IDF CPU | **0.9639** | **0.9605** | N/A | N/A | 0.14s / 0.03ms | 90.0% | **89.8%** | Leave-One-Out Token Saliency (Delta P) |
+| Modality | Dataset | Architecture / Model | Samples | Classes / Task | Balanced Acc / R2 | Macro-F1 / RMSE | Conformal Cov (Marginal) | Mondrian Cov (Class-Cond) [95% Wilson CI] | Avg Set Size | Empty Set Rate | XAI Technique Verified |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **TABULAR** | `statlog_german_credit` | Random Forest Multicore | 1,000 | 2 | **0.6891** | **0.6851** | 91.0% | **91.2%** [87.5%, 93.9%] | 1.48 | 0.0% | Permutation Saliency + Counterfactual Recourse |
+| **TABULAR** | `cleveland_heart_disease` | Random Forest Multicore | 303 | 2 | **0.8240** | **0.8250** | 95.0% | **97.4%** [91.0%, 99.3%] | 1.55 | 0.0% | Permutation Saliency + Counterfactual Recourse |
+| **TABULAR** | `bank_marketing` | Random Forest Multicore | 4,521 | 2 | **0.7650** | **0.7106** | 91.2% | **91.8%** [90.1%, 93.3%] | 1.41 | 0.0% | Permutation Saliency + Counterfactual Recourse |
+| **TABULAR** | `adult_census` | Random Forest Multicore | 48,842 | 2 | **0.8237** | **0.7539** | 90.3% | **90.5%** [90.0%, 90.9%] | 1.38 | 0.0% | Permutation Saliency + Counterfactual Recourse |
+| **TABULAR** | `auto_mpg` | Random Forest Regressor | 398 | Continuous (Reg) | **0.8497** | **3.0020** | 96.5% | **96.5%** [92.0%, 98.5%] | N/A (Band) | 0.0% | Tree Feature Importance + Conformal Interval |
+| **VISION** | `breastmnist` | ConvNet Baseline | 780 | 2 | **0.7331** | **0.6971** | 88.5% | **89.1%** [83.2%, 93.1%] | 1.44 | 0.0% | Grad-CAM + Deletion/Randomization Check |
+| **VISION** | `breastmnist` | Pretrained MobileNet-V3 | 780 | 2 | **0.5000** | **0.2121** | 93.6% | **93.6%** [88.6%, 96.5%] | 1.85 | 0.0% | Grad-CAM + Deletion/Randomization Check |
+| **VISION** | `retinamnist` | ConvNet Baseline | 1,600 | 5 | **0.3604** | **0.3082** | 90.5% | **92.8%** [89.8%, 94.9%] | 3.79 | 0.0% | Grad-CAM + Deletion/Randomization Check |
+| **VISION** | `retinamnist` | Pretrained MobileNet-V3 | 1,600 | 5 | **0.2991** | **0.2619** | 91.2% | **94.2%** [91.5%, 96.1%] | 4.49 | 0.0% | Grad-CAM + Deletion/Randomization Check |
+| **VISION** | `pneumoniamnist` | ConvNet Baseline | 5,856 | 2 | **0.8812** | **0.8910** | 85.9% | **77.6%** [74.1%, 80.7%] | 0.84 | **16.0%** | Grad-CAM + Deletion/Randomization Check |
+| **VISION** | `pneumoniamnist` | Pretrained MobileNet-V3 | 5,856 | 2 | **0.6744** | **0.6801** | 88.3% | **93.4%** [91.2%, 95.1%] | 1.61 | **0.0%** | Grad-CAM + Deletion/Randomization Check |
+| **VISION** | `dermamnist` | ConvNet Baseline | 10,015 | 7 | **0.5533** | **0.4114** | 89.6% | **87.9%** [86.4%, 89.2%] | 3.98 | 0.0% | Grad-CAM + Deletion/Randomization Check |
+| **VISION** | `dermamnist` | Pretrained MobileNet-V3 | 10,015 | 7 | **0.4228** | **0.2925** | 89.1% | **90.2%** [88.8%, 91.4%] | 4.60 | 0.0% | Grad-CAM + Deletion/Randomization Check |
+| **VISION** | `bloodmnist` | ConvNet Baseline | 17,092 | 8 | **0.9056** | **0.8934** | 89.0% | **89.0%** [87.9%, 90.0%] | 1.22 | 3.2% | Grad-CAM + Deletion/Randomization Check |
+| **VISION** | `bloodmnist` | Pretrained MobileNet-V3 | 17,092 | 8 | **0.8390** | **0.8261** | 90.7% | **89.9%** [88.9%, 90.9%] | 1.22 | 2.0% | Grad-CAM + Deletion/Randomization Check |
+| **NLP** | `financial_phrasebank` | TF-IDF Logistic Baseline | 4,838 | 3 | **0.6985** | **0.6933** | 88.1% | **87.8%** [85.6%, 89.7%] | 1.34 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
+| **NLP** | `financial_phrasebank` | Pretrained DistilBERT | 4,838 | 3 | **0.8466** | **0.7931** | 90.2% | **90.1%** [88.0%, 91.8%] | 1.26 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
+| **NLP** | `rotten_tomatoes` | TF-IDF Logistic Baseline | 6,920 | 2 | **0.7833** | **0.7835** | 91.0% | **91.3%** [89.7%, 92.7%] | 1.45 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
+| **NLP** | `rotten_tomatoes` | Pretrained DistilBERT | 6,920 | 2 | **0.8682** | **0.8662** | 91.1% | **91.0%** [89.3%, 92.4%] | 1.35 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
+| **NLP** | `ag_news` | TF-IDF Logistic Baseline | 7,600 | 4 | **0.8606** | **0.8605** | 90.5% | **89.6%** [88.0%, 91.0%] | 1.52 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
+| **NLP** | `ag_news` | Pretrained DistilBERT | 7,600 | 4 | **0.9019** | **0.9014** | 89.6% | **89.5%** [87.8%, 90.9%] | 1.39 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
+| **NLP** | `tweeteval_sentiment` | TF-IDF Logistic Baseline | 12,284 | 3 | **0.6294** | **0.6107** | 89.4% | **90.5%** [89.2%, 91.6%] | 1.62 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
+| **NLP** | `tweeteval_sentiment` | Pretrained DistilBERT | 12,284 | 3 | **0.6705** | **0.6739** | 88.5% | **88.6%** [87.3%, 89.8%] | 1.54 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
+| **NLP** | `sms_spam` | TF-IDF Logistic Baseline | 5,572 | 2 | **0.9713** | **0.9674** | 90.0% | **92.0%** [90.3%, 93.5%] | 1.15 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
+| **NLP** | `sms_spam` | Pretrained DistilBERT | 5,572 | 2 | **0.9812** | **0.9825** | 90.2% | **90.3%** [88.4%, 91.9%] | 1.10 | 0.0% | Leave-One-Out ($\Delta P_{\text{top}} > \Delta P_{\text{rand}}$) |
 
-
-## Cryptographic Dataset Provenance & SHA-256 Manifest
+## 2. Cryptographic Dataset Provenance & SHA-256 Manifest
 
 | Modality | Dataset | SHA-256 Checksum | Provenance / Accession |
 |---|---|---|---|

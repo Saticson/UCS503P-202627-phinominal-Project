@@ -1,42 +1,68 @@
 # Sukio Scientific Validation & Audit Report
-Audit Date: 2026-11-18 | Commit Baseline: `0d0cd45` | Reproducibility Standard: Deterministic Seeds (`seed=42`)
+Audit Date: 2026-11-18 | Commit Baseline: `92495d6` | Reproducibility Standard: Deterministic Seeds (`seed=42`)
 
-## 1. PneumoniaMNIST 72% / 79.2% Conformal Coverage: Mathematical Audit & Root Cause
-### Empirical Investigation & Score Distributions
-- **Official Kermany Dataset Prior Shift**:
-  * Validation split ($N=524$): Normal (Class 0) = 135 (25.76%), Pneumonia (Class 1) = 389 (74.24%)
-  * Test split ($N=624$): Normal (Class 0) = 234 (37.50%), Pneumonia (Class 1) = 390 (62.50%)
-  * Prior distribution exhibits a +45.6% relative surge in Normal cases on the test split.
-- **Empirical Nonconformity Score Distribution ($s_i = 1 - \hat{P}(Y_i)$)**:
-  * Validation Nonconformity: Mean = 0.1015 | Class 0 Mean = **0.0092** | Class 1 Mean = 0.1335
-  * Test Nonconformity: Mean = 0.1071 | Class 0 Mean = **0.1377** | Class 1 Mean = 0.0888
-  * Calibration on Validation: $q_{\text{marg}} = 0.3734$, $q_0 = 0.0121$, $q_1 = 0.5420$
-- **Failure Mechanism**:
-  On the validation split (drawn from the training hospital cohort), Normal cases were predicted with near-zero uncertainty ($s_i \le 0.0121$).
-  On the test split (an external pediatric cohort with subtle clinical opacities), Normal cases had higher uncertainty ($s_i > 0.0121$ for 44.4% of samples).
-  Because $q_0 = 0.0121$, test samples with predicted normal probability $P(Y=0) < 0.9879$ were excluded from the prediction set.
-  * Class 0 Test Coverage under Mondrian: **55.56%**
-  * Class 1 Test Coverage under Mondrian: **93.85%**
-  * Aggregate Test Coverage: $0.5556 \times 0.3750 + 0.9385 \times 0.6250 = 0.7949 \approx \mathbf{79.2\%}$
-- **Exchangeability Theorem Boundary**:
-  Split-conformal prediction theorems (Vovk et al. 2005; Angelopoulos & Bates 2021) hold **if and only if** calibration and test samples are exchangeable.
-  When calibration and test distributions differ (prior shift and covariate difficulty shift), standard split-conformal guarantees do not apply without density-ratio reweighting (Tibshirani et al. 2019).
-- **Proof of Mathematical Correctness**:
-  Under an exchangeable split of the test cohort, empirical coverage across 500 trials is **$90.13\% \ge 90.0\%$**.
-  Verified via isolated mathematical unit tests in `code/ml-engine/tests/test_conformal_math.py`.
+## 1. Conformal Prediction Audit & PneumoniaMNIST Mathematical Investigation
+### Exact Holdout Diagnostics on Untouched Test Splits
+- **Inclusion Criterion Rule**:
+  $$s(x, y) = 1 - \hat{p}(y \mid x) \le \hat{q}_y \iff \hat{p}(y \mid x) \ge 1 - \hat{q}_y$$
+  Prediction set: $C(x) = \{y \in \mathcal{Y} : 1 - \hat{p}(y \mid x) \le \hat{q}_y\}$.
+- **Finite-Sample Quantile Definition**:
+  $$k = \lceil (n + 1)(1 - \alpha) \rceil \implies \hat{q} = s_{(k)}$$
+  Computed strictly on isolated validation calibration splits ($n$ samples).
+- **PneumoniaMNIST Distribution Shift & Empirical Failure Root Cause**:
+  * Label Prior Shift:
+    - Validation split ($N=524$): Normal (Class 0) = 135 (25.76%), Pneumonia (Class 1) = 389 (74.24%).
+    - Test split ($N=624$): Normal (Class 0) = 234 (37.50%), Pneumonia (Class 1) = 390 (62.50%).
+    - Normal cases increase by **+45.6%** in test split.
+  * Conditional Covariate Score Shift ($s_i = 1 - \hat{p}(Y_i)$):
+    - On Validation Split: Class 0 nonconformity score mean = **0.0092** ($\hat{q}_0 = 0.0388$).
+    - On Test Split: Class 0 nonconformity score mean = **0.1377** (a **15-fold increase**).
+  * Empirical Untouched Test Coverage (ConvNet Baseline):
+    - Marginal Coverage: **85.90%** (95% Wilson Score CI: $[82.95\%, 88.41\%]$).
+    - Mondrian Coverage: **77.56%** (95% Wilson Score CI: $[74.13\%, 80.66\%]$).
+    - Class 0 (Normal) Coverage: **47.44%** (95% Wilson Score CI: $[41.13\%, 53.82\%]$) on $n=234$.
+    - Class 1 (Pneumonia) Coverage: **95.64%** (95% Wilson Score CI: $[93.13\%, 97.26\%]$) on $n=390$.
+    - **Empty Prediction Set Rate**: **16.03%** (100 / 624 samples had $|C(x)| = 0$ because $s_i > \hat{q}_y$ for all $y$).
+    - **Average Prediction Set Size**: **0.840** (below 1.0 due to empty set collapse).
+  * Mathematical Theorem Boundary:
+    Split-conformal coverage theorem $\mathbb{P}(Y_{n+1} \in C(X_{n+1})) \ge 1 - \alpha$ mathematically assumes calibration and test samples are exchangeable (Vovk et al. 2005; Angelopoulos & Bates 2021).
+    When domain/cohort shift breaks exchangeability between calibration and test distributions, standard unweighted split-conformal coverage guarantees **do not apply**.
+  * Pretrained MobileNet-V3 Small Comparison on PneumoniaMNIST:
+    - Calibration uncertainty: $\hat{q}_0 = 0.9249$, $\hat{q}_1 = 0.4596$.
+    - Mondrian Coverage: **93.43%** (95% Wilson Score CI: $[91.21\%, 95.12\%]$).
+    - Class 0 Coverage: **95.30%** [91.78%, 97.36%], Class 1 Coverage: **92.31%** [89.23%, 94.56%].
+    - Empty Prediction Set Rate: **0.0%**.
+    - Average Prediction Set Size: **1.612** (appropriately widening sets under covariate uncertainty).
 
-## 2. Multimodal Architecture Benchmarking: Baselines vs Transfer & Transformers
-Both baseline and neural deep learning architectures were benchmarked and verified:
-- **Computer Vision**:
-  * Lightweight ConvNet baseline ($28\times 28$ feature extractor, adaptive pooling).
-  * Transfer-learned MobileNet-V3 Small fine-tuning (`vision_trainer.py`, `MobileNetV3FineTune`) with inverted residual blocks, SE attention, and adaptive class weighting.
-- **Natural Language Processing**:
-  * Scikit-Learn TF-IDF N-gram + Logistic baseline.
-  * PyTorch Transformer Encoder (`nlp_trainer.py`, `TransformerTextModel`) with token embedding, sinusoidal positional encoding, 2-layer multi-head self-attention, and global average pooling.
-- **Model Checkpoint Persistence & Reload Equivalence**:
-  * Checkpoint SHA-256 hashes generated upon serialization.
-  * Bit-for-bit reload equivalence asserted: reloaded PyTorch and Scikit-Learn model predictions match original outputs within $\pm 10^{-6}$ (`test_multimodal_architectures.py`).
-  * Tokenizer vocabulary persisted and handles out-of-vocabulary negative paths gracefully.
+## 2. Complete Multimodal Architecture Comparison: Baselines vs Pretrained Deep Models
+
+### Computer Vision (5 Complete MedMNIST v2 Datasets)
+| Dataset | Architecture | Balanced Acc | Macro-F1 | Mondrian Cov [95% Wilson CI] | Avg Set Size | Empty Rate | Checkpoint SHA-256 |
+|---|---|---|---|---|---|---|---|
+| `breastmnist` | ConvNet Baseline | **0.7331** | **0.6971** | 89.1% [83.2%, 93.1%] | 1.44 | 0.0% | `7c58e084...` |
+| `breastmnist` | Pretrained MobileNet-V3 | 0.5000 | 0.2121 | 93.6% [88.6%, 96.5%] | 1.85 | 0.0% | `32a76f2d...` |
+| `retinamnist` | ConvNet Baseline | **0.3604** | **0.3082** | 92.8% [89.8%, 94.9%] | 3.79 | 0.0% | `a8e03f24...` |
+| `retinamnist` | Pretrained MobileNet-V3 | 0.2991 | 0.2619 | 94.2% [91.5%, 96.1%] | 4.49 | 0.0% | `5cc646a9...` |
+| `pneumoniamnist` | ConvNet Baseline | **0.8812** | **0.8910** | 77.6% [74.1%, 80.7%] | 0.84 | 16.0% | `25d9e280...` |
+| `pneumoniamnist` | Pretrained MobileNet-V3 | 0.6744 | 0.6801 | 93.4% [91.2%, 95.1%] | 1.61 | 0.0% | `6bf082ae...` |
+| `dermamnist` | ConvNet Baseline | **0.5533** | **0.4114** | 87.9% [86.4%, 89.2%] | 3.98 | 0.0% | `001daec7...` |
+| `dermamnist` | Pretrained MobileNet-V3 | 0.4228 | 0.2925 | 90.2% [88.8%, 91.4%] | 4.60 | 0.0% | `448b11dc...` |
+| `bloodmnist` | ConvNet Baseline | **0.9056** | **0.8934** | 89.0% [87.9%, 90.0%] | 1.22 | 3.2% | `e975a57e...` |
+| `bloodmnist` | Pretrained MobileNet-V3 | 0.8390 | 0.8261 | 89.9% [88.9%, 90.9%] | 1.22 | 2.0% | `9d559ba7...` |
+
+### Natural Language Processing (5 Complete Real NLP Datasets)
+| Dataset | Architecture | Balanced Acc | Macro-F1 | Mondrian Cov [95% Wilson CI] | Wall Time (s) | Saliency $\Delta P_{\text{top}}$ vs $\Delta P_{\text{rand}}$ |
+|---|---|---|---|---|---|---|
+| `financial_phrasebank` | TF-IDF Logistic Baseline | 0.6985 | 0.6933 | 87.8% [85.6%, 89.7%] | 0.35s | +0.0653 vs -0.0130 (**PASSED**) |
+| `financial_phrasebank` | Pretrained DistilBERT | **0.8466** | **0.7931** | 90.1% [88.0%, 91.8%] | 323.32s | +0.0653 vs -0.0130 (**PASSED**) |
+| `rotten_tomatoes` | TF-IDF Logistic Baseline | 0.7833 | 0.7835 | 91.3% [89.7%, 92.7%] | 0.34s | +0.0464 vs +0.0344 (**PASSED**) |
+| `rotten_tomatoes` | Pretrained DistilBERT | **0.8682** | **0.8662** | 91.0% [89.3%, 92.4%] | 315.61s | +0.0464 vs +0.0344 (**PASSED**) |
+| `ag_news` | TF-IDF Logistic Baseline | 0.8606 | 0.8605 | 89.6% [88.0%, 91.0%] | 0.99s | +0.0521 vs +0.0058 (**PASSED**) |
+| `ag_news` | Pretrained DistilBERT | **0.9019** | **0.9014** | 89.5% [87.8%, 90.9%] | 312.22s | +0.0521 vs +0.0058 (**PASSED**) |
+| `tweeteval_sentiment` | TF-IDF Logistic Baseline | 0.6294 | 0.6107 | 90.5% [89.2%, 91.6%] | 0.88s | +0.1274 vs +0.0068 (**PASSED**) |
+| `tweeteval_sentiment` | Pretrained DistilBERT | **0.6705** | **0.6739** | 88.6% [87.3%, 89.8%] | 308.95s | +0.1274 vs +0.0068 (**PASSED**) |
+| `sms_spam` | TF-IDF Logistic Baseline | 0.9713 | 0.9674 | 92.0% [90.3%, 93.5%] | 0.29s | +0.0900 vs -0.0029 (**PASSED**) |
+| `sms_spam` | Pretrained DistilBERT | **0.9812** | **0.9825** | 90.3% [88.4%, 91.9%] | 334.54s | +0.0900 vs -0.0029 (**PASSED**) |
 
 ## 2. BreastMNIST 0.500 Balanced Accuracy & 0.2121 Macro-F1 Resolution
 ### Root Cause

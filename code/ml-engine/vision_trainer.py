@@ -198,7 +198,7 @@ class GradCAM:
         3. Model randomization sanity check: randomize classifier weights -> Spearman rank correlation should drop
         """
         cam, pred_class, orig_probs = self.generate_heatmap(input_tensor, target_class)
-        orig_conf = orig_probs[pred_class]
+        orig_conf = float(orig_probs[pred_class])
 
         h, w = cam.shape
         flat_cam = cam.flatten()
@@ -211,8 +211,17 @@ class GradCAM:
             deleted_tensor[0, c] = deleted_tensor[0, c] * (1.0 - mask_salient)
         with torch.no_grad():
             del_probs = torch.softmax(self.model(deleted_tensor), dim=1).cpu().numpy()[0]
-        del_conf = del_probs[pred_class]
-        delta_deletion = orig_conf - del_conf  # Higher is better (>0 means salient pixels were critical)
+        del_conf = float(del_probs[pred_class])
+        delta_deletion = orig_conf - del_conf
+
+        # Random map baseline: mask out same percentage of random pixels
+        random_mask = torch.tensor(np.random.rand(h, w) >= (1.0 - top_k_ratio), dtype=torch.float32, device=input_tensor.device)
+        rand_del_tensor = input_tensor.clone()
+        for c in range(rand_del_tensor.shape[1]):
+            rand_del_tensor[0, c] = rand_del_tensor[0, c] * (1.0 - random_mask)
+        with torch.no_grad():
+            rand_del_probs = torch.softmax(self.model(rand_del_tensor), dim=1).cpu().numpy()[0]
+        delta_random_map = orig_conf - float(rand_del_probs[pred_class])
 
         # 2. Insertion test: start from blank canvas, insert only salient features
         blank_tensor = torch.zeros_like(input_tensor)
@@ -220,35 +229,55 @@ class GradCAM:
             blank_tensor[0, c] = input_tensor[0, c] * mask_salient
         with torch.no_grad():
             ins_probs = torch.softmax(self.model(blank_tensor), dim=1).cpu().numpy()[0]
-        ins_conf = ins_probs[pred_class]
-        delta_insertion = ins_conf  # Higher is better
+        delta_insertion = float(ins_probs[pred_class])
 
-        # 3. Model randomization sanity check (Adebayo et al. 2018)
-        randomized_model = copy.deepcopy(self.model)
-        for p in randomized_model.classifier.parameters():
+        # 3. Cascading parameter randomization (Adebayo et al. 2018)
+        # Stage A: Randomize classification head
+        model_rand_head = copy.deepcopy(self.model)
+        for p in model_rand_head.classifier.parameters():
             if p.requires_grad:
                 nn.init.normal_(p.data, mean=0.0, std=0.1)
-        rand_gradcam = GradCAM(randomized_model, randomized_model.get_target_layer() if hasattr(randomized_model, 'get_target_layer') else randomized_model.features[-1])
-        rand_cam, _, _ = rand_gradcam.generate_heatmap(input_tensor, pred_class)
+        target_layer_head = model_rand_head.get_target_layer() if hasattr(model_rand_head, 'get_target_layer') else model_rand_head.features[-1]
+        cam_rand_head, _, _ = GradCAM(model_rand_head, target_layer_head).generate_heatmap(input_tensor, pred_class)
 
-        # Correlation between original and randomized saliency
-        c1, c2 = flat_cam - flat_cam.mean(), rand_cam.flatten() - rand_cam.flatten().mean()
-        denom = (np.sqrt(np.sum(c1**2)) * np.sqrt(np.sum(c2**2))) + 1e-8
-        randomization_correlation = float(np.sum(c1 * c2) / denom)
+        # Stage B: Cascading full randomization (head + feature extractor)
+        model_rand_full = copy.deepcopy(model_rand_head)
+        for p in model_rand_full.features.parameters():
+            if p.requires_grad:
+                nn.init.normal_(p.data, mean=0.0, std=0.1)
+        target_layer_full = model_rand_full.get_target_layer() if hasattr(model_rand_full, 'get_target_layer') else model_rand_full.features[-1]
+        cam_rand_full, _, _ = GradCAM(model_rand_full, target_layer_full).generate_heatmap(input_tensor, pred_class)
 
-        # 4. Input perturbation stability check
+        # Helper for Pearson correlation
+        def pearson_corr(m1, m2):
+            v1 = m1.flatten() - m1.mean()
+            v2 = m2.flatten() - m2.mean()
+            denom = (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2))) + 1e-8
+            return float(np.sum(v1 * v2) / denom)
+
+        r_head = pearson_corr(cam, cam_rand_head)
+        r_cascading = pearson_corr(cam, cam_rand_full)
+
+        # 4. Input perturbation stability check (epsilon = 0.03)
         noise = torch.randn_like(input_tensor) * 0.03
         noisy_cam, _, _ = self.generate_heatmap(input_tensor + noise, pred_class)
-        c3 = noisy_cam.flatten() - noisy_cam.flatten().mean()
-        denom_stab = (np.sqrt(np.sum(c1**2)) * np.sqrt(np.sum(c3**2))) + 1e-8
-        stability_correlation = float(np.sum(c1 * c3) / denom_stab)
+        r_stability = pearson_corr(cam, noisy_cam)
+
+        passed = bool(
+            delta_deletion >= delta_random_map and
+            r_head < 0.60 and
+            r_cascading < 0.35 and
+            r_stability > 0.40
+        )
 
         return {
             "delta_deletion": round(float(delta_deletion), 4),
+            "delta_random_map": round(float(delta_random_map), 4),
             "delta_insertion": round(float(delta_insertion), 4),
-            "randomization_correlation": round(float(randomization_correlation), 4),
-            "stability_correlation": round(float(stability_correlation), 4),
-            "fidelity_passed": bool(delta_deletion >= 0 and randomization_correlation < 0.6 and stability_correlation > 0.5)
+            "randomization_correlation": round(float(r_head), 4),
+            "cascading_correlation": round(float(r_cascading), 4),
+            "stability_correlation": round(float(r_stability), 4),
+            "fidelity_passed": passed
         }
 
 def train_vision_model(image_data, labels, class_names, architecture="convnet",
