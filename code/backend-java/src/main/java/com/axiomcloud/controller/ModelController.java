@@ -48,6 +48,15 @@ public class ModelController {
         return ResponseEntity.ok(modelService.getShapExplanation(id, sampleIndex, nsamples));
     }
 
+    @PostMapping("/models/explain/shap")
+    public ResponseEntity<JsonNode> explainShapPost(@RequestBody(required = false) Map<String, Object> body) {
+        if (body != null && body.containsKey("model_id")) {
+            int modelId = ((Number) body.get("model_id")).intValue();
+            return ResponseEntity.ok(modelService.getShapExplanation(modelId, 0, 200));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
     @PostMapping("/models/{id}/lime")
     public ResponseEntity<JsonNode> getLimePost(
             @PathVariable("id") int id,
