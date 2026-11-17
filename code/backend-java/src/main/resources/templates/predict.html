@@ -190,7 +190,7 @@
                             <!-- SOTA Conformal Prediction Set -->
                             <div th:if="${prediction.conformalPredictionSet != null}" style="margin-top: 0.85rem; padding: 0.5rem 0.75rem; background: rgba(167, 139, 250, 0.12); border: 1px solid rgba(167, 139, 250, 0.35); border-radius: 6px; font-size: 0.85rem;">
                                 <strong style="color: var(--primary);">Conformal Prediction Set (90% Coverage Guarantee):</strong>
-                                <span style="font-family: monospace; color: #fff; margin-left: 0.35rem;" th:text="${'{' + #strings.listJoin(prediction.conformalPredictionSet, ', ') + '}'}">{positive}</span>
+                                <span style="font-family: monospace; color: #fff; margin-left: 0.35rem;" th:text="${prediction.conformalPredictionSet}">{positive}</span>
                             </div>
 
                             <!-- SOTA Actionable Counterfactual Recourse -->
