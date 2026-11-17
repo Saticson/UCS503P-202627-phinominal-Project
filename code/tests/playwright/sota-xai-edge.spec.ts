@@ -140,13 +140,12 @@ test.describe('Sukio SOTA Architecture — Edge Ingestion, XAI & Showcases', () 
     const analyzeBtn = page.locator('#btn-run-nlp-prediction');
     await expect(analyzeBtn).toBeVisible();
     await analyzeBtn.click();
-    await page.waitForTimeout(1000);
 
     // Verify result card and token badges
     const nlpResult = page.locator('#nlp-result');
     await expect(nlpResult).toBeVisible();
     await expect(nlpResult).toContainText('NLP Prediction & Token Attribution');
-    await expect(nlpResult).toContainText('Leave-One-Out Token Saliency Attribution');
+    await expect(nlpResult).toContainText('Leave-One-Out Token Saliency Attribution', { timeout: 15000 });
 
     const badgeContainer = page.locator('#token-attribution-container');
     await expect(badgeContainer).toBeVisible();

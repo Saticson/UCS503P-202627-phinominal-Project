@@ -58,3 +58,23 @@ To fulfill the hard requirement that **no advertised modality remains unsupporte
    - Implements **Token Saliency Attribution**: evaluates leave-one-out probability deltas for each token $\Delta P(w_i) = P(y \mid x) - P(y \mid x_{\setminus i})$ to produce genuine, input-sensitive token importance.
 3. **Tabular Engine Audit**:
    - Replace synthetic feature importance fallbacks in `MlEngineClient.java` with true permutation importance computed directly from the fitted `PipelineBundle`.
+
+---
+
+## 4. Retraction of Truncated Benchmark Results & Metric Reuse
+
+- **Audit Findings**:
+  1. `Adult Census Income`: Truncated with `.head(2500)` in `fetch_real_datasets.py`, discarding the remaining 30,000+ official rows of UCI Adult.
+  2. `MedMNIST Vision Datasets`: Arbitrarily capped with `max_train = 2000, max_test = 500` in `benchmark_evaluator.py`, discarding official split sizes.
+  3. `NLP Datasets`: Arbitrarily capped with `.head(3000)` in `fetch_real_datasets.py` and `benchmark_evaluator.py`.
+  4. `Vision Conformal Coverage`: Line 301 of `benchmark_evaluator.py` hardcoded `"conformal_coverage": 0.912` across all five vision tasks instead of computing empirical coverage on held-out test splits.
+  5. `Java Dispatcher Fallback Metrics`: `GpuAutoMlDispatcher.java` contained fallback mock numbers (`accuracy: 0.950` for vision, `0.940` for NLP), and `SmileTrainer.java` contained `roc_auc: 0.950`.
+
+- **Retraction Statement**:
+  > **Official Retraction**: All benchmark scores in `EMPIRICAL_5_DATASETS_PER_MODALITY_MATRIX.md` generated with arbitrary dataset truncation (`.head(2500)`, `max_train = 2000`, `max_test = 500`, `.head(3000)`) and the hardcoded `0.912` vision conformal coverage metric are officially retracted.
+
+- **Remediation Mandate**:
+  1. Evaluate ONLY full, untruncated official datasets and official splits.
+  2. Implement genuine empirical conformal prediction set computation for Vision and NLP on held-out calibration/test splits, recording exact empirical coverage and prediction set sizes.
+  3. Remove all mock metrics, canned accuracies, and synthetic fallbacks from Java controllers and dispatchers. Any failed training or inference must fail cleanly with descriptive error diagnostics rather than emitting fake numbers.
+

@@ -118,7 +118,7 @@ test.describe('Sukio Marketplace & Computer Vision Integration Suite', () => {
     await page.waitForTimeout(800);
 
     await expect(resultBox.locator('#vision-predicted-class')).toContainText('Defective');
-    await expect(resultBox.locator('#vision-confidence')).toContainText('94.6%');
+    await expect(resultBox.locator('#vision-confidence')).toContainText(/\d{2}\.\d+%/);
   });
 
   test('6. Hire Funnel: publishes expert commission request and lists on board', async ({ page }) => {

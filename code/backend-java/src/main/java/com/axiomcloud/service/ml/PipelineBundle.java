@@ -158,28 +158,45 @@ public class PipelineBundle implements Serializable {
      * Scores the preprocessed tuple against the fitted estimator.
      */
     public PredictionResult score(Tuple tuple) {
+        if ("regression".equalsIgnoreCase(taskType)) {
+            double pred = 0.0;
+            if (estimator instanceof smile.regression.RandomForest rfReg) {
+                pred = rfReg.predict(tuple);
+            } else if (estimator instanceof smile.regression.GradientTreeBoost gtbReg) {
+                pred = gtbReg.predict(tuple);
+            } else if (estimator instanceof smile.regression.RegressionTree dtReg) {
+                pred = dtReg.predict(tuple);
+            }
+            return new PredictionResult(0, String.format(Locale.ROOT, "%.4f", pred), 1.0, new double[]{pred});
+        }
+
         int predictedClass = 0;
-        double confidence = 0.95;
-        double[] posteriors = null;
+        double confidence = 0.50;
+        int numClasses = (idToLabel != null && !idToLabel.isEmpty()) ? Math.max(2, idToLabel.size()) : 2;
+        double[] posteriors = new double[numClasses];
 
         if (estimator instanceof RandomForest rf) {
-            posteriors = new double[idToLabel.isEmpty() ? 2 : Math.max(2, idToLabel.size())];
             predictedClass = rf.predict(tuple, posteriors);
             if (posteriors.length > predictedClass && predictedClass >= 0) {
                 confidence = posteriors[predictedClass];
             }
         } else if (estimator instanceof GradientTreeBoost gtb) {
-            posteriors = new double[idToLabel.isEmpty() ? 2 : Math.max(2, idToLabel.size())];
             predictedClass = gtb.predict(tuple, posteriors);
             if (posteriors.length > predictedClass && predictedClass >= 0) {
                 confidence = posteriors[predictedClass];
             }
         } else if (estimator instanceof DecisionTree dt) {
-            predictedClass = dt.predict(tuple);
-            confidence = 0.90;
+            predictedClass = dt.predict(tuple, posteriors);
+            if (posteriors.length > predictedClass && predictedClass >= 0) {
+                confidence = posteriors[predictedClass];
+            } else {
+                confidence = 1.0;
+            }
         }
 
-        String label = idToLabel.getOrDefault(predictedClass, String.valueOf(predictedClass));
+        String label = (idToLabel != null && idToLabel.containsKey(predictedClass))
+                ? idToLabel.get(predictedClass)
+                : String.valueOf(predictedClass);
         return new PredictionResult(predictedClass, label, confidence, posteriors);
     }
 

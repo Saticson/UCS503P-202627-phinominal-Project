@@ -199,21 +199,14 @@ public class GpuAutoMlDispatcher {
                 metrics.put("backend", "PyTorch 2.15 (CPU/CUDA)");
 
                 return root;
+            } else {
+                String err = new String(p.getInputStream().readAllBytes());
+                throw new IllegalStateException("PyTorch Vision training execution failed (exit code " + p.exitValue() + "): " + err);
             }
         } catch (Exception e) {
             logger.error("Vision training failed: {}", e.getMessage(), e);
+            throw new RuntimeException("Computer Vision training engine error: " + e.getMessage(), e);
         }
-
-        // Minimal fallback model entity
-        ObjectNode m = modelsNode.addObject();
-        m.put("model_name", "Sukio PyTorch ConvNet");
-        m.put("model_type", "convnet_gradcam");
-        m.put("task_type", "vision_classification");
-        m.put("file_path", artifactPath.toAbsolutePath().toString());
-        m.put("accuracy", 0.950);
-        m.put("f1_score", 0.948);
-        m.put("training_time", 1.25);
-        return root;
     }
 
     private JsonNode trainNlpPipeline(String jobId, String datasetPath, Map<String, Object> payload) {
@@ -300,19 +293,13 @@ public class GpuAutoMlDispatcher {
                 metrics.put("backend", "Scikit-Learn TF-IDF N-gram");
 
                 return root;
+            } else {
+                String err = new String(p.getInputStream().readAllBytes());
+                throw new IllegalStateException("NLP training execution failed (exit code " + p.exitValue() + "): " + err);
             }
         } catch (Exception e) {
             logger.error("NLP training failed: {}", e.getMessage(), e);
+            throw new RuntimeException("NLP text training engine error: " + e.getMessage(), e);
         }
-
-        ObjectNode m = modelsNode.addObject();
-        m.put("model_name", "Sukio TF-IDF NLP Transformer");
-        m.put("model_type", "tfidf_logistic");
-        m.put("task_type", "nlp_classification");
-        m.put("file_path", artifactPath.toAbsolutePath().toString());
-        m.put("accuracy", 0.940);
-        m.put("f1_score", 0.935);
-        m.put("training_time", 0.45);
-        return root;
     }
 }

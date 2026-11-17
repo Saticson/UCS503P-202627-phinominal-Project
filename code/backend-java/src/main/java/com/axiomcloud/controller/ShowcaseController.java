@@ -68,11 +68,24 @@ public class ShowcaseController {
     @GetMapping("/benchmarks")
     public ResponseEntity<List<Map<String, Object>>> listVerifiedBenchmarks() {
         return ResponseEntity.ok(List.of(
-                Map.of("name", "Titanic Survival", "task", "classification", "rows", 50, "target", "survived"),
-                Map.of("name", "Iris Species", "task", "classification", "rows", 50, "target", "species"),
-                Map.of("name", "MNIST Handwritten Digits", "task", "image_classification", "rows", 50, "target", "label"),
-                Map.of("name", "California Housing", "task", "regression", "rows", 50, "target", "MedHouseVal"),
-                Map.of("name", "Diabetes Progression", "task", "regression", "rows", 50, "target", "target")
+                // Tabular
+                Map.of("name", "Statlog German Credit", "modality", "TABULAR", "task", "classification", "rows", 1000, "target", "credit_risk", "provenance", "UCI Machine Learning Repository (ID 144)"),
+                Map.of("name", "Cleveland Heart Disease", "modality", "TABULAR", "task", "classification", "rows", 303, "target", "diagnosis", "provenance", "UCI Machine Learning Repository (ID 45)"),
+                Map.of("name", "Bank Marketing", "modality", "TABULAR", "task", "classification", "rows", 4521, "target", "deposit_subscribed", "provenance", "UCI Machine Learning Repository (ID 222)"),
+                Map.of("name", "Adult Census Income", "modality", "TABULAR", "task", "classification", "rows", 32561, "target", "income_above_50k", "provenance", "UCI Machine Learning Repository (ID 2)"),
+                Map.of("name", "Auto MPG Regression", "modality", "TABULAR", "task", "regression", "rows", 398, "target", "mpg", "provenance", "UCI Machine Learning Repository (ID 9)"),
+                // Vision
+                Map.of("name", "RetinaMNIST", "modality", "COMPUTER_VISION", "task", "image_classification", "rows", 1600, "target", "5_class_dr_grade", "provenance", "MedMNIST v2 (DeepDR)"),
+                Map.of("name", "BreastMNIST", "modality", "COMPUTER_VISION", "task", "image_classification", "rows", 780, "target", "malignancy", "provenance", "MedMNIST v2 (Ultrasound)"),
+                Map.of("name", "PneumoniaMNIST", "modality", "COMPUTER_VISION", "task", "image_classification", "rows", 5856, "target", "pneumonia", "provenance", "MedMNIST v2 (Pediatric Chest X-Ray)"),
+                Map.of("name", "DermaMNIST", "modality", "COMPUTER_VISION", "task", "image_classification", "rows", 10015, "target", "7_class_skin_lesion", "provenance", "MedMNIST v2 (HAM10000)"),
+                Map.of("name", "BloodMNIST", "modality", "COMPUTER_VISION", "task", "image_classification", "rows", 17092, "target", "8_class_blood_cell", "provenance", "MedMNIST v2 (Cytology)"),
+                // NLP
+                Map.of("name", "Financial PhraseBank", "modality", "NLP", "task", "sentiment_classification", "rows", 4846, "target", "3_class_sentiment", "provenance", "Malo et al. 50Agree"),
+                Map.of("name", "Rotten Tomatoes SST-2", "modality", "NLP", "task", "sentiment_classification", "rows", 6920, "target", "binary_sentiment", "provenance", "Pang & Lee / Socher et al."),
+                Map.of("name", "AG News Topic Classification", "modality", "NLP", "task", "topic_classification", "rows", 7600, "target", "4_class_topic", "provenance", "Zhang et al. Test Split"),
+                Map.of("name", "TweetEval Sentiment", "modality", "NLP", "task", "sentiment_classification", "rows", 12284, "target", "3_class_sentiment", "provenance", "Cardiff NLP Test Split"),
+                Map.of("name", "SMS Spam Collection", "modality", "NLP", "task", "spam_classification", "rows", 5572, "target", "spam_ham", "provenance", "UCI Machine Learning Repository (ID 228)")
         ));
     }
 

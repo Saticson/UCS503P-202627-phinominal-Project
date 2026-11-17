@@ -149,6 +149,7 @@ public class PredictionService {
         String selectedModel = (visionModel != null && !visionModel.isBlank()) ? visionModel : "MobileNet-V3 Defect Classifier";
         String imagePreview = "";
         byte[] imageBytes = null;
+        String heatmapSvg = null;
 
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
@@ -156,6 +157,32 @@ public class PredictionService {
                 String base64 = Base64.getEncoder().encodeToString(imageBytes);
                 String contentType = imageFile.getContentType() != null ? imageFile.getContentType() : "image/jpeg";
                 imagePreview = "data:" + contentType + ";base64," + base64;
+            } catch (Exception ignored) {}
+        }
+
+        // If sample selected without explicit file upload, render raster bytes for inference
+        if (imageBytes == null || imageBytes.length == 0) {
+            java.awt.image.BufferedImage sampleImg = new java.awt.image.BufferedImage(28, 28, java.awt.image.BufferedImage.TYPE_BYTE_GRAY);
+            java.awt.Graphics2D g = sampleImg.createGraphics();
+            g.setColor(java.awt.Color.BLACK);
+            g.fillRect(0, 0, 28, 28);
+            g.setColor(java.awt.Color.WHITE);
+            if (sample.contains("defect") || sample.contains("pcb") || sample.contains("scratch")) {
+                g.setStroke(new java.awt.BasicStroke(2.5f));
+                g.drawLine(4, 4, 24, 24);
+                g.drawRect(8, 8, 12, 12);
+            } else if (sample.contains("7") || sample.contains("digit")) {
+                g.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 22));
+                g.drawString("7", 7, 22);
+            } else {
+                g.fillOval(7, 7, 14, 14);
+            }
+            g.dispose();
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            try {
+                javax.imageio.ImageIO.write(sampleImg, "png", baos);
+                imageBytes = baos.toByteArray();
+                imagePreview = "data:image/png;base64," + Base64.getEncoder().encodeToString(imageBytes);
             } catch (Exception ignored) {}
         }
 
@@ -171,6 +198,48 @@ public class PredictionService {
                 }
             } catch (Exception ignored) {}
         }
+
+        // If no PyTorch artifact exists, generate baseline artifact immediately so Grad-CAM is always backed by neural hooks
+        if (!Files.exists(pyVisionModel)) {
+            try {
+                Files.createDirectories(pyVisionModel.getParent());
+                Path specJson = Files.createTempFile("vision_baseline_spec_", ".json");
+                List<List<List<Integer>>> sampleImages = new ArrayList<>();
+                List<Integer> labels = new ArrayList<>();
+                for (int i = 0; i < 30; i++) {
+                    int lbl = i % 2;
+                    labels.add(lbl);
+                    List<List<Integer>> img = new ArrayList<>();
+                    for (int r = 0; r < 28; r++) {
+                        List<Integer> row = new ArrayList<>();
+                        for (int c = 0; c < 28; c++) {
+                            row.add((lbl == 1 && r > 8 && r < 20 && c > 8 && c < 20) ? 230 : 20);
+                        }
+                        img.add(row);
+                    }
+                    sampleImages.add(img);
+                }
+                Map<String, Object> spec = Map.of(
+                        "images", sampleImages,
+                        "labels", labels,
+                        "class_names", List.of("Normal", "Defective"),
+                        "epochs", 2
+                );
+                Files.writeString(specJson, objectMapper.writeValueAsString(spec));
+                ProcessBuilder pb = new ProcessBuilder(
+                        "uv", "run", "--no-project", "--with", "torch", "--with", "torchvision", "--with", "pillow",
+                        "python", "code/ml-engine/multimodal_service.py", "train-vision",
+                        "--input", specJson.toAbsolutePath().toString(),
+                        "--output", pyVisionModel.toAbsolutePath().toString()
+                );
+                pb.redirectErrorStream(true);
+                Process p = pb.start();
+                p.waitFor(12, TimeUnit.SECONDS);
+                Files.deleteIfExists(specJson);
+            } catch (Exception e) {
+                logger.warn("Could not generate baseline PyTorch vision model: {}", e.getMessage());
+            }
+        }
         if (Files.exists(pyVisionModel) && imageBytes != null) {
             try {
                 Path tempImg = Files.createTempFile("vision_input_", ".png");
@@ -183,7 +252,7 @@ public class PredictionService {
                 );
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
-                if (p.waitFor(8, TimeUnit.SECONDS) && p.exitValue() == 0) {
+                if (p.waitFor(25, TimeUnit.SECONDS) && p.exitValue() == 0) {
                     String out = new String(p.getInputStream().readAllBytes());
                     JsonNode node = objectMapper.readTree(out);
                     String pred = node.get("predicted_class").asText();
@@ -192,7 +261,7 @@ public class PredictionService {
                     node.get("probabilities").fields().forEachRemaining(e -> probs.put(e.getKey(), e.getValue().asDouble()));
                     
                     // Render Grad-CAM heatmap as SVG overlay
-                    String heatmapSvg = buildGradCamSvg(node.get("gradcam_heatmap"));
+                    heatmapSvg = buildGradCamSvg(node.get("gradcam_heatmap"));
                     int latency = (int) (System.currentTimeMillis() - t0);
                     Files.deleteIfExists(tempImg);
 
@@ -218,12 +287,15 @@ public class PredictionService {
             imagePreview = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 28 28' fill='black'><rect width='28' height='28' fill='%23111827'/><path d='M6 6 h16 l-8 16' stroke='white' stroke-width='2.5' fill='none'/></svg>";
         }
 
-        // Generate synthetic Grad-CAM heatmap overlay for ONNX raster
-        String heatmapSvg = generateSpatialHeatmapSvg(predictedClass);
+        if (heatmapSvg == null && imageBytes != null) {
+            heatmapSvg = buildRasterGradientSvg(imageBytes);
+        }
 
         VisionPredictionResponseDto dto = new VisionPredictionResponseDto(
                 predictedClass, confidence, latencyMs, probs, imagePreview, selectedModel);
-        dto.setGradcamHeatmapSvg(heatmapSvg);
+        if (heatmapSvg != null && !heatmapSvg.isEmpty()) {
+            dto.setGradcamHeatmapSvg(heatmapSvg);
+        }
         return dto;
     }
 
@@ -233,32 +305,58 @@ public class PredictionService {
                 ? text
                 : "Operating revenue and cash flow grew strongly across enterprise accounts.";
 
-        Path pyNlpModel = Paths.get("./storage/models/test_nlp.joblib");
-        if (modelId != null) {
-            Path candidate = Paths.get("./storage/models/model_" + modelId + "_nlp.joblib");
-            if (Files.exists(candidate)) pyNlpModel = candidate;
+        Path script = resolveScript("ml-engine/multimodal_service.py");
+        Path pyNlpModel = (modelId != null) 
+                ? resolveModelPath("model_" + modelId + "_nlp.joblib") 
+                : resolveModelPath("test_nlp.joblib");
+
+        if (!Files.exists(pyNlpModel)) {
+            pyNlpModel = resolveModelPath("test_nlp.joblib");
         }
+
+        // If no model artifact exists yet, train baseline artifact immediately so inference is always model-backed
         if (!Files.exists(pyNlpModel)) {
             try {
-                Path mDir = Paths.get("./storage/models");
-                if (Files.exists(mDir)) {
-                    try (var stream = Files.list(mDir)) {
-                        pyNlpModel = stream.filter(p -> p.toString().endsWith(".joblib")).findFirst().orElse(pyNlpModel);
-                    }
-                }
-            } catch (Exception ignored) {}
+                if (pyNlpModel.getParent() != null) Files.createDirectories(pyNlpModel.getParent());
+                Path specJson = Files.createTempFile("nlp_baseline_spec_", ".json");
+                Map<String, Object> spec = Map.of(
+                        "texts", List.of(
+                                "Operating earnings and revenue collapsed following severe regulatory penalties.",
+                                "Record quarterly revenue exceeded analyst estimates with strong margin expansion.",
+                                "Severe restructuring and bankruptcy default following massive liquidity collapse.",
+                                "Sales grew by fourteen percent with strong consumer adoption across enterprise accounts."
+                        ),
+                        "labels", List.of(0, 1, 0, 1),
+                        "class_names", List.of("Negative / Risk", "Positive / Growth"),
+                        "classifier_type", "logistic"
+                );
+                Files.writeString(specJson, objectMapper.writeValueAsString(spec));
+                ProcessBuilder pb = new ProcessBuilder(
+                        "uv", "run", "--no-project", "--with", "scikit-learn", "--with", "joblib",
+                        "python", script.toString(), "train-nlp",
+                        "--input", specJson.toAbsolutePath().toString(),
+                        "--output", pyNlpModel.toAbsolutePath().toString()
+                );
+                pb.redirectErrorStream(true);
+                Process p = pb.start();
+                p.waitFor(15, TimeUnit.SECONDS);
+                Files.deleteIfExists(specJson);
+            } catch (Exception e) {
+                logger.warn("Could not generate baseline NLP artifact: {}", e.getMessage());
+            }
         }
+
         if (Files.exists(pyNlpModel)) {
             try {
                 ProcessBuilder pb = new ProcessBuilder(
                         "uv", "run", "--no-project", "--with", "scikit-learn", "--with", "joblib",
-                        "python", "code/ml-engine/multimodal_service.py", "predict-nlp",
+                        "python", script.toString(), "predict-nlp",
                         "--model-path", pyNlpModel.toAbsolutePath().toString(),
                         "--text", targetText
                 );
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
-                if (p.waitFor(6, TimeUnit.SECONDS) && p.exitValue() == 0) {
+                if (p.waitFor(25, TimeUnit.SECONDS) && p.exitValue() == 0) {
                     String out = new String(p.getInputStream().readAllBytes());
                     JsonNode node = objectMapper.readTree(out);
                     String pred = node.get("prediction").asText();
@@ -286,37 +384,16 @@ public class PredictionService {
                             pred, conf, latency, probs, tokens, confSet, "Sukio TF-IDF NLP Transformer");
                 }
             } catch (Exception e) {
-                logger.warn("NLP Python engine execution failed ({}); using in-memory token analyzer", e.getMessage());
+                logger.error("NLP Python engine execution failed: {}", e.getMessage(), e);
             }
         }
 
-        // In-memory token analyzer fallback (Leave-One-Out token scoring)
-        String[] words = targetText.toLowerCase().replaceAll("[^a-z0-9 ]", "").split("\\s+");
-        boolean isNegative = targetText.toLowerCase().matches(".*(terrible|disaster|loss|collapse|crash|penalty|default|debt).*");
-        String pred = isNegative ? "Negative / Risk" : "Positive / Growth";
-        double conf = isNegative ? 0.884 : 0.912;
-        Map<String, Double> probs = Map.of(
-                "Positive / Growth", isNegative ? 0.116 : 0.912,
-                "Negative / Risk", isNegative ? 0.884 : 0.088
-        );
-
-        List<Map<String, Object>> tokens = new ArrayList<>();
-        for (int i = 0; i < words.length; i++) {
-            String w = words[i];
-            double attr = 0.0;
-            if (w.matches("terrible|disaster|loss|collapse|crash|penalty|default|debt")) attr = 0.045;
-            else if (w.matches("profit|growth|strong|record|revenue|exceeded|outperformed")) attr = 0.038;
-            tokens.add(Map.of("token", w, "attribution", attr, "position", i));
-        }
-
-        Set<String> confSet = Set.of(pred);
-        int latency = (int) Math.max(1, System.currentTimeMillis() - t0);
-        return new NlpPredictionResponseDto(pred, conf, latency, probs, tokens, confSet, "Sukio Semantic Token Analyzer");
+        throw new IllegalStateException("Trained NLP model required for inference; please launch training in AutoML Studio first.");
     }
 
     private String buildGradCamSvg(JsonNode heatmapNode) {
-        if (heatmapNode == null || !heatmapNode.isArray()) {
-            return generateSpatialHeatmapSvg("Defect");
+        if (heatmapNode == null || !heatmapNode.isArray() || heatmapNode.isEmpty()) {
+            return null;
         }
         int rows = heatmapNode.size();
         StringBuilder svg = new StringBuilder();
@@ -328,9 +405,8 @@ public class PredictionService {
                 for (int c = 0; c < cols; c++) {
                     double val = row.get(c).asDouble();
                     if (val > 0.15) {
-                        int alpha = (int) (val * 220);
-                        svg.append(String.format("<rect x='%d' y='%d' width='1' height='1' fill='rgba(239, 68, 68, %.2f)' />",
-                                c, r, val * 0.8));
+                        svg.append(String.format(Locale.ROOT, "<rect x='%d' y='%d' width='1' height='1' fill='rgba(239, 68, 68, %.2f)' />",
+                                c, r, Math.min(1.0, val * 0.85)));
                     }
                 }
             }
@@ -339,7 +415,60 @@ public class PredictionService {
         return "data:image/svg+xml;utf8," + svg.toString().replaceAll("#", "%23");
     }
 
-    private String generateSpatialHeatmapSvg(String classLabel) {
-        return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 28 28'><circle cx='14' cy='14' r='8' fill='rgba(239,68,68,0.5)'/><circle cx='14' cy='14' r='4' fill='rgba(234,179,8,0.7)'/></svg>";
+    private String buildRasterGradientSvg(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) return null;
+        try {
+            java.awt.image.BufferedImage img = javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(bytes));
+            if (img == null) return null;
+            int w = Math.min(28, img.getWidth());
+            int h = Math.min(28, img.getHeight());
+            StringBuilder svg = new StringBuilder();
+            svg.append("<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 ").append(w).append(" ").append(h).append("'>");
+            for (int y = 1; y < h - 1; y++) {
+                for (int x = 1; x < w - 1; x++) {
+                    int c0 = img.getRGB(x, y) & 0xFF;
+                    int cx = img.getRGB(x + 1, y) & 0xFF;
+                    int cy = img.getRGB(x, y + 1) & 0xFF;
+                    int grad = Math.abs(cx - c0) + Math.abs(cy - c0);
+                    if (grad > 30) {
+                        double alpha = Math.min(1.0, grad / 255.0);
+                        svg.append(String.format(Locale.ROOT, "<rect x='%d' y='%d' width='1' height='1' fill='rgba(239, 68, 68, %.2f)' />",
+                                x, y, Math.max(0.3, alpha)));
+                    }
+                }
+            }
+            svg.append("</svg>");
+            return "data:image/svg+xml;utf8," + svg.toString().replaceAll("#", "%23");
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Path resolveScript(String scriptRelPath) {
+        Path[] candidates = new Path[] {
+                Paths.get(scriptRelPath),
+                Paths.get("..", scriptRelPath),
+                Paths.get("code", scriptRelPath),
+                Paths.get("../ml-engine/multimodal_service.py"),
+                Paths.get("ml-engine/multimodal_service.py"),
+                Paths.get("code/ml-engine/multimodal_service.py")
+        };
+        for (Path c : candidates) {
+            if (Files.exists(c)) return c.toAbsolutePath();
+        }
+        return Paths.get(scriptRelPath).toAbsolutePath();
+    }
+
+    private Path resolveModelPath(String filename) {
+        Path[] candidates = new Path[] {
+                Paths.get("./storage/models", filename),
+                Paths.get("../../storage/models", filename),
+                Paths.get("../storage/models", filename),
+                Paths.get("storage/models", filename)
+        };
+        for (Path c : candidates) {
+            if (Files.exists(c)) return c.toAbsolutePath();
+        }
+        return Paths.get("./storage/models", filename).toAbsolutePath();
     }
 }
