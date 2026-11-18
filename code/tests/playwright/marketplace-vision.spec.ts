@@ -106,7 +106,7 @@ test.describe('Sukio Marketplace & Computer Vision Integration Suite', () => {
 
     const resultBox = page.locator('#vision-result');
     await expect(resultBox).toBeVisible();
-    await expect(resultBox.locator('.badge:has-text("SUCCESS")')).toBeVisible();
+    await expect(resultBox.locator('.badge:has-text("SUCCESS")')).toBeVisible({ timeout: 10000 });
     await expect(resultBox.locator('#vision-predicted-class')).toContainText('Digit 7');
     await expect(resultBox.locator('#vision-confidence')).toContainText(/9[89]\.\d+%/);
     await expect(resultBox.locator('#result-preview-image')).toBeVisible();
@@ -115,9 +115,8 @@ test.describe('Sukio Marketplace & Computer Vision Integration Suite', () => {
     console.log('[Test 5] Testing PCB Defect vision inference...');
     await page.click('button:text("PCB Solder Defect")');
     await page.click('#btn-run-vision-prediction');
-    await page.waitForTimeout(800);
 
-    await expect(resultBox.locator('#vision-predicted-class')).toContainText('Defective');
+    await expect(resultBox.locator('#vision-predicted-class')).toContainText('Defective', { timeout: 10000 });
     await expect(resultBox.locator('#vision-confidence')).toContainText(/\d{2}\.\d+%/);
   });
 

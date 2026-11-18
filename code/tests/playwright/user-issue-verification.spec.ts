@@ -133,11 +133,10 @@ test.describe('Sukio — User Issue Verification & End-to-End Suite', () => {
 
     console.log('[Test] Triggering live prediction...');
     await page.click('#btn-run-prediction');
-    await page.waitForTimeout(800);
 
     const resultBox = page.locator('#prediction-result');
     await expect(resultBox).toBeVisible();
-    await expect(resultBox.locator('.badge:has-text("SUCCESS")')).toBeVisible();
+    await expect(resultBox.locator('.badge:has-text("SUCCESS")')).toBeVisible({ timeout: 10000 });
     await expect(resultBox.locator('#prediction-value')).toBeVisible();
 
     const predVal = await resultBox.locator('#prediction-value').innerText();

@@ -34,17 +34,46 @@ public class SmileInferenceEngine {
     public ObjectNode predict(String filePath, Map<String, Object> features, String taskType) {
         ObjectNode root = objectMapper.createObjectNode();
 
-        if (filePath == null || !Files.exists(Paths.get(filePath))) {
-            root.put("prediction", "positive");
-            root.put("confidence", 0.938);
-            ObjectNode probs = root.putObject("probability");
-            probs.put("negative", 0.062);
-            probs.put("positive", 0.938);
-            return root;
+        if (filePath == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "Model file path cannot be null");
+        }
+
+        Path pObj = Paths.get(filePath);
+        if (!Files.exists(pObj)) {
+            Path fname = pObj.getFileName();
+            Path[] candidates = new Path[] {
+                    Paths.get("storage/models", fname.toString()),
+                    Paths.get("./storage/models", fname.toString()),
+                    Paths.get("code/backend-java/storage/models", fname.toString()),
+                    Paths.get("../storage/models", fname.toString()),
+                    Paths.get("../../storage/models", fname.toString()),
+                    Paths.get("code/storage/models", fname.toString())
+            };
+            for (Path c : candidates) {
+                if (Files.exists(c)) {
+                    pObj = c;
+                    break;
+                }
+            }
+        }
+
+        if (!Files.exists(pObj)) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.NOT_FOUND,
+                    "Model artifact file not found on disk: " + filePath);
+        }
+
+        final String resolvedPath = pObj.toAbsolutePath().toString();
+
+        if (features == null || features.isEmpty()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "Prediction features must be provided as a non-empty key-value map");
         }
 
         try {
-            Object model = modelCache.computeIfAbsent(filePath, p -> {
+            Object model = modelCache.computeIfAbsent(resolvedPath, p -> {
                 try {
                     return Read.object(Paths.get(p));
                 } catch (Exception e) {
@@ -54,9 +83,9 @@ public class SmileInferenceEngine {
             });
 
             if (model == null) {
-                root.put("prediction", "positive");
-                root.put("confidence", 0.938);
-                return root;
+                throw new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY,
+                        "Model artifact is corrupted or cannot be deserialized: " + filePath);
             }
 
             // ==========================================
@@ -72,7 +101,9 @@ public class SmileInferenceEngine {
                 ObjectNode probs = root.putObject("probability");
                 if (res.posteriors != null && res.posteriors.length > 0) {
                     for (int k = 0; k < res.posteriors.length; k++) {
-                        String classLabel = bundle.getIdToLabel().getOrDefault(k, "class_" + k);
+                        String classLabel = (bundle.getIdToLabel() != null)
+                                ? bundle.getIdToLabel().getOrDefault(k, "class_" + k)
+                                : "class_" + k;
                         probs.put(classLabel, Math.round(res.posteriors[k] * 1000.0) / 1000.0);
                     }
                 } else {
@@ -94,9 +125,9 @@ public class SmileInferenceEngine {
             else if (model instanceof GradientTreeBoost gtb) schema = gtb.schema();
 
             if (schema == null) {
-                root.put("prediction", "positive");
-                root.put("confidence", 0.938);
-                return root;
+                throw new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY,
+                        "Unsupported model schema format: " + model.getClass().getName());
             }
 
             Object[] values = new Object[schema.length()];
@@ -134,28 +165,45 @@ public class SmileInferenceEngine {
 
             return root;
 
+        } catch (org.springframework.web.server.ResponseStatusException rse) {
+            throw rse;
         } catch (Exception e) {
             logger.warn("Live inference exception: {}", e.getMessage());
-            root.put("prediction", "positive");
-            root.put("confidence", 0.938);
-            return root;
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Inference failed: " + e.getMessage(), e);
         }
     }
 
     private Object coerceValue(Object val, DataType type) {
+        String typeStr = (type != null) ? type.toString().toLowerCase() : "";
+        boolean isDouble = typeStr.contains("double") || typeStr.contains("float");
+        boolean isInt = typeStr.contains("int") || typeStr.contains("byte") || typeStr.contains("short") || typeStr.contains("long");
+
         if (val == null) {
-            if (type == DataType.of(Double.class) || type == DataType.of(double.class)) return 0.0;
-            if (type == DataType.of(Integer.class) || type == DataType.of(int.class)) return 0;
-            return "0";
+            if (isDouble) return 0.0;
+            if (isInt) return 0;
+            return "";
         }
-        try {
-            if (type == DataType.of(Double.class) || type == DataType.of(double.class)) {
-                return Double.parseDouble(val.toString());
+
+        if (isDouble) {
+            if (val instanceof Number n) return n.doubleValue();
+            try {
+                return Double.parseDouble(val.toString().trim());
+            } catch (Exception e) {
+                return 0.0;
             }
-            if (type == DataType.of(Integer.class) || type == DataType.of(int.class)) {
-                return (int) Math.round(Double.parseDouble(val.toString()));
+        }
+
+        if (isInt) {
+            if (val instanceof Number n) return n.intValue();
+            try {
+                return (int) Math.round(Double.parseDouble(val.toString().trim()));
+            } catch (Exception e) {
+                return 0;
             }
-        } catch (Exception ignored) {}
+        }
+
         return val.toString();
     }
 }

@@ -138,19 +138,34 @@ public class PipelineBundle implements Serializable {
     }
 
     private Object coerceValue(Object val, DataType type) {
+        String typeStr = (type != null) ? type.toString().toLowerCase() : "";
+        boolean isDouble = typeStr.contains("double") || typeStr.contains("float");
+        boolean isInt = typeStr.contains("int") || typeStr.contains("byte") || typeStr.contains("short") || typeStr.contains("long");
+
         if (val == null) {
-            if (type == DataType.of(Double.class) || type == DataType.of(double.class)) return 0.0;
-            if (type == DataType.of(Integer.class) || type == DataType.of(int.class)) return 0;
-            return "0";
+            if (isDouble) return 0.0;
+            if (isInt) return 0;
+            return "";
         }
-        try {
-            if (type == DataType.of(Double.class) || type == DataType.of(double.class)) {
-                return Double.parseDouble(val.toString());
+
+        if (isDouble) {
+            if (val instanceof Number n) return n.doubleValue();
+            try {
+                return Double.parseDouble(val.toString().trim());
+            } catch (Exception e) {
+                return 0.0;
             }
-            if (type == DataType.of(Integer.class) || type == DataType.of(int.class)) {
-                return (int) Math.round(Double.parseDouble(val.toString()));
+        }
+
+        if (isInt) {
+            if (val instanceof Number n) return n.intValue();
+            try {
+                return (int) Math.round(Double.parseDouble(val.toString().trim()));
+            } catch (Exception e) {
+                return 0;
             }
-        } catch (Exception ignored) {}
+        }
+
         return val.toString();
     }
 
@@ -172,7 +187,12 @@ public class PipelineBundle implements Serializable {
 
         int predictedClass = 0;
         double confidence = 0.50;
-        int numClasses = (idToLabel != null && !idToLabel.isEmpty()) ? Math.max(2, idToLabel.size()) : 2;
+        int numClasses = 2;
+        if (estimator instanceof smile.classification.Classifier<?> c && c.classes() != null && c.classes().length > 0) {
+            numClasses = c.classes().length;
+        } else if (idToLabel != null && !idToLabel.isEmpty()) {
+            numClasses = Math.max(2, idToLabel.size());
+        }
         double[] posteriors = new double[numClasses];
 
         if (estimator instanceof RandomForest rf) {

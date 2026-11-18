@@ -242,13 +242,9 @@ public class MlEngineClient {
                 return smileInferenceEngine.predict(filePath, features, taskType);
             }
 
-            ObjectNode root = objectMapper.createObjectNode();
-            root.put("prediction", "positive");
-            root.put("confidence", 0.938);
-            ObjectNode probs = root.putObject("probability");
-            probs.put("negative", 0.062);
-            probs.put("positive", 0.938);
-            return root;
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "Missing or invalid model file_path parameter for prediction");
         }
 
         if (url.endsWith("/datasets/quality-report")) {

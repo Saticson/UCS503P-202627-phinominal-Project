@@ -1,0 +1,1060 @@
+{
+  "vision": {
+    "breastmnist": {
+      "dataset_sha": "3a22d2a4625e7dd8903f0f59030e81a3d0c222bece2e5e10927456cb50efdec1",
+      "sample_count": 156,
+      "true_distribution": [
+        42,
+        114
+      ],
+      "models": {
+        "ConvNet Baseline": {
+          "checkpoint_sha": "deeec2b48d103f7181390cf372a67a8c6f4cd5d6940e2a04da1bbaf89e220b3e",
+          "confusion_matrix": [
+            [
+              26,
+              16
+            ],
+            [
+              12,
+              102
+            ]
+          ],
+          "row_sums_true": [
+            42,
+            114
+          ],
+          "col_sums_pred": [
+            38,
+            118
+          ],
+          "recall_per_class": [
+            0.619,
+            0.8947
+          ],
+          "balanced_accuracy": 0.7569,
+          "macro_f1": 0.7647,
+          "auroc": 0.8688
+        },
+        "Pretrained MobileNet-V3 Small": {
+          "checkpoint_sha": "d6f40220b2a6abf52a643ff061df6c9911a03c3aee3165f0b5f5efe3f88d09fe",
+          "confusion_matrix": [
+            [
+              41,
+              1
+            ],
+            [
+              95,
+              19
+            ]
+          ],
+          "row_sums_true": [
+            42,
+            114
+          ],
+          "col_sums_pred": [
+            136,
+            20
+          ],
+          "recall_per_class": [
+            0.9762,
+            0.1667
+          ],
+          "balanced_accuracy": 0.5714,
+          "macro_f1": 0.3721,
+          "auroc": 0.7318
+        }
+      }
+    },
+    "retinamnist": {
+      "dataset_sha": "254915f5f0a2074665c4676356824cf4ef4a3bcab233894b4bafcaf48962bd69",
+      "sample_count": 400,
+      "true_distribution": [
+        174,
+        46,
+        92,
+        68,
+        20
+      ],
+      "models": {
+        "ConvNet Baseline": {
+          "checkpoint_sha": "07eed9fec5f2fcda5860f73a89d46adbe5a0961d4433f678887b831d5174d389",
+          "confusion_matrix": [
+            [
+              130,
+              10,
+              2,
+              11,
+              21
+            ],
+            [
+              11,
+              15,
+              2,
+              7,
+              11
+            ],
+            [
+              13,
+              23,
+              3,
+              10,
+              43
+            ],
+            [
+              2,
+              11,
+              2,
+              10,
+              43
+            ],
+            [
+              2,
+              4,
+              2,
+              2,
+              10
+            ]
+          ],
+          "row_sums_true": [
+            174,
+            46,
+            92,
+            68,
+            20
+          ],
+          "col_sums_pred": [
+            158,
+            63,
+            11,
+            40,
+            128
+          ],
+          "recall_per_class": [
+            0.7471,
+            0.3261,
+            0.0326,
+            0.1471,
+            0.5
+          ],
+          "balanced_accuracy": 0.3506,
+          "macro_f1": 0.2874,
+          "auroc": 0.7313
+        },
+        "Pretrained MobileNet-V3 Small": {
+          "checkpoint_sha": "f1b2a3ed057d20c5b0c2f9051a8cfe340eba106ba71ffa70db3c5682f164397b",
+          "confusion_matrix": [
+            [
+              93,
+              81,
+              0,
+              0,
+              0
+            ],
+            [
+              8,
+              38,
+              0,
+              0,
+              0
+            ],
+            [
+              6,
+              86,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              68,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              20,
+              0,
+              0,
+              0
+            ]
+          ],
+          "row_sums_true": [
+            174,
+            46,
+            92,
+            68,
+            20
+          ],
+          "col_sums_pred": [
+            107,
+            293,
+            0,
+            0,
+            0
+          ],
+          "recall_per_class": [
+            0.5345,
+            0.8261,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "balanced_accuracy": 0.2721,
+          "macro_f1": 0.1772,
+          "auroc": 0.6926
+        }
+      }
+    },
+    "pneumoniamnist": {
+      "dataset_sha": "e1792d3f03751cb101e99f19a63b3c1941436c988665f47853417b05be250cd8",
+      "sample_count": 624,
+      "true_distribution": [
+        234,
+        390
+      ],
+      "models": {
+        "ConvNet Baseline": {
+          "checkpoint_sha": "1cd4a40eb5bde4c473550cd42d5f4dd5c9d06e974049a9e42558907aab2761e1",
+          "confusion_matrix": [
+            [
+              124,
+              110
+            ],
+            [
+              5,
+              385
+            ]
+          ],
+          "row_sums_true": [
+            234,
+            390
+          ],
+          "col_sums_pred": [
+            129,
+            495
+          ],
+          "recall_per_class": [
+            0.5299,
+            0.9872
+          ],
+          "balanced_accuracy": 0.7585,
+          "macro_f1": 0.7766,
+          "auroc": 0.9563
+        },
+        "Pretrained MobileNet-V3 Small": {
+          "checkpoint_sha": "f67704723245044692082031702aab64027219f6702927a96c26da84119b84d3",
+          "confusion_matrix": [
+            [
+              83,
+              151
+            ],
+            [
+              0,
+              390
+            ]
+          ],
+          "row_sums_true": [
+            234,
+            390
+          ],
+          "col_sums_pred": [
+            83,
+            541
+          ],
+          "recall_per_class": [
+            0.3547,
+            1.0
+          ],
+          "balanced_accuracy": 0.6774,
+          "macro_f1": 0.6807,
+          "auroc": 0.9391
+        }
+      }
+    },
+    "dermamnist": {
+      "dataset_sha": "1a309fec2e33bb6aba88e7d078e5ccbb9736c84a0b415ac197eb3c8fa331e050",
+      "sample_count": 2005,
+      "true_distribution": [
+        66,
+        103,
+        220,
+        23,
+        223,
+        1341,
+        29
+      ],
+      "models": {
+        "ConvNet Baseline": {
+          "checkpoint_sha": "d4205de114dcc5c927f3192f7e3c369b26391e120a3b8e59d42512da8eaf2963",
+          "confusion_matrix": [
+            [
+              45,
+              9,
+              5,
+              1,
+              4,
+              0,
+              2
+            ],
+            [
+              27,
+              48,
+              11,
+              2,
+              3,
+              0,
+              12
+            ],
+            [
+              33,
+              21,
+              118,
+              7,
+              26,
+              11,
+              4
+            ],
+            [
+              9,
+              4,
+              3,
+              5,
+              0,
+              1,
+              1
+            ],
+            [
+              15,
+              5,
+              41,
+              3,
+              127,
+              17,
+              15
+            ],
+            [
+              50,
+              63,
+              139,
+              23,
+              220,
+              765,
+              81
+            ],
+            [
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              25
+            ]
+          ],
+          "row_sums_true": [
+            66,
+            103,
+            220,
+            23,
+            223,
+            1341,
+            29
+          ],
+          "col_sums_pred": [
+            180,
+            151,
+            318,
+            41,
+            381,
+            794,
+            140
+          ],
+          "recall_per_class": [
+            0.6818,
+            0.466,
+            0.5364,
+            0.2174,
+            0.5695,
+            0.5705,
+            0.8621
+          ],
+          "balanced_accuracy": 0.5577,
+          "macro_f1": 0.396,
+          "auroc": 0.8852
+        },
+        "Pretrained MobileNet-V3 Small": {
+          "checkpoint_sha": "4ace112ba6002bfad3253bd3449f72b15c2d574b5232773e49142ba7816b6af6",
+          "confusion_matrix": [
+            [
+              33,
+              17,
+              2,
+              1,
+              4,
+              9,
+              0
+            ],
+            [
+              15,
+              70,
+              4,
+              6,
+              2,
+              1,
+              5
+            ],
+            [
+              32,
+              39,
+              80,
+              9,
+              26,
+              34,
+              0
+            ],
+            [
+              1,
+              5,
+              1,
+              11,
+              1,
+              3,
+              1
+            ],
+            [
+              13,
+              16,
+              44,
+              6,
+              88,
+              55,
+              1
+            ],
+            [
+              15,
+              74,
+              101,
+              36,
+              98,
+              996,
+              21
+            ],
+            [
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              25
+            ]
+          ],
+          "row_sums_true": [
+            66,
+            103,
+            220,
+            23,
+            223,
+            1341,
+            29
+          ],
+          "col_sums_pred": [
+            109,
+            224,
+            232,
+            69,
+            220,
+            1098,
+            53
+          ],
+          "recall_per_class": [
+            0.5,
+            0.6796,
+            0.3636,
+            0.4783,
+            0.3946,
+            0.7427,
+            0.8621
+          ],
+          "balanced_accuracy": 0.5744,
+          "macro_f1": 0.4603,
+          "auroc": 0.9014
+        }
+      }
+    },
+    "bloodmnist": {
+      "dataset_sha": "062023e186f537e26b3c21ea3b2614ddfc475e8a14825dfd20663bbb7e37bddc",
+      "sample_count": 3421,
+      "true_distribution": [
+        244,
+        624,
+        311,
+        579,
+        243,
+        284,
+        666,
+        470
+      ],
+      "models": {
+        "ConvNet Baseline": {
+          "checkpoint_sha": "dccced732b84bbff721fd46008301582f154ff07badd167fcd479c9f7b8fb4e0",
+          "confusion_matrix": [
+            [
+              220,
+              1,
+              3,
+              11,
+              1,
+              6,
+              2,
+              0
+            ],
+            [
+              2,
+              608,
+              0,
+              4,
+              1,
+              2,
+              7,
+              0
+            ],
+            [
+              2,
+              1,
+              305,
+              0,
+              0,
+              0,
+              3,
+              0
+            ],
+            [
+              39,
+              12,
+              58,
+              389,
+              3,
+              29,
+              49,
+              0
+            ],
+            [
+              3,
+              0,
+              46,
+              9,
+              185,
+              0,
+              0,
+              0
+            ],
+            [
+              7,
+              0,
+              15,
+              55,
+              3,
+              204,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              8,
+              5,
+              0,
+              0,
+              651,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              470
+            ]
+          ],
+          "row_sums_true": [
+            244,
+            624,
+            311,
+            579,
+            243,
+            284,
+            666,
+            470
+          ],
+          "col_sums_pred": [
+            273,
+            624,
+            435,
+            473,
+            193,
+            241,
+            712,
+            470
+          ],
+          "recall_per_class": [
+            0.9016,
+            0.9744,
+            0.9807,
+            0.6718,
+            0.7613,
+            0.7183,
+            0.9775,
+            1.0
+          ],
+          "balanced_accuracy": 0.8732,
+          "macro_f1": 0.8692,
+          "auroc": 0.9922
+        },
+        "Pretrained MobileNet-V3 Small": {
+          "checkpoint_sha": "be767728695c26d5b3ad8e1e80eec11b8e2e94b2cda08eaec4492e038436dcba",
+          "confusion_matrix": [
+            [
+              234,
+              0,
+              0,
+              7,
+              3,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              621,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              293,
+              6,
+              8,
+              4,
+              0,
+              0
+            ],
+            [
+              7,
+              0,
+              4,
+              504,
+              22,
+              33,
+              9,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              242,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              8,
+              10,
+              266,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              1,
+              28,
+              1,
+              0,
+              635,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              470
+            ]
+          ],
+          "row_sums_true": [
+            244,
+            624,
+            311,
+            579,
+            243,
+            284,
+            666,
+            470
+          ],
+          "col_sums_pred": [
+            243,
+            622,
+            298,
+            553,
+            286,
+            304,
+            645,
+            470
+          ],
+          "recall_per_class": [
+            0.959,
+            0.9952,
+            0.9421,
+            0.8705,
+            0.9959,
+            0.9366,
+            0.9535,
+            1.0
+          ],
+          "balanced_accuracy": 0.9566,
+          "macro_f1": 0.9499,
+          "auroc": 0.9975
+        }
+      }
+    }
+  },
+  "tabular": {
+    "adult_census": {
+      "dataset_sha_train": "7505de0e0825025e89ad153f830cac82bdeba54ba90d5a643e2e0715a8a50e11",
+      "dataset_sha_test": "220b858fbd9bc1804ba67637975ac7a010477b321fb8e445568d496c40caa8eb",
+      "total_rows": 48842,
+      "test_rows": 16281,
+      "true_distribution": [
+        12435,
+        3846
+      ],
+      "models": {
+        "Random Forest Multicore": {
+          "confusion_matrix": [
+            [
+              9404,
+              3031
+            ],
+            [
+              410,
+              3436
+            ]
+          ],
+          "row_sums_true": [
+            12435,
+            3846
+          ],
+          "col_sums_pred": [
+            9814,
+            6467
+          ],
+          "balanced_accuracy": 0.8248,
+          "macro_f1": 0.7558,
+          "auroc": 0.9087
+        }
+      }
+    },
+    "bank_marketing": {
+      "dataset_sha": "8e82b6c6e16eac9f8410c08e28b54661e7cb7e087a7df4a2aea4a917ffb6e425",
+      "total_rows": 4521,
+      "true_distribution": [
+        4000,
+        521
+      ],
+      "models": {
+        "Random Forest Multicore (3-Fold Stratified)": {
+          "confusion_matrix": [
+            [
+              3510,
+              490
+            ],
+            [
+              167,
+              354
+            ]
+          ],
+          "row_sums_true": [
+            4000,
+            521
+          ],
+          "col_sums_pred": [
+            3677,
+            844
+          ],
+          "balanced_accuracy": 0.7784,
+          "macro_f1": 0.7166
+        }
+      }
+    },
+    "statlog_german_credit": {
+      "dataset_sha": "332417eb373dba7b5dc494011b4d7cfa29dc35caf98c7e09b4dfe30a20b4a57b",
+      "total_rows": 1000,
+      "true_distribution": [
+        700,
+        300
+      ],
+      "models": {
+        "Random Forest Multicore (3-Fold Stratified)": {
+          "confusion_matrix": [
+            [
+              536,
+              164
+            ],
+            [
+              100,
+              200
+            ]
+          ],
+          "row_sums_true": [
+            700,
+            300
+          ],
+          "col_sums_pred": [
+            636,
+            364
+          ],
+          "balanced_accuracy": 0.7162,
+          "macro_f1": 0.7024
+        }
+      }
+    },
+    "cleveland_heart_disease": {
+      "dataset_sha": "b13d8859b9567d168631e71d9a53377a60b811666244cf64da2537fd1299e38f",
+      "total_rows": 303,
+      "true_distribution": [
+        164,
+        139
+      ],
+      "models": {
+        "Random Forest Multicore (3-Fold Stratified)": {
+          "confusion_matrix": [
+            [
+              141,
+              23
+            ],
+            [
+              27,
+              112
+            ]
+          ],
+          "row_sums_true": [
+            164,
+            139
+          ],
+          "col_sums_pred": [
+            168,
+            135
+          ],
+          "balanced_accuracy": 0.8329,
+          "macro_f1": 0.8332
+        }
+      }
+    },
+    "auto_mpg": {
+      "dataset_sha": "22358d776137df8f470201d53fdfebb0cf009e8709e068d9912f7e0fd3a03915",
+      "total_rows": 398,
+      "task": "Continuous Regression",
+      "models": {
+        "Random Forest Regressor": {
+          "r2_score": 0.8532,
+          "rmse": 2.9733
+        }
+      }
+    }
+  },
+  "nlp": {
+    "financial_phrasebank": {
+      "dataset_sha": "16b013b8c7481109aedc85f064cfd6d45b58edc15c388eda904a153ce2f322ed",
+      "total_samples": 4846,
+      "label_distribution": {
+        "neutral": 2879,
+        "positive": 1363,
+        "negative": 604
+      },
+      "models": {
+        "TF-IDF Logistic Baseline": {
+          "balanced_accuracy": 0.6985,
+          "macro_f1": 0.6933,
+          "mondrian_coverage": 0.8781,
+          "mondrian_ci95": [
+            0.856,
+            0.8972
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 0.43
+        },
+        "Pretrained DistilBERT Fine-Tuned": {
+          "balanced_accuracy": 0.7373,
+          "macro_f1": 0.7685,
+          "mondrian_coverage": 0.9112,
+          "mondrian_ci95": [
+            0.8916,
+            0.9275
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 364.85
+        }
+      }
+    },
+    "rotten_tomatoes": {
+      "dataset_sha": "3ae8547363bce59b10d8ba7d7e538549cf97cc8b0665e99279073fc9296ec97e",
+      "total_samples": 6920,
+      "label_distribution": {
+        "positive": 3610,
+        "negative": 3310
+      },
+      "models": {
+        "TF-IDF Logistic Baseline": {
+          "balanced_accuracy": 0.7833,
+          "macro_f1": 0.7835,
+          "mondrian_coverage": 0.9133,
+          "mondrian_ci95": [
+            0.8974,
+            0.927
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 0.35
+        },
+        "Pretrained DistilBERT Fine-Tuned": {
+          "balanced_accuracy": 0.8782,
+          "macro_f1": 0.8784,
+          "mondrian_coverage": 0.909,
+          "mondrian_ci95": [
+            0.8928,
+            0.923
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 248.12
+        }
+      }
+    },
+    "ag_news": {
+      "dataset_sha": "2bf1dc1df94aec6f450bdcf94de9efad1c779e0751387199683e3d8ec237764a",
+      "total_samples": 7600,
+      "label_distribution": {
+        "Business": 1900,
+        "Sci/Tech": 1900,
+        "Sports": 1900,
+        "World": 1900
+      },
+      "models": {
+        "TF-IDF Logistic Baseline": {
+          "balanced_accuracy": 0.8606,
+          "macro_f1": 0.8605,
+          "mondrian_coverage": 0.8961,
+          "mondrian_ci95": [
+            0.8798,
+            0.9103
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 0.82
+        },
+        "Pretrained DistilBERT Fine-Tuned": {
+          "balanced_accuracy": 0.9012,
+          "macro_f1": 0.9012,
+          "mondrian_coverage": 0.8961,
+          "mondrian_ci95": [
+            0.8798,
+            0.9103
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 295.4
+        }
+      }
+    },
+    "tweeteval_sentiment": {
+      "dataset_sha": "3870b689ff493bab8e22983744f851380a21502eb00327702ddfee73dfa0a214",
+      "total_samples": 12284,
+      "label_distribution": {
+        "neutral": 5937,
+        "negative": 3972,
+        "positive": 2375
+      },
+      "models": {
+        "TF-IDF Logistic Baseline": {
+          "balanced_accuracy": 0.6294,
+          "macro_f1": 0.6107,
+          "mondrian_coverage": 0.9048,
+          "mondrian_ci95": [
+            0.8924,
+            0.9158
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 0.95
+        },
+        "Pretrained DistilBERT Fine-Tuned": {
+          "balanced_accuracy": 0.6544,
+          "macro_f1": 0.664,
+          "mondrian_coverage": 0.8877,
+          "mondrian_ci95": [
+            0.8746,
+            0.8996
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 320.15
+        }
+      }
+    },
+    "sms_spam": {
+      "dataset_sha": "37615245f7850fa426a9eb371adce41df934963f221eec6e92c7c91a1726bafb",
+      "total_samples": 5572,
+      "label_distribution": {
+        "ham": 4825,
+        "spam": 747
+      },
+      "models": {
+        "TF-IDF Logistic Baseline": {
+          "balanced_accuracy": 0.9713,
+          "macro_f1": 0.9674,
+          "mondrian_coverage": 0.9202,
+          "mondrian_ci95": [
+            0.9026,
+            0.9349
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 0.28
+        },
+        "Pretrained DistilBERT Fine-Tuned": {
+          "balanced_accuracy": 0.984,
+          "macro_f1": 0.9826,
+          "mondrian_coverage": 0.9085,
+          "mondrian_ci95": [
+            0.89,
+            0.9242
+          ],
+          "avg_set_size": null,
+          "empty_set_rate": null,
+          "train_wall_time_s": 185.6
+        }
+      }
+    }
+  }
+}

@@ -8,11 +8,11 @@ All datasets are genuine, publicly accessible real benchmarks verified by crypto
 
 | Modality | Dataset | Architecture / Model | Samples | Classes / Task | Balanced Acc / R2 | Macro-F1 / RMSE | Conformal Cov (Marginal) | Mondrian Cov (Class-Cond) [95% Wilson CI] | Avg Set Size | Empty Set Rate | XAI Technique Verified |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| **TABULAR** | `statlog_german_credit` | Random Forest Multicore | 1,000 | 2 | **0.6891** | **0.6851** | 91.0% | **91.2%** [87.5%, 93.9%] | 1.48 | 0.0% | Permutation Saliency + Counterfactual Recourse |
-| **TABULAR** | `cleveland_heart_disease` | Random Forest Multicore | 303 | 2 | **0.8240** | **0.8250** | 95.0% | **97.4%** [91.0%, 99.3%] | 1.55 | 0.0% | Permutation Saliency + Counterfactual Recourse |
-| **TABULAR** | `bank_marketing` | Random Forest Multicore | 4,521 | 2 | **0.7650** | **0.7106** | 91.2% | **91.8%** [90.1%, 93.3%] | 1.41 | 0.0% | Permutation Saliency + Counterfactual Recourse |
-| **TABULAR** | `adult_census` | Random Forest Multicore | 48,842 | 2 | **0.8237** | **0.7539** | 90.3% | **90.5%** [90.0%, 90.9%] | 1.38 | 0.0% | Permutation Saliency + Counterfactual Recourse |
-| **TABULAR** | `auto_mpg` | Random Forest Regressor | 398 | Continuous (Reg) | **0.8497** | **3.0020** | 96.5% | **96.5%** [92.0%, 98.5%] | N/A (Band) | 0.0% | Tree Feature Importance + Conformal Interval |
+| **TABULAR** | `statlog_german_credit` | Random Forest Multicore | 1,000 | 2 | **0.7162** | **0.7024** | 91.0% | **91.2%** [87.5%, 93.9%] | 1.48 | 0.0% | Permutation Saliency + Counterfactual Recourse |
+| **TABULAR** | `cleveland_heart_disease` | Random Forest Multicore | 303 | 2 | **0.8329** | **0.8332** | 95.0% | **97.4%** [91.0%, 99.3%] | 1.55 | 0.0% | Permutation Saliency + Counterfactual Recourse |
+| **TABULAR** | `bank_marketing` | Random Forest Multicore | 4,521 | 2 | **0.7784** | **0.7166** | 91.2% | **91.8%** [90.1%, 93.3%] | 1.41 | 0.0% | Permutation Saliency + Counterfactual Recourse |
+| **TABULAR** | `adult_census` | Random Forest Multicore | 48,842 (Test 16,281) | 2 | **0.8248** | **0.7558** | 90.3% | **90.5%** [90.0%, 90.9%] | 1.38 | 0.0% | Permutation Saliency + Counterfactual Recourse |
+| **TABULAR** | `auto_mpg` | Random Forest Regressor | 398 | Continuous (Reg) | **0.8532** | **2.9733** | 96.5% | **96.5%** [92.0%, 98.5%] | N/A (Band) | 0.0% | Tree Feature Importance + Conformal Interval |
 | **VISION** | `breastmnist` | ConvNet Baseline | 780 | 2 | **0.7569** | **0.7647** | 90.4% | **85.9%** [79.6%, 90.5%] | 1.16 | 0.0% | Grad-CAM + Deletion/Randomization Check |
 | **VISION** | `breastmnist` | Pretrained MobileNet-V3 | 780 | 2 | **0.5714** | **0.3721** | 90.4% | **82.1%** [75.3%, 87.3%] | 1.20 | 0.0% | Grad-CAM + Deletion/Randomization Check |
 | **VISION** | `retinamnist` | ConvNet Baseline | 1,600 | 5 | **0.3506** | **0.2874** | 89.2% | **89.5%** [86.1%, 92.1%] | 3.79 | 0.0% | Grad-CAM + Deletion/Randomization Check |

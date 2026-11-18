@@ -60,25 +60,40 @@ test.describe('Sukio Demo — AutoML Training Studio', () => {
   });
 
   test('direct API training job submission validation', async ({ request }) => {
-    const payload = {
-      dataset_id: 1,
-      target_column: 'species',
-      task_type: 'classification',
-      models_to_train: ['Random Forest', 'Extra Trees'],
-      enable_tuning: true,
-      tuning_trials: 5,
-      cv_folds: 3,
-      test_size: 0.2,
-      execution_mode: 'remote'
-    };
-
-    const response = await request.post('/api/train-model', {
-      data: payload
+    // 1. Strict Negative Test: Non-existent dataset ID must return 404
+    const notFoundRes = await request.post('/api/train-model', {
+      data: {
+        dataset_id: 999999,
+        target_column: 'target',
+        task_type: 'classification',
+        models_to_train: ['Random Forest']
+      }
     });
+    expect(notFoundRes.status()).toBe(404);
 
-    // 200, 400 (validation), or 404 (dataset not found) are valid API responses
-    expect([200, 400, 404]).toContain(response.status());
-    if (response.status() === 200) {
+    // 2. Verified submission with first available dataset
+    const datasetsRes = await request.get('/api/datasets');
+    expect(datasetsRes.status()).toBe(200);
+    const datasets = await datasetsRes.json();
+
+    if (Array.isArray(datasets) && datasets.length > 0) {
+      const validDs = datasets[0];
+      const payload = {
+        dataset_id: validDs.id,
+        target_column: validDs.target_column || 'target',
+        task_type: 'classification',
+        models_to_train: ['Random Forest'],
+        enable_tuning: false,
+        cv_folds: 2,
+        test_size: 0.2,
+        execution_mode: 'local'
+      };
+
+      const response = await request.post('/api/train-model', {
+        data: payload
+      });
+
+      expect(response.status()).toBe(200);
       const data = await response.json();
       expect(data).toHaveProperty('job_id');
       expect(data).toHaveProperty('status');

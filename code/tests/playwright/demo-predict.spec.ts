@@ -32,27 +32,40 @@ test.describe('Sukio Demo — Live Inference Sandbox', () => {
     await expect(page.locator('#prediction-result')).toBeVisible();
   });
 
-  test('direct API prediction endpoint verification', async ({ request }) => {
-    const payload = {
-      model_id: 1,
-      features: {
-        sepal_length: 5.1,
-        sepal_width: 3.5,
-        petal_length: 1.4,
-        petal_width: 0.2
-      }
-    };
-
-    const response = await request.post('/api/predict', {
-      data: payload
+  test('direct API prediction endpoint error handling and inference verification', async ({ request }) => {
+    // 1. Strict Negative Test: Non-existent model ID must return 404
+    const notFoundRes = await request.post('/api/predict', {
+      data: { model_id: 999999, features: { age: 30, income: 50000 } }
     });
+    expect(notFoundRes.status()).toBe(404);
 
-    // 200 or 404/400 (if model 1 not trained yet)
-    expect([200, 400, 404]).toContain(response.status());
-    if (response.status() === 200) {
-      const result = await response.json();
-      expect(result).toHaveProperty('prediction');
-      expect(result).toHaveProperty('confidence');
+    // 2. Query catalog for trained models
+    const modelsRes = await request.get('/api/models');
+    expect(modelsRes.status()).toBe(200);
+    const models = await modelsRes.json();
+
+    if (Array.isArray(models) && models.length > 0) {
+      const activeModel = models[0];
+
+      // 3. Strict Negative Test: Missing / empty features on active model must return 400
+      const emptyFeaturesRes = await request.post('/api/predict', {
+        data: { model_id: activeModel.id, features: {} }
+      });
+      expect(emptyFeaturesRes.status()).toBe(400);
+
+      // 4. Positive & Data-Dependent Test: Valid features return 200 with prediction & confidence
+      const resA = await request.post('/api/predict', {
+        data: {
+          model_id: activeModel.id,
+          features: { pclass: 1, sex: 'female', age: 29, fare: 211.3 }
+        }
+      });
+      expect(resA.status()).toBe(200);
+      const dataA = await resA.json();
+      expect(dataA).toHaveProperty('prediction');
+      expect(dataA).toHaveProperty('confidence');
+      expect(dataA.confidence).toBeGreaterThan(0.0);
+      expect(dataA.confidence).toBeLessThanOrEqual(1.0);
     }
   });
 

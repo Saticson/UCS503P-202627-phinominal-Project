@@ -57,9 +57,36 @@ public class PredictionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Model file path not available");
         }
 
+        Path path = Paths.get(model.getFilePath());
+        if (!Files.exists(path)) {
+            Path fname = path.getFileName();
+            Path[] candidates = new Path[] {
+                    Paths.get("storage/models", fname.toString()),
+                    Paths.get("./storage/models", fname.toString()),
+                    Paths.get("code/backend-java/storage/models", fname.toString()),
+                    Paths.get("../storage/models", fname.toString()),
+                    Paths.get("../../storage/models", fname.toString()),
+                    Paths.get("code/storage/models", fname.toString())
+            };
+            for (Path c : candidates) {
+                if (Files.exists(c)) {
+                    path = c;
+                    break;
+                }
+            }
+        }
+
+        if (!Files.exists(path)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Model artifact file not found on disk: " + model.getFilePath());
+        }
+
+        if (request.getFeatures() == null || request.getFeatures().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prediction features map must not be null or empty");
+        }
+
         Map<String, Object> payload = new HashMap<>();
         payload.put("model_id", model.getId());
-        payload.put("file_path", model.getFilePath());
+        payload.put("file_path", path.toAbsolutePath().toString());
         payload.put("features", request.getFeatures());
         payload.put("task_type", model.getTaskType());
 
@@ -186,60 +213,8 @@ public class PredictionService {
             } catch (Exception ignored) {}
         }
 
-        // Try Python PyTorch vision worker for true Grad-CAM if a PyTorch model exists
-        Path pyVisionModel = Paths.get("./storage/models/vision_model.pt");
-        if (!Files.exists(pyVisionModel)) {
-            try {
-                Path mDir = Paths.get("./storage/models");
-                if (Files.exists(mDir)) {
-                    try (var stream = Files.list(mDir)) {
-                        pyVisionModel = stream.filter(p -> p.toString().endsWith(".pt")).findFirst().orElse(pyVisionModel);
-                    }
-                }
-            } catch (Exception ignored) {}
-        }
-
-        // If no PyTorch artifact exists, generate baseline artifact immediately so Grad-CAM is always backed by neural hooks
-        if (!Files.exists(pyVisionModel)) {
-            try {
-                Files.createDirectories(pyVisionModel.getParent());
-                Path specJson = Files.createTempFile("vision_baseline_spec_", ".json");
-                List<List<List<Integer>>> sampleImages = new ArrayList<>();
-                List<Integer> labels = new ArrayList<>();
-                for (int i = 0; i < 30; i++) {
-                    int lbl = i % 2;
-                    labels.add(lbl);
-                    List<List<Integer>> img = new ArrayList<>();
-                    for (int r = 0; r < 28; r++) {
-                        List<Integer> row = new ArrayList<>();
-                        for (int c = 0; c < 28; c++) {
-                            row.add((lbl == 1 && r > 8 && r < 20 && c > 8 && c < 20) ? 230 : 20);
-                        }
-                        img.add(row);
-                    }
-                    sampleImages.add(img);
-                }
-                Map<String, Object> spec = Map.of(
-                        "images", sampleImages,
-                        "labels", labels,
-                        "class_names", List.of("Normal", "Defective"),
-                        "epochs", 2
-                );
-                Files.writeString(specJson, objectMapper.writeValueAsString(spec));
-                ProcessBuilder pb = new ProcessBuilder(
-                        "uv", "run", "--no-project", "--with", "torch", "--with", "torchvision", "--with", "pillow",
-                        "python", "code/ml-engine/multimodal_service.py", "train-vision",
-                        "--input", specJson.toAbsolutePath().toString(),
-                        "--output", pyVisionModel.toAbsolutePath().toString()
-                );
-                pb.redirectErrorStream(true);
-                Process p = pb.start();
-                p.waitFor(12, TimeUnit.SECONDS);
-                Files.deleteIfExists(specJson);
-            } catch (Exception e) {
-                logger.warn("Could not generate baseline PyTorch vision model: {}", e.getMessage());
-            }
-        }
+        // Fast PyTorch vision worker execution if a trained model exists
+        Path pyVisionModel = resolveModelPath("vision_model.pt");
         if (Files.exists(pyVisionModel) && imageBytes != null) {
             try {
                 Path tempImg = Files.createTempFile("vision_input_", ".png");
@@ -252,14 +227,14 @@ public class PredictionService {
                 );
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
-                if (p.waitFor(25, TimeUnit.SECONDS) && p.exitValue() == 0) {
+                if (p.waitFor(3, TimeUnit.SECONDS) && p.exitValue() == 0) {
                     String out = new String(p.getInputStream().readAllBytes());
                     JsonNode node = objectMapper.readTree(out);
                     String pred = node.get("predicted_class").asText();
                     double conf = node.get("confidence").asDouble();
                     Map<String, Double> probs = new HashMap<>();
                     node.get("probabilities").fields().forEachRemaining(e -> probs.put(e.getKey(), e.getValue().asDouble()));
-                    
+
                     // Render Grad-CAM heatmap as SVG overlay
                     heatmapSvg = buildGradCamSvg(node.get("gradcam_heatmap"));
                     int latency = (int) (System.currentTimeMillis() - t0);
@@ -349,7 +324,7 @@ public class PredictionService {
         if (Files.exists(pyNlpModel)) {
             try {
                 ProcessBuilder pb = new ProcessBuilder(
-                        "uv", "run", "--no-project", "--with", "scikit-learn", "--with", "joblib",
+                        resolveUvBinary(), "run", "--no-project", "--with", "scikit-learn", "--with", "joblib",
                         "python", script.toString(), "predict-nlp",
                         "--model-path", pyNlpModel.toAbsolutePath().toString(),
                         "--text", targetText
@@ -459,16 +434,24 @@ public class PredictionService {
         return Paths.get(scriptRelPath).toAbsolutePath();
     }
 
+    private String resolveUvBinary() {
+        Path userUv = Paths.get(System.getProperty("user.home"), ".local", "bin", "uv.exe");
+        if (Files.exists(userUv)) return userUv.toAbsolutePath().toString();
+        return "uv";
+    }
+
     private Path resolveModelPath(String filename) {
         Path[] candidates = new Path[] {
+                Paths.get("code/storage/models", filename),
                 Paths.get("./storage/models", filename),
+                Paths.get("storage/models", filename),
                 Paths.get("../../storage/models", filename),
                 Paths.get("../storage/models", filename),
-                Paths.get("storage/models", filename)
+                Paths.get("code/backend-java/storage/models", filename)
         };
         for (Path c : candidates) {
             if (Files.exists(c)) return c.toAbsolutePath();
         }
-        return Paths.get("./storage/models", filename).toAbsolutePath();
+        return Paths.get("code/storage/models", filename).toAbsolutePath();
     }
 }

@@ -45,16 +45,15 @@ test.describe('Sukio SOTA Architecture — Edge Ingestion, XAI & Showcases', () 
     const runBtn = page.locator('#btn-run-prediction');
     await expect(runBtn).toBeVisible();
     await runBtn.click();
-    await page.waitForTimeout(1500);
 
     const verdictCard = page.locator('#prediction-result');
     await expect(verdictCard).toBeVisible();
 
     // Verify Conformal Prediction Set badge
-    await expect(verdictCard).toContainText('Conformal Prediction Set');
+    await expect(verdictCard).toContainText('Conformal Prediction Set', { timeout: 10000 });
 
     // Verify Actionable Algorithmic Recourse section
-    await expect(verdictCard).toContainText('Actionable Algorithmic Recourse');
+    await expect(verdictCard).toContainText('Actionable Algorithmic Recourse', { timeout: 10000 });
   });
 
   test('3. Showcase API: returns verified interactive tours and empirical benchmarks', async ({ request }) => {
@@ -167,8 +166,6 @@ test.describe('Sukio SOTA Architecture — Edge Ingestion, XAI & Showcases', () 
     const runVisionBtn = page.locator('#btn-run-vision-prediction');
     await expect(runVisionBtn).toBeVisible();
     await runVisionBtn.click();
-    await page.waitForTimeout(1500);
-
     // Verify vision verdict card
     const visionResult = page.locator('#vision-result');
     await expect(visionResult).toBeVisible();
@@ -176,7 +173,7 @@ test.describe('Sukio SOTA Architecture — Edge Ingestion, XAI & Showcases', () 
 
     // Verify Grad-CAM overlay image is present
     const gradcamImg = page.locator('#gradcam-preview-image');
-    await expect(gradcamImg).toBeVisible();
+    await expect(gradcamImg).toBeVisible({ timeout: 10000 });
   });
 
 });
