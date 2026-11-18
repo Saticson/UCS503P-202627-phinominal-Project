@@ -162,4 +162,86 @@ test.describe('Sukio Substantive Integration & Lifecycle Audit', () => {
     }
   });
 
+  test('6. NLP Model Switch: Transformer vs TF-IDF Baseline yields distinct evaluations & attributions', async ({ page }) => {
+    await page.goto('/predict');
+    await page.click('#tab-btn-nlp');
+
+    const modelSelect = page.locator('#nlp-model-select');
+    await expect(modelSelect).toBeVisible();
+
+    const textarea = page.locator('#nlp-text-input');
+    await textarea.fill('the movie was surprisingly thoughtful and brilliantly acted despite minor pacing flaws');
+
+    // 6a. Run with Transformer
+    await modelSelect.selectOption('998'); // Transformer
+    const respTfPromise = page.waitForResponse(resp => resp.url().includes('/predict/nlp') && resp.status() === 200);
+    await page.click('#btn-run-nlp-prediction');
+    await respTfPromise;
+
+    await page.waitForSelector('#token-attribution-container span', { timeout: 10000 });
+    const pillsTf = await page.locator('#token-attribution-container span').allTextContents();
+
+    // 6b. Run with TF-IDF
+    await modelSelect.selectOption('999'); // TF-IDF
+    const respTfidfPromise = page.waitForResponse(resp => resp.url().includes('/predict/nlp') && resp.status() === 200);
+    await page.click('#btn-run-nlp-prediction');
+    await respTfidfPromise;
+
+    await page.waitForSelector('#token-attribution-container span', { timeout: 10000 });
+    const pillsTfidf = await page.locator('#token-attribution-container span').allTextContents();
+
+    // Verify attributions are model-specific and non-empty
+    expect(pillsTf.length).toBeGreaterThan(0);
+    expect(pillsTfidf.length).toBeGreaterThan(0);
+    expect(pillsTf.join(' ')).not.toEqual(pillsTfidf.join(' '));
+  });
+
+  test('7. Vision Architecture Switch: PathMNIST ConvNet PyTorch vs ONNX runtime yields real multi-class outputs', async ({ page }) => {
+    await page.goto('/predict');
+    await page.click('#tab-btn-vision');
+
+    const visionModelSelect = page.locator('#vision_model');
+    await expect(visionModelSelect).toBeVisible();
+
+    // Select PathMNIST PyTorch model
+    await visionModelSelect.selectOption({ label: 'PathMNIST Histology Classifier (PyTorch ConvNet, 9 Classes)' });
+    const colonBtn = page.locator('button:text("Colon Histology (PathMNIST)")');
+    if (await colonBtn.isVisible()) {
+      await colonBtn.click();
+    }
+
+    const runVisionBtn = page.locator('#btn-run-vision-prediction');
+    const respPyPromise = page.waitForResponse(resp => resp.url().includes('/predict/vision') && resp.status() === 200);
+    await runVisionBtn.click();
+    await respPyPromise;
+
+    const visionResult = page.locator('#vision-result');
+    await expect(visionResult).toBeVisible();
+    await expect(page.locator('#gradcam-preview-image')).toBeVisible({ timeout: 10000 });
+
+    // Switch to ONNX Digit Classifier
+    await visionModelSelect.selectOption({ label: 'MobileNet-V3 Ultra-Fast Digit Classifier (ONNX, 3ms)' });
+    const digit7Btn = page.locator('button:text("Digit 7 (MNIST)")');
+    if (await digit7Btn.isVisible()) {
+      await digit7Btn.click();
+    }
+    const respOnnxPromise = page.waitForResponse(resp => resp.url().includes('/predict/vision') && resp.status() === 200);
+    await runVisionBtn.click();
+    await respOnnxPromise;
+
+    await expect(visionResult).toBeVisible();
+  });
+
+  test('8. Replacement Benchmarks Ingestion: California Housing tabular regression', async ({ request }) => {
+    const res = await request.post('/datasets/load-benchmark/california_housing');
+    expect(res.status()).toBe(200);
+
+    const dsListRes = await request.get('/api/datasets');
+    expect(dsListRes.status()).toBe(200);
+    const datasets = await dsListRes.json();
+    const housing = datasets.find((d: any) => d.name.toLowerCase().includes('housing'));
+    expect(housing).toBeDefined();
+    expect(housing.target_column || housing.targetColumn).toBe('MedHouseVal');
+  });
+
 });

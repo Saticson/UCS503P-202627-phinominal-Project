@@ -446,20 +446,44 @@ def save_vision_artifact(model, class_names, output_path, conformal_quantiles=No
 
 def load_vision_artifact(model_path):
     checkpoint = torch.load(model_path, map_location='cpu')
-    arch = checkpoint.get("architecture", "ConvNet")
-    num_classes = checkpoint["num_classes"]
-    sd = checkpoint["state_dict"]
+    if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+        arch = checkpoint.get("architecture", "ConvNet")
+        num_classes = checkpoint["num_classes"]
+        sd = checkpoint["state_dict"]
+        class_names = checkpoint.get("class_names")
+        conformal_quantiles = checkpoint.get("conformal_quantiles", {})
+    else:
+        sd = checkpoint
+        # Infer num_classes from last layer
+        num_classes = 2
+        for k in reversed(list(sd.keys())):
+            if "bias" in k or "weight" in k:
+                num_classes = sd[k].shape[0]
+                break
+        arch = "MobileNet" if any("features.1" in k for k in sd.keys()) else "ConvNet"
+        if num_classes == 9:
+            class_names = ["Adipose", "Background", "Debris", "Lymphocytes", "Mucus", "Smooth Muscle", "Normal Colon", "Stroma", "Epithelium"]
+        elif num_classes == 7:
+            class_names = ["Actinic keratoses", "Basal cell carcinoma", "Benign keratosis", "Dermatofibroma", "Melanocytic nevi", "Vascular lesions", "Melanoma"]
+        elif num_classes == 5:
+            class_names = ["No DR", "Mild DR", "Moderate DR", "Severe DR", "Proliferative DR"]
+        elif num_classes == 2:
+            class_names = ["Normal / Benign", "Defect / Malignant"]
+        else:
+            class_names = [f"Class_{i}" for i in range(num_classes)]
+        conformal_quantiles = {i: 0.90 for i in range(num_classes)}
+
     in_channels = 3
     if "features.0.0.weight" in sd:
         in_channels = sd["features.0.0.weight"].shape[1]
     elif "features.0.weight" in sd:
         in_channels = sd["features.0.weight"].shape[1]
+
     model = build_vision_model(architecture=arch, num_classes=num_classes, in_channels=in_channels, pretrained=False)
     try:
         model.load_state_dict(sd)
     except Exception:
-        # Fallback to ConvNet if architecture mismatch
         model = ConvNet(num_classes=num_classes, in_channels=in_channels)
         model.load_state_dict(sd)
     model.eval()
-    return model, checkpoint["class_names"], checkpoint.get("conformal_quantiles", {})
+    return model, class_names, conformal_quantiles

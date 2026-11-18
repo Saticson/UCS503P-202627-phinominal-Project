@@ -173,7 +173,7 @@ public class PredictionService {
         String filename = (imageFile != null && !imageFile.isEmpty()) ? imageFile.getOriginalFilename() : "";
         String sample = sampleImage != null ? sampleImage.toLowerCase() : "";
         String target = (filename + " " + sample).toLowerCase();
-        String selectedModel = (visionModel != null && !visionModel.isBlank()) ? visionModel : "MobileNet-V3 Defect Classifier";
+        String selectedModel = (visionModel != null && !visionModel.isBlank()) ? visionModel : "MobileNet-V3 Ultra-Fast Digit Classifier";
         String imagePreview = "";
         byte[] imageBytes = null;
         String heatmapSvg = null;
@@ -213,22 +213,34 @@ public class PredictionService {
             } catch (Exception ignored) {}
         }
 
-        // Fast PyTorch vision worker execution if a trained model exists
-        Path pyVisionModel = resolveModelPath("vision_model.pt");
-        if (Files.exists(pyVisionModel) && imageBytes != null) {
+        // Fast PyTorch vision worker execution if a trained model exists and not onnx/digit
+        boolean isDigitOrOnnx = selectedModel.toLowerCase(Locale.ROOT).contains("digit")
+                || selectedModel.toLowerCase(Locale.ROOT).contains("onnx")
+                || selectedModel.toLowerCase(Locale.ROOT).contains("mnist-8")
+                || selectedModel.toLowerCase(Locale.ROOT).contains("yolo")
+                || selectedModel.toLowerCase(Locale.ROOT).contains("defect")
+                || selectedModel.toLowerCase(Locale.ROOT).contains("pcb");
+        Path pyVisionModel = resolveVisionModel(selectedModel);
+        if (!isDigitOrOnnx && pyVisionModel != null && Files.exists(pyVisionModel) && imageBytes != null) {
+            Path tempImg = null;
             try {
-                Path tempImg = Files.createTempFile("vision_input_", ".png");
+                tempImg = Files.createTempFile("vision_input_", ".png");
                 Files.write(tempImg, imageBytes);
                 ProcessBuilder pb = new ProcessBuilder(
-                        "uv", "run", "--no-project", "--with", "torch", "--with", "torchvision", "--with", "pillow",
-                        "python", "code/ml-engine/multimodal_service.py", "predict-vision",
+                        resolveUvBinary(), "run", "--no-project", "--with", "torch", "--with", "torchvision", "--with", "pillow",
+                        "python", "-W", "ignore", resolveScript("ml-engine/multimodal_service.py").toString(), "predict-vision",
                         "--model-path", pyVisionModel.toAbsolutePath().toString(),
                         "--image-path", tempImg.toAbsolutePath().toString()
                 );
-                pb.redirectErrorStream(true);
+                pb.redirectErrorStream(false);
                 Process p = pb.start();
-                if (p.waitFor(3, TimeUnit.SECONDS) && p.exitValue() == 0) {
+                if (p.waitFor(15, TimeUnit.SECONDS) && p.exitValue() == 0) {
                     String out = new String(p.getInputStream().readAllBytes());
+                    int jsonStart = out.indexOf('{');
+                    int jsonEnd = out.lastIndexOf('}');
+                    if (jsonStart >= 0 && jsonEnd > jsonStart) {
+                        out = out.substring(jsonStart, jsonEnd + 1);
+                    }
                     JsonNode node = objectMapper.readTree(out);
                     String pred = node.get("predicted_class").asText();
                     double conf = node.get("confidence").asDouble();
@@ -238,16 +250,19 @@ public class PredictionService {
                     // Render Grad-CAM heatmap as SVG overlay
                     heatmapSvg = buildGradCamSvg(node.get("gradcam_heatmap"));
                     int latency = (int) (System.currentTimeMillis() - t0);
-                    Files.deleteIfExists(tempImg);
 
+                    String evaluatedName = selectedModel.contains("(") ? selectedModel : selectedModel + " (PyTorch Grad-CAM)";
                     VisionPredictionResponseDto dto = new VisionPredictionResponseDto(
-                            pred, conf, latency, probs, imagePreview, "Sukio PyTorch ConvNet (Grad-CAM Enabled)");
+                            pred, conf, latency, probs, imagePreview, evaluatedName);
                     dto.setGradcamHeatmapSvg(heatmapSvg);
                     return dto;
                 }
-                Files.deleteIfExists(tempImg);
             } catch (Exception e) {
                 logger.warn("PyTorch vision prediction failed ({}); falling back to ONNX engine", e.getMessage());
+            } finally {
+                if (tempImg != null) {
+                    try { Files.deleteIfExists(tempImg); } catch (Exception ignored) {}
+                }
             }
         }
 
@@ -281,13 +296,7 @@ public class PredictionService {
                 : "Operating revenue and cash flow grew strongly across enterprise accounts.";
 
         Path script = resolveScript("ml-engine/multimodal_service.py");
-        Path pyNlpModel = (modelId != null) 
-                ? resolveModelPath("model_" + modelId + "_nlp.joblib") 
-                : resolveModelPath("test_nlp.joblib");
-
-        if (!Files.exists(pyNlpModel)) {
-            pyNlpModel = resolveModelPath("test_nlp.joblib");
-        }
+        Path pyNlpModel = resolveNlpModel(modelId);
 
         // If no model artifact exists yet, train baseline artifact immediately so inference is always model-backed
         if (!Files.exists(pyNlpModel)) {
@@ -307,12 +316,12 @@ public class PredictionService {
                 );
                 Files.writeString(specJson, objectMapper.writeValueAsString(spec));
                 ProcessBuilder pb = new ProcessBuilder(
-                        "uv", "run", "--no-project", "--with", "scikit-learn", "--with", "joblib",
-                        "python", script.toString(), "train-nlp",
+                        resolveUvBinary(), "run", "--no-project", "--with", "scikit-learn", "--with", "joblib",
+                        "python", "-W", "ignore", script.toString(), "train-nlp",
                         "--input", specJson.toAbsolutePath().toString(),
                         "--output", pyNlpModel.toAbsolutePath().toString()
                 );
-                pb.redirectErrorStream(true);
+                pb.redirectErrorStream(false);
                 Process p = pb.start();
                 p.waitFor(15, TimeUnit.SECONDS);
                 Files.deleteIfExists(specJson);
@@ -324,15 +333,20 @@ public class PredictionService {
         if (Files.exists(pyNlpModel)) {
             try {
                 ProcessBuilder pb = new ProcessBuilder(
-                        resolveUvBinary(), "run", "--no-project", "--with", "scikit-learn", "--with", "joblib",
-                        "python", script.toString(), "predict-nlp",
+                        resolveUvBinary(), "run", "--no-project", "--with", "scikit-learn", "--with", "joblib", "--with", "torch",
+                        "python", "-W", "ignore", script.toString(), "predict-nlp",
                         "--model-path", pyNlpModel.toAbsolutePath().toString(),
                         "--text", targetText
                 );
-                pb.redirectErrorStream(true);
+                pb.redirectErrorStream(false);
                 Process p = pb.start();
                 if (p.waitFor(25, TimeUnit.SECONDS) && p.exitValue() == 0) {
                     String out = new String(p.getInputStream().readAllBytes());
+                    int jsonStart = out.indexOf('{');
+                    int jsonEnd = out.lastIndexOf('}');
+                    if (jsonStart >= 0 && jsonEnd > jsonStart) {
+                        out = out.substring(jsonStart, jsonEnd + 1);
+                    }
                     JsonNode node = objectMapper.readTree(out);
                     String pred = node.get("prediction").asText();
                     double conf = node.get("confidence").asDouble();
@@ -343,9 +357,9 @@ public class PredictionService {
                     if (node.has("token_attribution") && node.get("token_attribution").isArray()) {
                         for (JsonNode t : node.get("token_attribution")) {
                             tokens.add(Map.of(
-                                    "token", t.get("token").asText(),
-                                    "attribution", t.get("attribution").asDouble(),
-                                    "position", t.get("position").asInt()
+                                     "token", t.get("token").asText(),
+                                     "attribution", t.get("attribution").asDouble(),
+                                     "position", t.get("position").asInt()
                             ));
                         }
                     }
@@ -355,8 +369,12 @@ public class PredictionService {
                             : Set.of(pred);
 
                     int latency = (int) (System.currentTimeMillis() - t0);
+                    String arch = node.has("architecture") ? node.get("architecture").asText() : "Sukio NLP Pipeline";
+                    String evaluatedModelName = "transformer".equalsIgnoreCase(arch)
+                            ? "Sukio PyTorch Transformer (Self-Attention LOO Saliency)"
+                            : "Sukio TF-IDF N-Gram Classifier (Leave-One-Out Saliency)";
                     return new NlpPredictionResponseDto(
-                            pred, conf, latency, probs, tokens, confSet, "Sukio TF-IDF NLP Transformer");
+                            pred, conf, latency, probs, tokens, confSet, evaluatedModelName);
                 }
             } catch (Exception e) {
                 logger.error("NLP Python engine execution failed: {}", e.getMessage(), e);
@@ -364,6 +382,79 @@ public class PredictionService {
         }
 
         throw new IllegalStateException("Trained NLP model required for inference; please launch training in AutoML Studio first.");
+    }
+
+    private Path resolveVisionModel(String visionModel) {
+        if (visionModel == null || visionModel.isBlank()) {
+            return null;
+        }
+
+        try {
+            int mid = Integer.parseInt(visionModel.trim());
+            Optional<TrainedModelEntity> ent = trainedModelRepository.findById(mid);
+            if (ent.isPresent() && ent.get().getFilePath() != null) {
+                Path p = Paths.get(ent.get().getFilePath());
+                if (Files.exists(p)) return p;
+            }
+        } catch (NumberFormatException ignored) {}
+
+        Path direct = resolveModelPath(visionModel);
+        if (Files.exists(direct)) return direct;
+
+        String lower = visionModel.toLowerCase(Locale.ROOT);
+        if (lower.contains("digit") || lower.contains("onnx") || lower.contains("mnist-8")
+                || lower.contains("yolo") || lower.contains("defect") || lower.contains("pcb")) {
+            return null;
+        }
+
+        if (lower.contains("pathmnist") || lower.contains("histology") || lower.contains("colon")) {
+            return resolveModelPath("pathmnist_convnet_baseline.pth");
+        } else if (lower.contains("dermamnist") || lower.contains("derma")) {
+            return resolveModelPath("dermamnist_convnet_baseline.pth");
+        } else if (lower.contains("pneumonia")) {
+            return resolveModelPath("pneumoniamnist_convnet_baseline.pth");
+        } else if (lower.contains("retina")) {
+            return resolveModelPath("retinamnist_convnet_baseline.pth");
+        } else if (lower.contains("breast")) {
+            return resolveModelPath("breastmnist_convnet_baseline.pth");
+        } else if (lower.contains("mobilenet") && !lower.contains("onnx")) {
+            Path p = resolveModelPath("pathmnist_pretrained_mobilenet-v3_small.pth");
+            if (Files.exists(p)) return p;
+            return resolveModelPath("dermamnist_pretrained_mobilenet-v3_small.pth");
+        } else if (lower.contains("convnet")) {
+            Path p = resolveModelPath("pathmnist_convnet_baseline.pth");
+            if (Files.exists(p)) return p;
+        }
+        return null;
+    }
+
+    private Path resolveNlpModel(Integer modelId) {
+        if (modelId != null) {
+            if (modelId == 999) {
+                return resolveModelPath("sst2_tfidf_logistic.joblib");
+            }
+            if (modelId == 998) {
+                return resolveModelPath("sst2_transformer.joblib");
+            }
+            Optional<TrainedModelEntity> ent = trainedModelRepository.findById(modelId);
+            if (ent.isPresent() && ent.get().getFilePath() != null) {
+                Path p = Paths.get(ent.get().getFilePath());
+                if (Files.exists(p)) return p;
+            }
+            Path p = resolveModelPath("model_" + modelId + "_nlp.joblib");
+            if (Files.exists(p)) return p;
+        }
+
+        // Check for trained SST-2 or benchmark artifacts
+        Path[] candidates = new Path[] {
+                resolveModelPath("sst2_tfidf_logistic.joblib"),
+                resolveModelPath("sst2_transformer.joblib"),
+                resolveModelPath("test_nlp.joblib")
+        };
+        for (Path c : candidates) {
+            if (Files.exists(c)) return c;
+        }
+        return resolveModelPath("test_nlp.joblib");
     }
 
     private String buildGradCamSvg(JsonNode heatmapNode) {
