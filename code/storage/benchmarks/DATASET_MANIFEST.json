@@ -1,0 +1,258 @@
+{
+  "tabular": {
+    "statlog_german_credit": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 144)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\statlog_german_credit.csv",
+      "rows": 1000,
+      "features": 20,
+      "classes": [
+        "Good Credit",
+        "Bad Credit"
+      ],
+      "sha256": "332417eb373dba7b5dc494011b4d7cfa29dc35caf98c7e09b4dfe30a20b4a57b"
+    },
+    "cleveland_heart_disease": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 45)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\cleveland_heart_disease.csv",
+      "rows": 303,
+      "features": 13,
+      "classes": [
+        "Absence",
+        "Presence"
+      ],
+      "sha256": "b13d8859b9567d168631e71d9a53377a60b811666244cf64da2537fd1299e38f"
+    },
+    "bank_marketing": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 222)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\bank_marketing.csv",
+      "rows": 4521,
+      "features": 16,
+      "classes": [
+        "No Subscription",
+        "Subscription"
+      ],
+      "sha256": "8e82b6c6e16eac9f8410c08e28b54661e7cb7e087a7df4a2aea4a917ffb6e425"
+    },
+    "adult_census": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\adult_census.csv",
+      "train_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\adult_census_train.csv",
+      "test_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\adult_census_test.csv",
+      "train_rows": 32561,
+      "test_rows": 16281,
+      "total_rows": 48842,
+      "rows": 32561,
+      "features": 14,
+      "classes": [
+        "<=50K",
+        ">50K"
+      ],
+      "train_sha256": "7505de0e0825025e89ad153f830cac82bdeba54ba90d5a643e2e0715a8a50e11",
+      "test_sha256": "220b858fbd9bc1804ba67637975ac7a010477b321fb8e445568d496c40caa8eb",
+      "sha256": "7505de0e0825025e89ad153f830cac82bdeba54ba90d5a643e2e0715a8a50e11"
+    },
+    "auto_mpg": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 9)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\auto_mpg.csv",
+      "rows": 398,
+      "features": 7,
+      "task": "REGRESSION",
+      "sha256": "22358d776137df8f470201d53fdfebb0cf009e8709e068d9912f7e0fd3a03915"
+    },
+    "breast_cancer_coimbra": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 451)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\breast_cancer_coimbra.csv",
+      "rows": 116,
+      "features": 9,
+      "classes": [
+        "Healthy Control",
+        "Patient"
+      ],
+      "sha256": "a3ba12e5cedfe8f1f9a59b356079559c0d2fc0ea7e38b040b24a3ac5a42178a3"
+    }
+  },
+  "vision": {
+    "retinamnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "DeepDR Retina Fundus Micrographs (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\retinamnist.npz",
+      "train_samples": 1080,
+      "val_samples": 120,
+      "test_samples": 400,
+      "total_samples": 1600,
+      "image_shape": [
+        28,
+        28,
+        3
+      ],
+      "classes": [
+        "No DR",
+        "Mild",
+        "Moderate",
+        "Severe",
+        "Proliferative DR"
+      ],
+      "sha256": "254915f5f0a2074665c4676356824cf4ef4a3bcab233894b4bafcaf48962bd69"
+    },
+    "breastmnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "Breast Ultrasound Micro-patches (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\breastmnist.npz",
+      "train_samples": 546,
+      "val_samples": 78,
+      "test_samples": 156,
+      "total_samples": 780,
+      "image_shape": [
+        28,
+        28
+      ],
+      "classes": [
+        "Malignant",
+        "Normal/Benign"
+      ],
+      "sha256": "3a22d2a4625e7dd8903f0f59030e81a3d0c222bece2e5e10927456cb50efdec1"
+    },
+    "pneumoniamnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "Chest X-Ray Pediatric Pneumonia (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\pneumoniamnist.npz",
+      "train_samples": 4708,
+      "val_samples": 524,
+      "test_samples": 624,
+      "total_samples": 5856,
+      "image_shape": [
+        28,
+        28
+      ],
+      "classes": [
+        "Normal",
+        "Pneumonia"
+      ],
+      "sha256": "e1792d3f03751cb101e99f19a63b3c1941436c988665f47853417b05be250cd8"
+    },
+    "dermamnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "HAM10000 Dermatoscopy Pigmented Lesions (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\dermamnist.npz",
+      "train_samples": 7007,
+      "val_samples": 1003,
+      "test_samples": 2005,
+      "total_samples": 10015,
+      "image_shape": [
+        28,
+        28,
+        3
+      ],
+      "classes": [
+        "Actinic Keratoses",
+        "Basal Cell Carcinoma",
+        "Benign Keratosis",
+        "Dermatofibroma",
+        "Melanoma",
+        "Melanocytic Nevi",
+        "Vascular"
+      ],
+      "sha256": "1a309fec2e33bb6aba88e7d078e5ccbb9736c84a0b415ac197eb3c8fa331e050"
+    },
+    "bloodmnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "Peripheral Blood Cell Micrographs (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\bloodmnist.npz",
+      "train_samples": 11959,
+      "val_samples": 1712,
+      "test_samples": 3421,
+      "total_samples": 17092,
+      "image_shape": [
+        28,
+        28,
+        3
+      ],
+      "classes": [
+        "Basophil",
+        "Eosinophil",
+        "Erythroblast",
+        "Immature Granulocyte",
+        "Lymphocyte",
+        "Monocyte",
+        "Neutrophil",
+        "Platelet"
+      ],
+      "sha256": "062023e186f537e26b3c21ea3b2614ddfc475e8a14825dfd20663bbb7e37bddc"
+    }
+  },
+  "nlp": {
+    "financial_phrasebank": {
+      "modality": "NLP",
+      "provenance": "Malo et al. Financial PhraseBank (50% Consensus Agreement)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\financial_phrasebank.csv",
+      "train_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\financial_phrasebank_train.csv",
+      "cal_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\financial_phrasebank_cal.csv",
+      "test_file": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\financial_phrasebank_test.csv",
+      "total_rows": 4846,
+      "train_rows": 2902,
+      "cal_rows": 968,
+      "test_rows": 968,
+      "classes": [
+        "negative",
+        "neutral",
+        "positive"
+      ],
+      "sha256": "16b013b8c7481109aedc85f064cfd6d45b58edc15c388eda904a153ce2f322ed",
+      "train_sha256": "3981dc47d7454e9f2a958b09955fc13d7b1609571e15fb6e1f2dcc9949bfc3a1",
+      "test_sha256": "836ed01b7e215ff432bee5aaa457cda95cf225fba123a6cc70a992891f566e7e"
+    },
+    "rotten_tomatoes": {
+      "modality": "NLP",
+      "provenance": "Socher et al. Stanford Sentiment Treebank (Rotten Tomatoes reviews)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\rotten_tomatoes.csv",
+      "rows": 6920,
+      "classes": [
+        "negative",
+        "positive"
+      ],
+      "sha256": "3ae8547363bce59b10d8ba7d7e538549cf97cc8b0665e99279073fc9296ec97e"
+    },
+    "ag_news": {
+      "modality": "NLP",
+      "provenance": "Zhang et al. AG's News Topic Classification Corpus",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\ag_news.csv",
+      "rows": 7600,
+      "classes": [
+        "World",
+        "Sports",
+        "Business",
+        "Sci/Tech"
+      ],
+      "sha256": "2bf1dc1df94aec6f450bdcf94de9efad1c779e0751387199683e3d8ec237764a"
+    },
+    "tweeteval_sentiment": {
+      "modality": "NLP",
+      "provenance": "Barbieri et al. TweetEval Twitter Sentiment Corpus",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\tweeteval_sentiment.csv",
+      "rows": 12284,
+      "classes": [
+        "negative",
+        "neutral",
+        "positive"
+      ],
+      "sha256": "3870b689ff493bab8e22983744f851380a21502eb00327702ddfee73dfa0a214"
+    },
+    "sms_spam": {
+      "modality": "NLP",
+      "provenance": "Almeida et al. UCI SMS Spam Collection (ID 228)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\sms_spam.csv",
+      "rows": 5572,
+      "classes": [
+        "ham",
+        "spam"
+      ],
+      "sha256": "37615245f7850fa426a9eb371adce41df934963f221eec6e92c7c91a1726bafb"
+    }
+  }
+}

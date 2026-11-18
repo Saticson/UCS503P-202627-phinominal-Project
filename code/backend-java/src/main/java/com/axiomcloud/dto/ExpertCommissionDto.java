@@ -13,6 +13,8 @@ public class ExpertCommissionDto {
     private String description;
     private String status; // "OPEN", "MATCHED", "IN_PROGRESS"
     private LocalDateTime createdAt;
+    private int proposalCount;
+    private java.util.List<com.axiomcloud.model.CommissionProposalEntity> proposals = new java.util.ArrayList<>();
 
     public ExpertCommissionDto() {
         this.createdAt = LocalDateTime.now();
@@ -63,4 +65,10 @@ public class ExpertCommissionDto {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public int getProposalCount() { return proposalCount; }
+    public void setProposalCount(int proposalCount) { this.proposalCount = proposalCount; }
+
+    public java.util.List<com.axiomcloud.model.CommissionProposalEntity> getProposals() { return proposals; }
+    public void setProposals(java.util.List<com.axiomcloud.model.CommissionProposalEntity> proposals) { this.proposals = proposals; }
 }

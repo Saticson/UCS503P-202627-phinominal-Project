@@ -1,0 +1,248 @@
+{
+  "tabular": {
+    "statlog_german_credit": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 144)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\statlog_german_credit.csv",
+      "rows": 1000,
+      "features": 20,
+      "classes": [
+        "Good Credit",
+        "Bad Credit"
+      ],
+      "sha256": "332417eb373dba7b5dc494011b4d7cfa29dc35caf98c7e09b4dfe30a20b4a57b"
+    },
+    "cleveland_heart_disease": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 45)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\cleveland_heart_disease.csv",
+      "rows": 303,
+      "features": 13,
+      "classes": [
+        "Absence",
+        "Presence"
+      ],
+      "sha256": "b13d8859b9567d168631e71d9a53377a60b811666244cf64da2537fd1299e38f"
+    },
+    "bank_marketing": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 222)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\bank_marketing.csv",
+      "rows": 4521,
+      "features": 16,
+      "classes": [
+        "No Subscription",
+        "Subscription"
+      ],
+      "sha256": "8e82b6c6e16eac9f8410c08e28b54661e7cb7e087a7df4a2aea4a917ffb6e425"
+    },
+    "adult_census": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\adult_census.csv",
+      "rows": 2500,
+      "features": 14,
+      "classes": [
+        "<=50K",
+        ">50K"
+      ],
+      "sha256": "1192671b9ebed13a0fad5ec26a95f995b9707f2560752541d4355ec2394a7f0f"
+    },
+    "breast_cancer_coimbra": {
+      "modality": "TABULAR",
+      "provenance": "UCI Machine Learning Repository (ID 451)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\tabular\\breast_cancer_coimbra.csv",
+      "rows": 116,
+      "features": 9,
+      "classes": [
+        "Healthy Control",
+        "Patient"
+      ],
+      "sha256": "a3ba12e5cedfe8f1f9a59b356079559c0d2fc0ea7e38b040b24a3ac5a42178a3"
+    }
+  },
+  "vision": {
+    "retinamnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "DeepDR Retina Fundus Micrographs (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\retinamnist.npz",
+      "train_samples": 1080,
+      "val_samples": 120,
+      "test_samples": 400,
+      "total_samples": 1600,
+      "image_shape": [
+        28,
+        28,
+        3
+      ],
+      "classes": [
+        "No DR",
+        "Mild",
+        "Moderate",
+        "Severe",
+        "Proliferative DR"
+      ],
+      "sha256": "254915f5f0a2074665c4676356824cf4ef4a3bcab233894b4bafcaf48962bd69"
+    },
+    "tissuemnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "BBBC051 Kidney Cortex Micrographs (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\tissuemnist.npz",
+      "train_samples": 165466,
+      "val_samples": 23640,
+      "test_samples": 47280,
+      "total_samples": 236386,
+      "image_shape": [
+        28,
+        28
+      ],
+      "classes": [
+        "Collecting Duct",
+        "Distal Tubule",
+        "Glomerular",
+        "Interstitium",
+        "Proximal Tubule",
+        "Thick Ascending",
+        "Urothelium",
+        "Vessel"
+      ],
+      "sha256": "b4083e9b18254d3cc6138d833b0160c072c9b8a43718bdaf6bdf8f980eeb9659"
+    },
+    "dermamnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "HAM10000 Dermatoscopy Pigmented Lesions (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\dermamnist.npz",
+      "train_samples": 7007,
+      "val_samples": 1003,
+      "test_samples": 2005,
+      "total_samples": 10015,
+      "image_shape": [
+        28,
+        28,
+        3
+      ],
+      "classes": [
+        "Actinic Keratoses",
+        "Basal Cell Carcinoma",
+        "Benign Keratosis",
+        "Dermatofibroma",
+        "Melanoma",
+        "Melanocytic Nevi",
+        "Vascular"
+      ],
+      "sha256": "1a309fec2e33bb6aba88e7d078e5ccbb9736c84a0b415ac197eb3c8fa331e050"
+    },
+    "bloodmnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "Peripheral Blood Cell Micrographs (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\bloodmnist.npz",
+      "train_samples": 11959,
+      "val_samples": 1712,
+      "test_samples": 3421,
+      "total_samples": 17092,
+      "image_shape": [
+        28,
+        28,
+        3
+      ],
+      "classes": [
+        "Basophil",
+        "Eosinophil",
+        "Erythroblast",
+        "Immature Granulocyte",
+        "Lymphocyte",
+        "Monocyte",
+        "Neutrophil",
+        "Platelet"
+      ],
+      "sha256": "062023e186f537e26b3c21ea3b2614ddfc475e8a14825dfd20663bbb7e37bddc"
+    },
+    "pathmnist": {
+      "modality": "COMPUTER_VISION",
+      "provenance": "Kather et al. Colorectal Histology Micro-patches (MedMNIST v2)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\vision\\pathmnist.npz",
+      "train_samples": 89996,
+      "val_samples": 10004,
+      "test_samples": 7180,
+      "total_samples": 107180,
+      "image_shape": [
+        28,
+        28,
+        3
+      ],
+      "classes": [
+        "Adipose",
+        "Background",
+        "Debris",
+        "Lymphocytes",
+        "Mucus",
+        "Smooth Muscle",
+        "Normal Mucosa",
+        "Cancer-Associated Stroma",
+        "Colorectal Adenocarcinoma"
+      ],
+      "sha256": "81823f52dc622e69db2db4c72f8e8e617938dd6864d3c1f23d4e49724a28ea72"
+    }
+  },
+  "nlp": {
+    "financial_phrasebank": {
+      "modality": "NLP",
+      "provenance": "Malo et al. Financial PhraseBank (50% Consensus Agreement)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\financial_phrasebank.csv",
+      "rows": 4846,
+      "classes": [
+        "negative",
+        "neutral",
+        "positive"
+      ],
+      "sha256": "16b013b8c7481109aedc85f064cfd6d45b58edc15c388eda904a153ce2f322ed"
+    },
+    "rotten_tomatoes": {
+      "modality": "NLP",
+      "provenance": "Socher et al. Stanford Sentiment Treebank (Rotten Tomatoes reviews)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\rotten_tomatoes.csv",
+      "rows": 6920,
+      "classes": [
+        "negative",
+        "positive"
+      ],
+      "sha256": "3ae8547363bce59b10d8ba7d7e538549cf97cc8b0665e99279073fc9296ec97e"
+    },
+    "ag_news": {
+      "modality": "NLP",
+      "provenance": "Zhang et al. AG's News Topic Classification Corpus",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\ag_news.csv",
+      "rows": 3000,
+      "classes": [
+        "World",
+        "Sports",
+        "Business",
+        "Sci/Tech"
+      ],
+      "sha256": "4d6f842f799f1fd139bbe84bcef0cb6617d7e727b1f45aefa63b7580cab8dfe0"
+    },
+    "tweeteval_sentiment": {
+      "modality": "NLP",
+      "provenance": "Barbieri et al. TweetEval Twitter Sentiment Corpus",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\tweeteval_sentiment.csv",
+      "rows": 3000,
+      "classes": [
+        "negative",
+        "neutral",
+        "positive"
+      ],
+      "sha256": "4735b9b62e5f9982da35c96552f058c58298e79037efedad4e5682e1ca11e9d3"
+    },
+    "sms_spam": {
+      "modality": "NLP",
+      "provenance": "Almeida et al. UCI SMS Spam Collection (ID 228)",
+      "file_path": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\datasets\\real\\nlp\\sms_spam.csv",
+      "rows": 5572,
+      "classes": [
+        "ham",
+        "spam"
+      ],
+      "sha256": "37615245f7850fa426a9eb371adce41df934963f221eec6e92c7c91a1726bafb"
+    }
+  }
+}

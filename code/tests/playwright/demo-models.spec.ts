@@ -38,14 +38,26 @@ test.describe('Sukio Demo — Model Leaderboard & Explainability', () => {
       expect(first).toHaveProperty('id');
       expect(first).toHaveProperty('model_name');
 
-      // Test explainability endpoint
+      // Test explainability endpoint with valid model: must return 200
       const shapRes = await request.post('/api/models/explain/shap', {
         data: {
           model_id: first.id,
           sample_features: { feature_1: 1.0, feature_2: 2.0 }
         }
       });
-      expect([200, 400, 404]).toContain(shapRes.status());
+      expect(shapRes.status()).toBe(200);
+
+      // Strict Negative Test: missing model_id returns 400
+      const badReq = await request.post('/api/models/explain/shap', {
+        data: { sample_features: { f: 1 } }
+      });
+      expect(badReq.status()).toBe(400);
+
+      // Strict Negative Test: non-existent model_id returns 404
+      const notFound = await request.post('/api/models/explain/shap', {
+        data: { model_id: 999999 }
+      });
+      expect(notFound.status()).toBe(404);
     }
   });
 

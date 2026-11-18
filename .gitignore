@@ -466,3 +466,12 @@ TSWLatexianTemp*
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
  
+code/tests/test-results/
+
+
+storage/
+
+
+code/test-results/
+test-results/
+uv.lock

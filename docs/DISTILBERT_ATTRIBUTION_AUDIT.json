@@ -1,0 +1,637 @@
+{
+  "ag_news": [
+    {
+      "text": "Fan v Fan: Manchester City-Tottenham Hotspur - This weekend Manchester City entertain",
+      "pred_class": 2,
+      "orig_prob": 0.842,
+      "orig_logit": 2.1729,
+      "top_token": "v",
+      "delta_top_p": 0.0181,
+      "delta_rand_p": 0.001,
+      "delta_top_z": 0.106,
+      "delta_rand_z": 0.0047,
+      "deletion_curve_logits": [
+        2.1729,
+        2.0669,
+        1.9716,
+        1.8725
+      ],
+      "deletion_curve_probs": [
+        0.842,
+        0.824,
+        0.8044,
+        0.7843
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.4617
+    },
+    {
+      "text": "Paris Tourists Search for Key to 'Da Vinci Code' (Reuters) - Reuters",
+      "pred_class": 3,
+      "orig_prob": 0.5545,
+      "orig_logit": 1.1437,
+      "top_token": "Tourists",
+      "delta_top_p": 0.1368,
+      "delta_rand_p": 0.0351,
+      "delta_top_z": 0.3947,
+      "delta_rand_z": 0.0894,
+      "deletion_curve_logits": [
+        1.1437,
+        0.7489,
+        0.3707,
+        0.0179
+      ],
+      "deletion_curve_probs": [
+        0.5545,
+        0.4177,
+        0.2896,
+        0.1948
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.0071
+    },
+    {
+      "text": "Net firms: Don't tax VoIP - The Spanish-American War is over and",
+      "pred_class": 0,
+      "orig_prob": 0.6325,
+      "orig_logit": 1.4635,
+      "top_token": "firms:",
+      "delta_top_p": 0.2117,
+      "delta_rand_p": 0.0284,
+      "delta_top_z": 0.6767,
+      "delta_rand_z": 0.0807,
+      "deletion_curve_logits": [
+        1.4635,
+        0.7868,
+        0.2575,
+        -0.2104
+      ],
+      "deletion_curve_probs": [
+        0.6325,
+        0.4208,
+        0.253,
+        0.148
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.049
+    },
+    {
+      "text": "Dependent species risk extinction - The global extinction crisis is worse than",
+      "pred_class": 0,
+      "orig_prob": 0.35,
+      "orig_logit": 0.4632,
+      "top_token": "-",
+      "delta_top_p": 0.0149,
+      "delta_rand_p": -0.0013,
+      "delta_top_z": 0.0842,
+      "delta_rand_z": -0.004,
+      "deletion_curve_logits": [
+        0.4632,
+        0.379,
+        0.3411,
+        0.372
+      ],
+      "deletion_curve_probs": [
+        0.35,
+        0.335,
+        0.3237,
+        0.3278
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.5003
+    },
+    {
+      "text": "EDS Is Charter Member of Siebel BPO Alliance (NewsFactor) - NewsFactor -",
+      "pred_class": 0,
+      "orig_prob": 0.4928,
+      "orig_logit": 1.0364,
+      "top_token": "BPO",
+      "delta_top_p": 0.051,
+      "delta_rand_p": -0.0026,
+      "delta_top_z": 0.1768,
+      "delta_rand_z": -0.008,
+      "deletion_curve_logits": [
+        1.0364,
+        0.8596,
+        0.7721,
+        0.6798
+      ],
+      "deletion_curve_probs": [
+        0.4928,
+        0.4418,
+        0.4131,
+        0.39
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.3291
+    }
+  ],
+  "sms_spam": [
+    {
+      "text": "Squeeeeeze!! This is christmas hug.. If u lik my frndshp den hug",
+      "pred_class": 0,
+      "orig_prob": 0.9913,
+      "orig_logit": 2.416,
+      "top_token": "If",
+      "delta_top_p": 0.0013,
+      "delta_rand_p": 0.0001,
+      "delta_top_z": 0.0863,
+      "delta_rand_z": 0.0046,
+      "deletion_curve_logits": [
+        2.416,
+        2.3298,
+        2.2155,
+        2.1186
+      ],
+      "deletion_curve_probs": [
+        0.9913,
+        0.9899,
+        0.9872,
+        0.9838
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.6381
+    },
+    {
+      "text": "And also I've sorta blown him off a couple times recently so",
+      "pred_class": 0,
+      "orig_prob": 0.9912,
+      "orig_logit": 2.3475,
+      "top_token": "sorta",
+      "delta_top_p": 0.0018,
+      "delta_rand_p": -0.0001,
+      "delta_top_z": 0.127,
+      "delta_rand_z": -0.0125,
+      "deletion_curve_logits": [
+        2.3475,
+        2.2205,
+        2.2812,
+        2.1938
+      ],
+      "deletion_curve_probs": [
+        0.9912,
+        0.9894,
+        0.9907,
+        0.9889
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.1831
+    },
+    {
+      "text": "Mmm thats better now i got a roast down me! i\u0092d b",
+      "pred_class": 0,
+      "orig_prob": 0.9933,
+      "orig_logit": 2.5151,
+      "top_token": "i\u0092d",
+      "delta_top_p": 0.0006,
+      "delta_rand_p": 0.0,
+      "delta_top_z": 0.0491,
+      "delta_rand_z": 0.0018,
+      "deletion_curve_logits": [
+        2.5151,
+        2.466,
+        2.3549,
+        2.2709
+      ],
+      "deletion_curve_probs": [
+        0.9933,
+        0.9927,
+        0.9909,
+        0.9901
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.5293
+    },
+    {
+      "text": "Mm have some kanji dont eat anything heavy ok",
+      "pred_class": 0,
+      "orig_prob": 0.9925,
+      "orig_logit": 2.4587,
+      "top_token": "dont",
+      "delta_top_p": 0.0057,
+      "delta_rand_p": 0.0003,
+      "delta_top_z": 0.2955,
+      "delta_rand_z": 0.0162,
+      "deletion_curve_logits": [
+        2.4587,
+        2.1632,
+        1.8271,
+        1.8995
+      ],
+      "deletion_curve_probs": [
+        0.9925,
+        0.9868,
+        0.9744,
+        0.9779
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.5167
+    },
+    {
+      "text": "So there's a ring that comes with the guys costumes. It's there",
+      "pred_class": 0,
+      "orig_prob": 0.9871,
+      "orig_logit": 2.14,
+      "top_token": "So",
+      "delta_top_p": 0.0013,
+      "delta_rand_p": -0.0008,
+      "delta_top_z": 0.0537,
+      "delta_rand_z": -0.0318,
+      "deletion_curve_logits": [
+        2.14,
+        2.0863,
+        2.0819,
+        2.0853
+      ],
+      "deletion_curve_probs": [
+        0.9871,
+        0.9858,
+        0.9858,
+        0.9854
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.3088
+    }
+  ],
+  "financial_phrasebank": [
+    {
+      "text": "The company was supposed to deliver machinery to a veneer mill in",
+      "pred_class": 1,
+      "orig_prob": 0.8004,
+      "orig_logit": 1.4194,
+      "top_token": "deliver",
+      "delta_top_p": 0.0454,
+      "delta_rand_p": 0.0036,
+      "delta_top_z": 0.1867,
+      "delta_rand_z": 0.0141,
+      "deletion_curve_logits": [
+        1.4194,
+        1.2327,
+        1.1428,
+        1.0163
+      ],
+      "deletion_curve_probs": [
+        0.8004,
+        0.755,
+        0.727,
+        0.6971
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.021
+    },
+    {
+      "text": "UNC Charlotte would also deploy SSH Tectia Connector to enable secure application",
+      "pred_class": 1,
+      "orig_prob": 0.7691,
+      "orig_logit": 1.5043,
+      "top_token": "also",
+      "delta_top_p": 0.0079,
+      "delta_rand_p": -0.0015,
+      "delta_top_z": 0.0484,
+      "delta_rand_z": 0.0004,
+      "deletion_curve_logits": [
+        1.5043,
+        1.4559,
+        1.4945,
+        1.4638
+      ],
+      "deletion_curve_probs": [
+        0.7691,
+        0.7612,
+        0.7813,
+        0.7779
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.2598
+    },
+    {
+      "text": "In 2009 , Lee & Man had a combined annual production capacity",
+      "pred_class": 1,
+      "orig_prob": 0.5806,
+      "orig_logit": 0.8875,
+      "top_token": "Lee",
+      "delta_top_p": 0.0769,
+      "delta_rand_p": -0.0007,
+      "delta_top_z": 0.2175,
+      "delta_rand_z": 0.0073,
+      "deletion_curve_logits": [
+        0.8875,
+        0.67,
+        0.5135,
+        0.4841
+      ],
+      "deletion_curve_probs": [
+        0.5806,
+        0.5037,
+        0.4389,
+        0.4307
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.1958
+    },
+    {
+      "text": "`` That 's a very high figure on the European scale ,",
+      "pred_class": 1,
+      "orig_prob": 0.5652,
+      "orig_logit": 0.7003,
+      "top_token": "figure",
+      "delta_top_p": 0.0056,
+      "delta_rand_p": -0.0272,
+      "delta_top_z": 0.0267,
+      "delta_rand_z": -0.0634,
+      "deletion_curve_logits": [
+        0.7003,
+        0.6737,
+        0.7307,
+        0.6777
+      ],
+      "deletion_curve_probs": [
+        0.5652,
+        0.5597,
+        0.5795,
+        0.5616
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.0427
+    },
+    {
+      "text": "In Finland , the corresponding service is Alma Media 's Etuovi.com ,",
+      "pred_class": 1,
+      "orig_prob": 0.8211,
+      "orig_logit": 1.5333,
+      "top_token": "is",
+      "delta_top_p": 0.0677,
+      "delta_rand_p": 0.006,
+      "delta_top_z": 0.2797,
+      "delta_rand_z": 0.0167,
+      "deletion_curve_logits": [
+        1.5333,
+        1.2536,
+        1.1163,
+        1.0456
+      ],
+      "deletion_curve_probs": [
+        0.8211,
+        0.7534,
+        0.7169,
+        0.6932
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.169
+    }
+  ],
+  "rotten_tomatoes": [
+    {
+      "text": "lrb westbrook rrb makes a wonderful subject for the camera",
+      "pred_class": 1,
+      "orig_prob": 0.9172,
+      "orig_logit": 1.2171,
+      "top_token": "wonderful",
+      "delta_top_p": 0.1957,
+      "delta_rand_p": 0.013,
+      "delta_top_z": 0.6794,
+      "delta_rand_z": 0.0709,
+      "deletion_curve_logits": [
+        1.2171,
+        0.5377,
+        0.126,
+        0.0242
+      ],
+      "deletion_curve_probs": [
+        0.9172,
+        0.7215,
+        0.5166,
+        0.4577
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.5879
+    },
+    {
+      "text": "mama africa pretty much delivers on that promise",
+      "pred_class": 1,
+      "orig_prob": 0.7738,
+      "orig_logit": 0.56,
+      "top_token": "delivers",
+      "delta_top_p": 0.291,
+      "delta_rand_p": 0.0145,
+      "delta_top_z": 0.578,
+      "delta_rand_z": -0.0048,
+      "deletion_curve_logits": [
+        0.56,
+        -0.0181,
+        -0.2832,
+        -0.3242
+      ],
+      "deletion_curve_probs": [
+        0.7738,
+        0.4828,
+        0.3343,
+        0.3052
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.2156
+    },
+    {
+      "text": "easily the most thoughtful fictional examination of the root causes of anti",
+      "pred_class": 1,
+      "orig_prob": 0.9014,
+      "orig_logit": 1.0445,
+      "top_token": "thoughtful",
+      "delta_top_p": 0.0906,
+      "delta_rand_p": 0.0221,
+      "delta_top_z": 0.34,
+      "delta_rand_z": 0.0946,
+      "deletion_curve_logits": [
+        1.0445,
+        0.7044,
+        0.1568,
+        -0.1117
+      ],
+      "deletion_curve_probs": [
+        0.9014,
+        0.8108,
+        0.5545,
+        0.4258
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.4859
+    },
+    {
+      "text": "tara reid plays a college journalist , but she looks like the",
+      "pred_class": 1,
+      "orig_prob": 0.5059,
+      "orig_logit": 0.0388,
+      "top_token": "journalist",
+      "delta_top_p": 0.0565,
+      "delta_rand_p": -0.0099,
+      "delta_top_z": 0.1199,
+      "delta_rand_z": -0.0275,
+      "deletion_curve_logits": [
+        0.0388,
+        -0.0811,
+        -0.1477,
+        -0.2249
+      ],
+      "deletion_curve_probs": [
+        0.5059,
+        0.4493,
+        0.4149,
+        0.3657
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.3118
+    },
+    {
+      "text": "a classy , sprightly spin on film",
+      "pred_class": 1,
+      "orig_prob": 0.6877,
+      "orig_logit": 0.3832,
+      "top_token": "film",
+      "delta_top_p": 0.1465,
+      "delta_rand_p": 0.0246,
+      "delta_top_z": 0.277,
+      "delta_rand_z": 0.033,
+      "deletion_curve_logits": [
+        0.3832,
+        0.1061,
+        -0.2899,
+        -0.2598
+      ],
+      "deletion_curve_probs": [
+        0.6877,
+        0.5412,
+        0.3228,
+        0.3408
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.5345
+    }
+  ],
+  "tweeteval_sentiment": [
+    {
+      "text": "Do you think Michelle Obama wanted to smack Melania Trump for plagiarizing",
+      "pred_class": 0,
+      "orig_prob": 0.6984,
+      "orig_logit": 1.1996,
+      "top_token": "Obama",
+      "delta_top_p": 0.0157,
+      "delta_rand_p": -0.0002,
+      "delta_top_z": 0.0544,
+      "delta_rand_z": 0.003,
+      "deletion_curve_logits": [
+        1.1996,
+        1.1452,
+        1.0247,
+        0.8934
+      ],
+      "deletion_curve_probs": [
+        0.6984,
+        0.6827,
+        0.6452,
+        0.5913
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.0559
+    },
+    {
+      "text": "Well that finale was one big mindfuck \ud83d\ude33 #Westworld",
+      "pred_class": 2,
+      "orig_prob": 0.4463,
+      "orig_logit": 0.4774,
+      "top_token": "#Westworld",
+      "delta_top_p": 0.0553,
+      "delta_rand_p": 0.0065,
+      "delta_top_z": 0.2646,
+      "delta_rand_z": 0.0032,
+      "deletion_curve_logits": [
+        0.4774,
+        0.2127,
+        -0.0285,
+        -0.2978
+      ],
+      "deletion_curve_probs": [
+        0.4463,
+        0.391,
+        0.3218,
+        0.2393
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": 0.3264
+    },
+    {
+      "text": "Luis Enrique: \"In the first half I can't remember Celtic having a",
+      "pred_class": 1,
+      "orig_prob": 0.4985,
+      "orig_logit": 0.409,
+      "top_token": "remember",
+      "delta_top_p": 0.029,
+      "delta_rand_p": 0.0044,
+      "delta_top_z": 0.1047,
+      "delta_rand_z": -0.0004,
+      "deletion_curve_logits": [
+        0.409,
+        0.3043,
+        0.2744,
+        0.294
+      ],
+      "deletion_curve_probs": [
+        0.4985,
+        0.4696,
+        0.4476,
+        0.4508
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.0596
+    },
+    {
+      "text": "Happy Thanksgiving from a couple of bad hombres! #movember #firefighters #thanksgiving\u2026",
+      "pred_class": 1,
+      "orig_prob": 0.4856,
+      "orig_logit": 0.5462,
+      "top_token": "Thanksgiving",
+      "delta_top_p": 0.021,
+      "delta_rand_p": 0.001,
+      "delta_top_z": 0.1209,
+      "delta_rand_z": 0.0013,
+      "deletion_curve_logits": [
+        0.5462,
+        0.4254,
+        0.3615,
+        0.3086
+      ],
+      "deletion_curve_probs": [
+        0.4856,
+        0.4646,
+        0.4532,
+        0.432
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.1651
+    },
+    {
+      "text": "Viendo The Walking Dead 7x02 - El pozo #TheWalkingDead",
+      "pred_class": 1,
+      "orig_prob": 0.5938,
+      "orig_logit": 0.9159,
+      "top_token": "-",
+      "delta_top_p": 0.0128,
+      "delta_rand_p": 0.0015,
+      "delta_top_z": 0.0784,
+      "delta_rand_z": 0.0188,
+      "deletion_curve_logits": [
+        0.9159,
+        0.8376,
+        0.7573,
+        0.7312
+      ],
+      "deletion_curve_probs": [
+        0.5938,
+        0.5811,
+        0.5921,
+        0.5862
+      ],
+      "vectors_distinct_from_tfidf": true,
+      "spearman_rank_correlation": -0.5658
+    }
+  ]
+}

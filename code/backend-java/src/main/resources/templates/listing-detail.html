@@ -137,9 +137,12 @@
                     <h1 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem;" th:text="${listing.title}">Model Name</h1>
                     <p style="color: var(--text-muted); font-size: 1rem;" th:text="${listing.description}">Model description</p>
                 </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--success); margin-bottom: 0.5rem;" th:text="${listing.price}">Free</div>
-                    <a th:href="@{'/predict?modality=' + ${listing.modality}}" class="btn">Test in Sandbox &rarr;</a>
+                <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--success);" th:text="${listing.price}">Free</div>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <a th:href="@{'/api/marketplace/' + ${listing.id} + '/download'}" class="btn btn-secondary" id="btn-download-model">Download Package &darr;</a>
+                        <a th:href="@{'/predict?modality=' + ${listing.modality}}" class="btn">Test in Sandbox &rarr;</a>
+                    </div>
                 </div>
             </div>
 

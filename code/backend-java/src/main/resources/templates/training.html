@@ -104,10 +104,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Task Type</label>
+                        <label>Task Type &amp; Modality</label>
                         <select name="task_type" id="task_type">
-                            <option value="classification">Classification</option>
-                            <option value="regression">Regression</option>
+                            <option value="classification">Tabular Classification</option>
+                            <option value="regression">Tabular Regression</option>
+                            <option value="vision_classification">Computer Vision (PyTorch ConvNet)</option>
+                            <option value="nlp_classification">NLP Text Classification (TF-IDF Neural)</option>
                         </select>
                     </div>
 
@@ -128,6 +130,9 @@
                             </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="models_to_train" value="Gradient Boosting" checked /> Gradient Boosting
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="models_to_train" value="MLP Neural Net" /> MLP Neural Net
                             </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="models_to_train" value="Extra Trees" /> Extra Trees

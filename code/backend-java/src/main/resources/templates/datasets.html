@@ -37,25 +37,75 @@
             <div>
                 <div class="card">
                     <h2>Upload Dataset</h2>
-                    <form hx-post="/datasets/upload"
+                    <form id="dataset-upload-form"
+                          hx-post="/datasets/upload"
                           hx-target="#dataset-table-body"
                           hx-swap="outerHTML"
                           hx-encoding="multipart/form-data"
                           enctype="multipart/form-data">
                         <div class="form-group">
                             <label>File (CSV or Excel)</label>
-                            <input type="file" name="file" accept=".csv, .xlsx, .xls" required />
+                            <input type="file" id="dataset-file-input" name="file" accept=".csv, .xlsx, .xls, .gz" required onchange="handleDatasetFileSelection(this)" />
+                            <div id="sniff-status" style="display: none; margin-top: 0.5rem; font-size: 0.8rem; padding: 0.5rem 0.75rem; border-radius: 6px; background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.3); color: var(--primary);"></div>
                         </div>
                         <div class="form-group">
                             <label>Dataset Name (Optional)</label>
-                            <input type="text" name="name" placeholder="e.g. churn_v2 or defect_data" />
+                            <input type="text" id="dataset-name-input" name="name" placeholder="e.g. churn_v2 or defect_data" />
                         </div>
                         <div class="form-group">
                             <label>Target Column (Optional)</label>
-                            <input type="text" name="target_column" placeholder="e.g. churn or label" />
+                            <input type="text" id="dataset-target-input" name="target_column" placeholder="e.g. churn or label" />
                         </div>
-                        <button type="submit" style="width: 100%;">Upload Dataset</button>
+                        <button type="submit" id="btn-upload-dataset" style="width: 100%;">Upload Dataset</button>
                     </form>
+                    <script>
+                        async function handleDatasetFileSelection(input) {
+                            const file = input.files && input.files[0];
+                            const badge = document.getElementById('sniff-status');
+                            if (!file) {
+                                if (badge) badge.style.display = 'none';
+                                return;
+                            }
+                            badge.style.display = 'block';
+                            badge.innerHTML = '🔍 Sniffing schema & inspecting byte encoding...';
+
+                            const isCsv = file.name.endsWith('.csv');
+                            if (!isCsv) {
+                                badge.innerHTML = `📦 ${file.name} (${(file.size / 1024).toFixed(1)} KB) ready for ingest`;
+                                return;
+                            }
+
+                            try {
+                                const slice = file.slice(0, 16384);
+                                const text = await slice.text();
+                                const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+                                if (lines.length > 0) {
+                                    const header = lines[0];
+                                    let delimiter = ',';
+                                    if ((header.match(/\t/g) || []).length > (header.match(/,/g) || []).length) delimiter = '\\t';
+                                    else if ((header.match(/;/g) || []).length > (header.match(/,/g) || []).length) delimiter = ';';
+                                    
+                                    const cols = header.split(delimiter);
+                                    let compressionNote = '';
+                                    if (typeof window.CompressionStream !== 'undefined') {
+                                        compressionNote = ' • ⚡ Edge GZIP acceleration ready';
+                                    }
+                                    badge.innerHTML = `✨ <strong>In-Browser Sniffer:</strong> Delimiter: [<code>${delimiter === '\\t' ? 'TAB' : delimiter}</code>] • ${cols.length} cols • ~${lines.length} rows previewed${compressionNote}`;
+                                    
+                                    // Auto-suggest target column if last column looks like target
+                                    const targetInput = document.getElementById('dataset-target-input');
+                                    if (targetInput && !targetInput.value && cols.length > 1) {
+                                        const lastCol = cols[cols.length - 1].trim();
+                                        if (['label', 'target', 'churn', 'survived', 'class', 'species'].includes(lastCol.toLowerCase())) {
+                                            targetInput.value = lastCol;
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                                badge.innerHTML = `📦 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+                            }
+                        }
+                    </script>
 
                     <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
                         <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Built-in Benchmarks (Tabular &amp; Vision)</div>

@@ -1,0 +1,366 @@
+{
+  "audit_timestamp": "2026-11-18T12:36:48Z",
+  "replacements": {
+    "vision": {
+      "dataset": "pathmnist",
+      "dataset_sha": "81823f52dc622e69db2db4c72f8e8e617938dd6864d3c1f23d4e49724a28ea72",
+      "test_sample_count": 7180,
+      "classes": 9,
+      "true_distribution": [
+        1338,
+        847,
+        339,
+        634,
+        1035,
+        592,
+        741,
+        421,
+        1233
+      ],
+      "models": {
+        "ConvNet Baseline": {
+          "checkpoint": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\models\\pathmnist_convnet_baseline.pth",
+          "checkpoint_sha": "afbf9978a504081cc16097da01bc885e36a7979d70fc991cf4e6d1945ce1765a",
+          "confusion_matrix": [
+            [
+              1253,
+              0,
+              0,
+              0,
+              70,
+              0,
+              15,
+              0,
+              0
+            ],
+            [
+              0,
+              847,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              328,
+              9,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              557,
+              0,
+              0,
+              75,
+              0,
+              1
+            ],
+            [
+              18,
+              29,
+              1,
+              1,
+              955,
+              0,
+              25,
+              0,
+              6
+            ],
+            [
+              0,
+              0,
+              371,
+              56,
+              0,
+              159,
+              0,
+              0,
+              6
+            ],
+            [
+              0,
+              0,
+              9,
+              18,
+              6,
+              0,
+              696,
+              0,
+              12
+            ],
+            [
+              0,
+              0,
+              191,
+              31,
+              14,
+              50,
+              30,
+              82,
+              23
+            ],
+            [
+              0,
+              0,
+              15,
+              22,
+              18,
+              1,
+              486,
+              0,
+              691
+            ]
+          ],
+          "balanced_accuracy": 0.7409,
+          "macro_f1": 0.7012,
+          "auroc": 0.9671,
+          "row_sums_true": [
+            1338,
+            847,
+            339,
+            634,
+            1035,
+            592,
+            741,
+            421,
+            1233
+          ],
+          "col_sums_pred": [
+            1271,
+            876,
+            916,
+            694,
+            1063,
+            212,
+            1327,
+            82,
+            739
+          ]
+        },
+        "MobileNet-V3 Small": {
+          "checkpoint": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\models\\pathmnist_pretrained_mobilenet-v3_small.pth",
+          "checkpoint_sha": "8a820bf0a44b3c78a1100e589d9a9e1d98d329586019cb2f31df70de7cb0817e",
+          "confusion_matrix": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1338
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              847
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              339
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              634
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1035
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              592
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              741
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              421
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1233
+            ]
+          ],
+          "balanced_accuracy": 0.1111,
+          "macro_f1": 0.0326,
+          "auroc": 0.7439,
+          "row_sums_true": [
+            1338,
+            847,
+            339,
+            634,
+            1035,
+            592,
+            741,
+            421,
+            1233
+          ],
+          "col_sums_pred": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            7180
+          ]
+        }
+      }
+    },
+    "tabular": {
+      "dataset": "california_housing",
+      "dataset_sha_train": "3694b4b8a1cda791bfe72d8e1822022fe4ec90139788311cc37a1226e3696a22",
+      "dataset_sha_test": "9dafa223a8e6c5f69bfd07ffe8441189f60ba641268995db56eb62234023362b",
+      "total_rows": 20433,
+      "test_rows": 4087,
+      "task": "Continuous Regression",
+      "models": {
+        "Random Forest Regressor": {
+          "checkpoint": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\models\\california_housing_rf.joblib",
+          "checkpoint_sha": "d925a620666264b690c2394cf4ad5cce7a96e03400446c31d08ede9b8a0999c3",
+          "r2_score": 0.8063,
+          "rmse": 51473.7623,
+          "mae": 34289.8743,
+          "test_rows": 4087
+        }
+      }
+    },
+    "nlp": {
+      "dataset": "sst2",
+      "dataset_sha_train": "ff39c065c298d72594eeff98dd37c8631a72c2037646462e8b69ec370573614d",
+      "dataset_sha_test": "f16e0da130be13d5dc86768891a29ece8ef14a5d09012c8ada91f3039a8d1f75",
+      "train_rows": 6920,
+      "test_rows": 1821,
+      "true_distribution": [
+        912,
+        909
+      ],
+      "models": {
+        "TF-IDF Baseline": {
+          "checkpoint": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\models\\sst2_tfidf_logistic.joblib",
+          "checkpoint_sha": "1ebcaae06c5ed52c2233c4e102b61e7ccfa51ade5bdc75056277461bb3c37354",
+          "confusion_matrix": [
+            [
+              733,
+              179
+            ],
+            [
+              190,
+              719
+            ]
+          ],
+          "balanced_accuracy": 0.7974,
+          "macro_f1": 0.7974,
+          "auroc": 0.8793,
+          "row_sums_true": [
+            912,
+            909
+          ],
+          "col_sums_pred": [
+            923,
+            898
+          ]
+        },
+        "PyTorch Transformer": {
+          "checkpoint": "C:\\Users\\keshav\\Documents\\soft_desgn_proj\\UCS503P-202627-phinominal-Project\\code\\storage\\models\\sst2_transformer.joblib",
+          "checkpoint_sha": "98cbde02f4ca71e08ade112859956b4565f36d93d273d671bab988df56748424",
+          "confusion_matrix": [
+            [
+              728,
+              184
+            ],
+            [
+              323,
+              586
+            ]
+          ],
+          "balanced_accuracy": 0.7215,
+          "macro_f1": 0.7199,
+          "auroc": 0.8103,
+          "row_sums_true": [
+            912,
+            909
+          ],
+          "col_sums_pred": [
+            1051,
+            770
+          ]
+        }
+      }
+    }
+  },
+  "total_time_sec": 254.22
+}

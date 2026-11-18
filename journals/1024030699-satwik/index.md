@@ -11,4 +11,7 @@ Project: Sukio (AutoML Platform & Marketplace)
 - *(Sep 20 – Oct 04: Mid-Semester Test Exam Gap)*
 - [W5 (Oct 07): Axiom Obsidian Design System & Templates](./w05.md)
 - [W6 (Oct 13): Prototype Stage Delivery & Automated Verification](./w06.md)
-- *(Upcoming Weeks 7–10: Final Stage — Marketplace Buy & Hire Funnels)*
+- [W7 (Oct 20): Marketplace UI & Solution Detail Surface](./w07.md)
+- [W8 (Oct 27): Hire Funnel Frontend & Proposal Bidding Board](./w08.md)
+- [W9 (Nov 03): AutoML Studio Smile ML Controls & Leaderboard Wiring](./w09.md)
+- [W10 (Nov 10): Vision Sandbox Verification & Final Deliverables](./w10.md)

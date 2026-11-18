@@ -18,7 +18,47 @@ public class PredictionResponseDto {
 
     private Double confidence;
 
+    private java.util.Set<String> conformalPredictionSet;
+
+    private Double conformalCoverage;
+
+    private String actionableRecourse;
+
+    private String auditRationale;
+
     public PredictionResponseDto() {
+    }
+
+    public java.util.Set<String> getConformalPredictionSet() {
+        return conformalPredictionSet;
+    }
+
+    public void setConformalPredictionSet(java.util.Set<String> conformalPredictionSet) {
+        this.conformalPredictionSet = conformalPredictionSet;
+    }
+
+    public Double getConformalCoverage() {
+        return conformalCoverage;
+    }
+
+    public void setConformalCoverage(Double conformalCoverage) {
+        this.conformalCoverage = conformalCoverage;
+    }
+
+    public String getActionableRecourse() {
+        return actionableRecourse;
+    }
+
+    public void setActionableRecourse(String actionableRecourse) {
+        this.actionableRecourse = actionableRecourse;
+    }
+
+    public String getAuditRationale() {
+        return auditRationale;
+    }
+
+    public void setAuditRationale(String auditRationale) {
+        this.auditRationale = auditRationale;
     }
 
     public Integer getModelId() {

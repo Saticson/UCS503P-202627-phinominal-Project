@@ -57,9 +57,14 @@ public class TrainingService {
 
     @Transactional
     public TrainingJobResponseDto launchTraining(TrainingConfigDto config) {
-        DatasetEntity dataset = datasetRepository.findById(config.getDatasetId())
-                .orElseGet(() -> datasetRepository.findAll().stream().findFirst()
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Dataset not found")));
+        DatasetEntity dataset;
+        if (config.getDatasetId() != null) {
+            dataset = datasetRepository.findById(config.getDatasetId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Dataset with ID " + config.getDatasetId() + " not found"));
+        } else {
+            dataset = datasetRepository.findAll().stream().findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No datasets available for training"));
+        }
 
         String jobId = UUID.randomUUID().toString();
         String runId = UUID.randomUUID().toString();

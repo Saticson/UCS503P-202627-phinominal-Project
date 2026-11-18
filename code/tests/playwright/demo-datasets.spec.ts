@@ -59,7 +59,13 @@ test.describe('Sukio Demo — Dataset Ingestion & Profiling', () => {
     if (datasets.length > 0) {
       const firstId = datasets[0].id;
       const reportRes = await request.get(`/api/datasets/${firstId}/quality-report`);
-      expect([200, 404]).toContain(reportRes.status());
+      expect(reportRes.status()).toBe(200);
+      const report = await reportRes.json();
+      expect(report).toBeDefined();
+
+      // Strict Negative Test: non-existent dataset must return 404
+      const notFoundRes = await request.get('/api/datasets/999999/quality-report');
+      expect(notFoundRes.status()).toBe(404);
     }
   });
 

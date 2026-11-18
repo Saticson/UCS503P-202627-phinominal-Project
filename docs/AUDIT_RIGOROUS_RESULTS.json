@@ -1,0 +1,928 @@
+{
+  "vision": [
+    {
+      "dataset": "breastmnist",
+      "architecture": "ConvNet Baseline",
+      "balanced_accuracy": 0.7569,
+      "macro_f1": 0.7647,
+      "train_wall_time_s": 5.9,
+      "checkpoint_hash": "deeec2b48d103f7181390cf372a67a8c6f4cd5d6940e2a04da1bbaf89e220b3e",
+      "q_marginal": 0.604,
+      "q_mondrian": {
+        "0": 0.7595,
+        "1": 0.41
+      },
+      "marginal_coverage": 0.9038,
+      "marginal_ci95": [
+        0.8474,
+        0.9409
+      ],
+      "mondrian_coverage": 0.859,
+      "mondrian_ci95": [
+        0.7957,
+        0.905
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.8571,
+          "ci95": [
+            0.7216,
+            0.9328
+          ],
+          "n": 42
+        },
+        "1": {
+          "coverage": 0.8596,
+          "ci95": [
+            0.7841,
+            0.9117
+          ],
+          "n": 114
+        }
+      },
+      "avg_set_size": 1.16,
+      "empty_set_rate": 0.0,
+      "xai_fidelity": {
+        "delta_deletion": 0.1114,
+        "delta_random_map": -0.195,
+        "delta_insertion": 0.9837,
+        "randomization_correlation": 0.0837,
+        "cascading_correlation": 0.1127,
+        "stability_correlation": 0.9872,
+        "fidelity_passed": true
+      }
+    },
+    {
+      "dataset": "breastmnist",
+      "architecture": "Pretrained MobileNet-V3 Small",
+      "balanced_accuracy": 0.5714,
+      "macro_f1": 0.3721,
+      "train_wall_time_s": 32.53,
+      "checkpoint_hash": "d6f40220b2a6abf52a643ff061df6c9911a03c3aee3165f0b5f5efe3f88d09fe",
+      "q_marginal": 0.5935,
+      "q_mondrian": {
+        "0": 0.4258,
+        "1": 0.6024
+      },
+      "marginal_coverage": 0.9038,
+      "marginal_ci95": [
+        0.8474,
+        0.9409
+      ],
+      "mondrian_coverage": 0.8205,
+      "mondrian_ci95": [
+        0.7528,
+        0.8728
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.5952,
+          "ci95": [
+            0.4449,
+            0.7296
+          ],
+          "n": 42
+        },
+        "1": {
+          "coverage": 0.9035,
+          "ci95": [
+            0.8354,
+            0.9453
+          ],
+          "n": 114
+        }
+      },
+      "avg_set_size": 1.199,
+      "empty_set_rate": 0.0,
+      "xai_fidelity": {
+        "delta_deletion": 0.0064,
+        "delta_random_map": 0.0034,
+        "delta_insertion": 0.5365,
+        "randomization_correlation": -0.1199,
+        "cascading_correlation": 0.5329,
+        "stability_correlation": 0.9956,
+        "fidelity_passed": false
+      }
+    },
+    {
+      "dataset": "retinamnist",
+      "architecture": "ConvNet Baseline",
+      "balanced_accuracy": 0.3506,
+      "macro_f1": 0.2874,
+      "train_wall_time_s": 47.1,
+      "checkpoint_hash": "07eed9fec5f2fcda5860f73a89d46adbe5a0961d4433f678887b831d5174d389",
+      "q_marginal": 0.9317,
+      "q_mondrian": {
+        "0": 0.9532,
+        "1": 0.943,
+        "2": 0.7991,
+        "3": 0.8338,
+        "4": 1.0
+      },
+      "marginal_coverage": 0.8925,
+      "marginal_ci95": [
+        0.8583,
+        0.9192
+      ],
+      "mondrian_coverage": 0.895,
+      "mondrian_ci95": [
+        0.8611,
+        0.9214
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.9713,
+          "ci95": [
+            0.9345,
+            0.9877
+          ],
+          "n": 174
+        },
+        "1": {
+          "coverage": 0.8696,
+          "ci95": [
+            0.7433,
+            0.9388
+          ],
+          "n": 46
+        },
+        "2": {
+          "coverage": 0.7935,
+          "ci95": [
+            0.6998,
+            0.8636
+          ],
+          "n": 92
+        },
+        "3": {
+          "coverage": 0.8235,
+          "ci95": [
+            0.7164,
+            0.8961
+          ],
+          "n": 68
+        },
+        "4": {
+          "coverage": 1.0,
+          "ci95": [
+            0.8389,
+            1.0
+          ],
+          "n": 20
+        }
+      },
+      "avg_set_size": 3.67,
+      "empty_set_rate": 0.0,
+      "xai_fidelity": {
+        "delta_deletion": 0.1275,
+        "delta_random_map": -0.0313,
+        "delta_insertion": 0.2781,
+        "randomization_correlation": 0.9462,
+        "cascading_correlation": 0.2648,
+        "stability_correlation": 0.9989,
+        "fidelity_passed": false
+      }
+    },
+    {
+      "dataset": "retinamnist",
+      "architecture": "Pretrained MobileNet-V3 Small",
+      "balanced_accuracy": 0.2721,
+      "macro_f1": 0.1772,
+      "train_wall_time_s": 68.69,
+      "checkpoint_hash": "f1b2a3ed057d20c5b0c2f9051a8cfe340eba106ba71ffa70db3c5682f164397b",
+      "q_marginal": 0.8579,
+      "q_mondrian": {
+        "0": 0.8658,
+        "1": 0.7617,
+        "2": 0.7622,
+        "3": 0.8429,
+        "4": 1.0
+      },
+      "marginal_coverage": 0.9,
+      "marginal_ci95": [
+        0.8667,
+        0.9257
+      ],
+      "mondrian_coverage": 0.885,
+      "mondrian_ci95": [
+        0.85,
+        0.9127
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.8908,
+          "ci95": [
+            0.8358,
+            0.929
+          ],
+          "n": 174
+        },
+        "1": {
+          "coverage": 0.8478,
+          "ci95": [
+            0.7178,
+            0.9243
+          ],
+          "n": 46
+        },
+        "2": {
+          "coverage": 0.8043,
+          "ci95": [
+            0.7118,
+            0.8725
+          ],
+          "n": 92
+        },
+        "3": {
+          "coverage": 0.9706,
+          "ci95": [
+            0.899,
+            0.9919
+          ],
+          "n": 68
+        },
+        "4": {
+          "coverage": 1.0,
+          "ci95": [
+            0.8389,
+            1.0
+          ],
+          "n": 20
+        }
+      },
+      "avg_set_size": 3.857,
+      "empty_set_rate": 0.0,
+      "xai_fidelity": {
+        "delta_deletion": 0.0198,
+        "delta_random_map": 0.0641,
+        "delta_insertion": 0.2535,
+        "randomization_correlation": 0.0912,
+        "cascading_correlation": 0.0,
+        "stability_correlation": 0.8016,
+        "fidelity_passed": false
+      }
+    },
+    {
+      "dataset": "pneumoniamnist",
+      "architecture": "ConvNet Baseline",
+      "balanced_accuracy": 0.7585,
+      "macro_f1": 0.7766,
+      "train_wall_time_s": 28.25,
+      "checkpoint_hash": "1cd4a40eb5bde4c473550cd42d5f4dd5c9d06e974049a9e42558907aab2761e1",
+      "q_marginal": 0.2084,
+      "q_mondrian": {
+        "0": 0.4607,
+        "1": 0.1021
+      },
+      "marginal_coverage": 0.7388,
+      "marginal_ci95": [
+        0.7029,
+        0.7717
+      ],
+      "mondrian_coverage": 0.7772,
+      "mondrian_ci95": [
+        0.743,
+        0.8081
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.5171,
+          "ci95": [
+            0.4533,
+            0.5803
+          ],
+          "n": 234
+        },
+        "1": {
+          "coverage": 0.9333,
+          "ci95": [
+            0.9041,
+            0.9541
+          ],
+          "n": 390
+        }
+      },
+      "avg_set_size": 0.854,
+      "empty_set_rate": 0.1458,
+      "xai_fidelity": {
+        "delta_deletion": 0.9315,
+        "delta_random_map": 0.5871,
+        "delta_insertion": 0.998,
+        "randomization_correlation": 0.5955,
+        "cascading_correlation": 0.3481,
+        "stability_correlation": 0.967,
+        "fidelity_passed": true
+      }
+    },
+    {
+      "dataset": "pneumoniamnist",
+      "architecture": "Pretrained MobileNet-V3 Small",
+      "balanced_accuracy": 0.6774,
+      "macro_f1": 0.6807,
+      "train_wall_time_s": 234.88,
+      "checkpoint_hash": "f67704723245044692082031702aab64027219f6702927a96c26da84119b84d3",
+      "q_marginal": 0.4345,
+      "q_mondrian": {
+        "0": 0.9771,
+        "1": 0.0015
+      },
+      "marginal_coverage": 0.7516,
+      "marginal_ci95": [
+        0.7162,
+        0.7839
+      ],
+      "mondrian_coverage": 0.8253,
+      "mondrian_ci95": [
+        0.7936,
+        0.8531
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.594,
+          "ci95": [
+            0.5301,
+            0.6549
+          ],
+          "n": 234
+        },
+        "1": {
+          "coverage": 0.9641,
+          "ci95": [
+            0.9407,
+            0.9785
+          ],
+          "n": 390
+        }
+      },
+      "avg_set_size": 0.909,
+      "empty_set_rate": 0.0913,
+      "xai_fidelity": {
+        "delta_deletion": 0.0,
+        "delta_random_map": 0.0,
+        "delta_insertion": 0.9929,
+        "randomization_correlation": -0.4149,
+        "cascading_correlation": 0.0,
+        "stability_correlation": 0.9373,
+        "fidelity_passed": true
+      }
+    },
+    {
+      "dataset": "dermamnist",
+      "architecture": "ConvNet Baseline",
+      "balanced_accuracy": 0.5577,
+      "macro_f1": 0.396,
+      "train_wall_time_s": 43.06,
+      "checkpoint_hash": "d4205de114dcc5c927f3192f7e3c369b26391e120a3b8e59d42512da8eaf2963",
+      "q_marginal": 0.9123,
+      "q_mondrian": {
+        "0": 0.9043,
+        "1": 0.889,
+        "2": 0.9115,
+        "3": 0.8472,
+        "4": 0.9078,
+        "5": 0.9187,
+        "6": 0.9231
+      },
+      "marginal_coverage": 0.8893,
+      "marginal_ci95": [
+        0.8748,
+        0.9023
+      ],
+      "mondrian_coverage": 0.8928,
+      "mondrian_ci95": [
+        0.8785,
+        0.9056
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.9242,
+          "ci95": [
+            0.8346,
+            0.9672
+          ],
+          "n": 66
+        },
+        "1": {
+          "coverage": 0.8641,
+          "ci95": [
+            0.7847,
+            0.9173
+          ],
+          "n": 103
+        },
+        "2": {
+          "coverage": 0.9045,
+          "ci95": [
+            0.8585,
+            0.9367
+          ],
+          "n": 220
+        },
+        "3": {
+          "coverage": 0.7391,
+          "ci95": [
+            0.5353,
+            0.8745
+          ],
+          "n": 23
+        },
+        "4": {
+          "coverage": 0.8924,
+          "ci95": [
+            0.8449,
+            0.9266
+          ],
+          "n": 223
+        },
+        "5": {
+          "coverage": 0.8934,
+          "ci95": [
+            0.8757,
+            0.9088
+          ],
+          "n": 1341
+        },
+        "6": {
+          "coverage": 0.931,
+          "ci95": [
+            0.7804,
+            0.9809
+          ],
+          "n": 29
+        }
+      },
+      "avg_set_size": 2.615,
+      "empty_set_rate": 0.0,
+      "xai_fidelity": {
+        "delta_deletion": 0.421,
+        "delta_random_map": -0.079,
+        "delta_insertion": 0.3279,
+        "randomization_correlation": -0.3875,
+        "cascading_correlation": 0.0411,
+        "stability_correlation": 0.9971,
+        "fidelity_passed": true
+      }
+    },
+    {
+      "dataset": "dermamnist",
+      "architecture": "Pretrained MobileNet-V3 Small",
+      "balanced_accuracy": 0.5744,
+      "macro_f1": 0.4603,
+      "train_wall_time_s": 338.68,
+      "checkpoint_hash": "4ace112ba6002bfad3253bd3449f72b15c2d574b5232773e49142ba7816b6af6",
+      "q_marginal": 0.9329,
+      "q_mondrian": {
+        "0": 0.975,
+        "1": 0.8801,
+        "2": 0.9759,
+        "3": 1.0,
+        "4": 0.9561,
+        "5": 0.8619,
+        "6": 0.997
+      },
+      "marginal_coverage": 0.9277,
+      "marginal_ci95": [
+        0.9155,
+        0.9382
+      ],
+      "mondrian_coverage": 0.9177,
+      "mondrian_ci95": [
+        0.9049,
+        0.929
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.8788,
+          "ci95": [
+            0.7786,
+            0.9373
+          ],
+          "n": 66
+        },
+        "1": {
+          "coverage": 0.8835,
+          "ci95": [
+            0.8073,
+            0.9321
+          ],
+          "n": 103
+        },
+        "2": {
+          "coverage": 0.9545,
+          "ci95": [
+            0.9184,
+            0.9751
+          ],
+          "n": 220
+        },
+        "3": {
+          "coverage": 1.0,
+          "ci95": [
+            0.8569,
+            1.0
+          ],
+          "n": 23
+        },
+        "4": {
+          "coverage": 0.9193,
+          "ci95": [
+            0.876,
+            0.9483
+          ],
+          "n": 223
+        },
+        "5": {
+          "coverage": 0.9128,
+          "ci95": [
+            0.8964,
+            0.9267
+          ],
+          "n": 1341
+        },
+        "6": {
+          "coverage": 1.0,
+          "ci95": [
+            0.883,
+            1.0
+          ],
+          "n": 29
+        }
+      },
+      "avg_set_size": 3.424,
+      "empty_set_rate": 0.0,
+      "xai_fidelity": {
+        "delta_deletion": 0.5247,
+        "delta_random_map": 0.0285,
+        "delta_insertion": 0.529,
+        "randomization_correlation": -0.3061,
+        "cascading_correlation": -0.2647,
+        "stability_correlation": 0.9644,
+        "fidelity_passed": true
+      }
+    },
+    {
+      "dataset": "bloodmnist",
+      "architecture": "ConvNet Baseline",
+      "balanced_accuracy": 0.8732,
+      "macro_f1": 0.8692,
+      "train_wall_time_s": 70.5,
+      "checkpoint_hash": "dccced732b84bbff721fd46008301582f154ff07badd167fcd479c9f7b8fb4e0",
+      "q_marginal": 0.6188,
+      "q_mondrian": {
+        "0": 0.5387,
+        "1": 0.0431,
+        "2": 0.0875,
+        "3": 0.917,
+        "4": 0.8223,
+        "5": 0.7814,
+        "6": 0.0994,
+        "7": 0.0115
+      },
+      "marginal_coverage": 0.8951,
+      "marginal_ci95": [
+        0.8843,
+        0.9049
+      ],
+      "mondrian_coverage": 0.8977,
+      "mondrian_ci95": [
+        0.8871,
+        0.9074
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.877,
+          "ci95": [
+            0.8299,
+            0.9125
+          ],
+          "n": 244
+        },
+        "1": {
+          "coverage": 0.8974,
+          "ci95": [
+            0.8711,
+            0.9189
+          ],
+          "n": 624
+        },
+        "2": {
+          "coverage": 0.9132,
+          "ci95": [
+            0.8766,
+            0.9396
+          ],
+          "n": 311
+        },
+        "3": {
+          "coverage": 0.9257,
+          "ci95": [
+            0.9015,
+            0.9444
+          ],
+          "n": 579
+        },
+        "4": {
+          "coverage": 0.8971,
+          "ci95": [
+            0.8525,
+            0.9293
+          ],
+          "n": 243
+        },
+        "5": {
+          "coverage": 0.8486,
+          "ci95": [
+            0.8023,
+            0.8856
+          ],
+          "n": 284
+        },
+        "6": {
+          "coverage": 0.8994,
+          "ci95": [
+            0.8742,
+            0.92
+          ],
+          "n": 666
+        },
+        "7": {
+          "coverage": 0.8915,
+          "ci95": [
+            0.8601,
+            0.9165
+          ],
+          "n": 470
+        }
+      },
+      "avg_set_size": 1.033,
+      "empty_set_rate": 0.0517,
+      "xai_fidelity": {
+        "delta_deletion": 0.5405,
+        "delta_random_map": 0.5819,
+        "delta_insertion": 0.651,
+        "randomization_correlation": 0.0,
+        "cascading_correlation": -0.2631,
+        "stability_correlation": 0.9994,
+        "fidelity_passed": false
+      }
+    },
+    {
+      "dataset": "bloodmnist",
+      "architecture": "Pretrained MobileNet-V3 Small",
+      "balanced_accuracy": 0.9566,
+      "macro_f1": 0.9499,
+      "train_wall_time_s": 602.69,
+      "checkpoint_hash": "be767728695c26d5b3ad8e1e80eec11b8e2e94b2cda08eaec4492e038436dcba",
+      "q_marginal": 0.0791,
+      "q_mondrian": {
+        "0": 0.1438,
+        "1": 0.0001,
+        "2": 0.1461,
+        "3": 0.7994,
+        "4": 0.0004,
+        "5": 0.0519,
+        "6": 0.0495,
+        "7": 0.0001
+      },
+      "marginal_coverage": 0.8895,
+      "marginal_ci95": [
+        0.8786,
+        0.8996
+      ],
+      "mondrian_coverage": 0.8895,
+      "mondrian_ci95": [
+        0.8786,
+        0.8996
+      ],
+      "per_class_coverage": {
+        "0": {
+          "coverage": 0.8893,
+          "ci95": [
+            0.8438,
+            0.9228
+          ],
+          "n": 244
+        },
+        "1": {
+          "coverage": 0.8814,
+          "ci95": [
+            0.8537,
+            0.9045
+          ],
+          "n": 624
+        },
+        "2": {
+          "coverage": 0.8971,
+          "ci95": [
+            0.8584,
+            0.9262
+          ],
+          "n": 311
+        },
+        "3": {
+          "coverage": 0.924,
+          "ci95": [
+            0.8995,
+            0.9429
+          ],
+          "n": 579
+        },
+        "4": {
+          "coverage": 0.9053,
+          "ci95": [
+            0.862,
+            0.9361
+          ],
+          "n": 243
+        },
+        "5": {
+          "coverage": 0.8627,
+          "ci95": [
+            0.8178,
+            0.8979
+          ],
+          "n": 284
+        },
+        "6": {
+          "coverage": 0.8664,
+          "ci95": [
+            0.8384,
+            0.8901
+          ],
+          "n": 666
+        },
+        "7": {
+          "coverage": 0.8936,
+          "ci95": [
+            0.8625,
+            0.9184
+          ],
+          "n": 470
+        }
+      },
+      "avg_set_size": 0.922,
+      "empty_set_rate": 0.0778,
+      "xai_fidelity": {
+        "delta_deletion": 0.7393,
+        "delta_random_map": 0.7556,
+        "delta_insertion": 0.0523,
+        "randomization_correlation": 0.9409,
+        "cascading_correlation": 0.0,
+        "stability_correlation": 0.9629,
+        "fidelity_passed": false
+      }
+    }
+  ],
+  "nlp": [
+    {
+      "dataset": "financial_phrasebank",
+      "architecture": "TF-IDF Logistic Baseline",
+      "balanced_accuracy": 0.6985,
+      "macro_f1": 0.6933,
+      "train_wall_time_s": 0.43,
+      "mondrian_coverage": 0.8781,
+      "mondrian_ci95": [
+        0.856,
+        0.8972
+      ],
+      "xai_top_delta_p": 0.0653,
+      "xai_rand_delta_p": -0.013,
+      "xai_faithful": true
+    },
+    {
+      "dataset": "financial_phrasebank",
+      "architecture": "Pretrained DistilBERT Fine-Tuned",
+      "balanced_accuracy": 0.7373,
+      "macro_f1": 0.7685,
+      "train_wall_time_s": 364.85,
+      "mondrian_coverage": 0.9112,
+      "mondrian_ci95": [
+        0.8916,
+        0.9275
+      ],
+      "xai_top_delta_p": 0.0194,
+      "xai_rand_delta_p": 0.0041,
+      "xai_faithful": true
+    },
+    {
+      "dataset": "rotten_tomatoes",
+      "architecture": "TF-IDF Logistic Baseline",
+      "balanced_accuracy": 0.7833,
+      "macro_f1": 0.7835,
+      "train_wall_time_s": 0.35,
+      "mondrian_coverage": 0.9133,
+      "mondrian_ci95": [
+        0.8974,
+        0.927
+      ],
+      "xai_top_delta_p": 0.0464,
+      "xai_rand_delta_p": -0.0181,
+      "xai_faithful": true
+    },
+    {
+      "dataset": "rotten_tomatoes",
+      "architecture": "Pretrained DistilBERT Fine-Tuned",
+      "balanced_accuracy": 0.8782,
+      "macro_f1": 0.8784,
+      "train_wall_time_s": 248.12,
+      "mondrian_coverage": 0.909,
+      "mondrian_ci95": [
+        0.8928,
+        0.923
+      ],
+      "xai_top_delta_p": 0.4439,
+      "xai_rand_delta_p": 0.112,
+      "xai_faithful": true
+    },
+    {
+      "dataset": "ag_news",
+      "architecture": "TF-IDF Logistic Baseline",
+      "balanced_accuracy": 0.8606,
+      "macro_f1": 0.8605,
+      "train_wall_time_s": 0.82,
+      "mondrian_coverage": 0.8961,
+      "mondrian_ci95": [
+        0.8798,
+        0.9103
+      ],
+      "xai_top_delta_p": 0.0521,
+      "xai_rand_delta_p": 0.0076,
+      "xai_faithful": true
+    },
+    {
+      "dataset": "ag_news",
+      "architecture": "Pretrained DistilBERT Fine-Tuned",
+      "balanced_accuracy": 0.9012,
+      "macro_f1": 0.9012,
+      "train_wall_time_s": 295.4,
+      "mondrian_coverage": 0.8961,
+      "mondrian_ci95": [
+        0.8798,
+        0.9103
+      ],
+      "xai_top_delta_p": 0.003,
+      "xai_rand_delta_p": 0.0006,
+      "xai_faithful": true
+    },
+    {
+      "dataset": "tweeteval_sentiment",
+      "architecture": "TF-IDF Logistic Baseline",
+      "balanced_accuracy": 0.6294,
+      "macro_f1": 0.6107,
+      "train_wall_time_s": 0.95,
+      "mondrian_coverage": 0.9048,
+      "mondrian_ci95": [
+        0.8924,
+        0.9158
+      ],
+      "xai_top_delta_p": 0.1274,
+      "xai_rand_delta_p": 0.0177,
+      "xai_faithful": true
+    },
+    {
+      "dataset": "tweeteval_sentiment",
+      "architecture": "Pretrained DistilBERT Fine-Tuned",
+      "balanced_accuracy": 0.6544,
+      "macro_f1": 0.664,
+      "train_wall_time_s": 320.15,
+      "mondrian_coverage": 0.8877,
+      "mondrian_ci95": [
+        0.8746,
+        0.8996
+      ],
+      "xai_top_delta_p": 0.1606,
+      "xai_rand_delta_p": 0.0418,
+      "xai_faithful": true
+    },
+    {
+      "dataset": "sms_spam",
+      "architecture": "TF-IDF Logistic Baseline",
+      "balanced_accuracy": 0.9713,
+      "macro_f1": 0.9674,
+      "train_wall_time_s": 0.28,
+      "mondrian_coverage": 0.9202,
+      "mondrian_ci95": [
+        0.9026,
+        0.9349
+      ],
+      "xai_top_delta_p": 0.09,
+      "xai_rand_delta_p": 0.0123,
+      "xai_faithful": true
+    },
+    {
+      "dataset": "sms_spam",
+      "architecture": "Pretrained DistilBERT Fine-Tuned",
+      "balanced_accuracy": 0.984,
+      "macro_f1": 0.9826,
+      "train_wall_time_s": 185.6,
+      "mondrian_coverage": 0.9085,
+      "mondrian_ci95": [
+        0.89,
+        0.9242
+      ],
+      "xai_top_delta_p": 0.0034,
+      "xai_rand_delta_p": 0.0008,
+      "xai_faithful": true
+    }
+  ]
+}
