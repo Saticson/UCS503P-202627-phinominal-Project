@@ -170,8 +170,8 @@ public class GpuAutoMlDispatcher {
             Files.writeString(specJson, objectMapper.writeValueAsString(spec));
 
             ProcessBuilder pb = new ProcessBuilder(
-                    "uv", "run", "--no-project", "--with", "torch", "--with", "torchvision", "--with", "pillow",
-                    "python", "code/ml-engine/multimodal_service.py", "train-vision",
+                    resolveUvBinary(), "run", "--no-project", "--with", "torch", "--with", "torchvision", "--with", "pillow",
+                    "python", resolveScript("ml-engine/multimodal_service.py").toString(), "train-vision",
                     "--input", specJson.toAbsolutePath().toString(),
                     "--output", artifactPath.toAbsolutePath().toString()
             );
@@ -264,8 +264,8 @@ public class GpuAutoMlDispatcher {
             Files.writeString(specJson, objectMapper.writeValueAsString(spec));
 
             ProcessBuilder pb = new ProcessBuilder(
-                    "uv", "run", "--no-project", "--with", "scikit-learn", "--with", "joblib",
-                    "python", "code/ml-engine/multimodal_service.py", "train-nlp",
+                    resolveUvBinary(), "run", "--no-project", "--with", "scikit-learn", "--with", "joblib",
+                    "python", resolveScript("ml-engine/multimodal_service.py").toString(), "train-nlp",
                     "--input", specJson.toAbsolutePath().toString(),
                     "--output", artifactPath.toAbsolutePath().toString()
             );
@@ -301,5 +301,26 @@ public class GpuAutoMlDispatcher {
             logger.error("NLP training failed: {}", e.getMessage(), e);
             throw new RuntimeException("NLP text training engine error: " + e.getMessage(), e);
         }
+    }
+
+    private Path resolveScript(String scriptRelPath) {
+        Path[] candidates = new Path[] {
+                Paths.get(scriptRelPath),
+                Paths.get("..", scriptRelPath),
+                Paths.get("code", scriptRelPath),
+                Paths.get("../ml-engine/multimodal_service.py"),
+                Paths.get("ml-engine/multimodal_service.py"),
+                Paths.get("code/ml-engine/multimodal_service.py")
+        };
+        for (Path c : candidates) {
+            if (Files.exists(c)) return c.toAbsolutePath();
+        }
+        return Paths.get(scriptRelPath).toAbsolutePath();
+    }
+
+    private String resolveUvBinary() {
+        Path userUv = Paths.get(System.getProperty("user.home"), ".local", "bin", "uv.exe");
+        if (Files.exists(userUv)) return userUv.toAbsolutePath().toString();
+        return "uv";
     }
 }
